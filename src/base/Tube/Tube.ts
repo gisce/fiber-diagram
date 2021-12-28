@@ -223,7 +223,7 @@ export class Tube {
       return;
     }
 
-    if (!this.expanded && !this.canWeCollapse()) {
+    if (!this.expanded || !this.canWeCollapse()) {
       return;
     }
 

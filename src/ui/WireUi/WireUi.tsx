@@ -15,13 +15,6 @@ export const WireUi = ({ wire }: { wire: Wire }) => {
         y={opts.position.y}
         width={opts.size.width}
         height={opts.size.height}
-        onClick={() => {
-          if (wire.expanded) {
-            wire.collapse();
-          } else {
-            wire.expand();
-          }
-        }}
         fill="#555555"
       />
       {wire.expanded &&
