@@ -1,0 +1,118 @@
+{
+  "res": {
+    "elements": {
+      "wires": [
+        {
+          "id": 21,
+          "name": "TRAM1 23/06",
+          "disposition": "LEFT",
+          "tubes": [
+            {
+              "color": "#00ff00",
+              "id": 23,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            },
+            {
+              "color": "#0914f9",
+              "id": 24,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            },
+            {
+              "color": "#f914f9",
+              "id": 404040,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            }
+          ]
+        },
+        {
+          "id": 421,
+          "name": "TRAM1 23/06",
+          "disposition": "LEFT",
+          "tubes": [
+            {
+              "color": "#00ff00",
+              "id": 423,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            },
+            {
+              "color": "#0914f9",
+              "id": 424,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            },
+            {
+              "color": "#f914f9",
+              "id": 4404090,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            }
+          ]
+        },
+
+        {
+          "id": 84,
+          "name": "TRAM1 23/06",
+          "disposition": "RIGHT",
+          "tubes": [
+            {
+              "color": "#00ff00",
+              "id": 32,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            },
+            {
+              "color": "#0914f9",
+              "id": 938,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            }
+          ]
+        },
+        {
+          "id": 9984,
+          "name": "TRAM1 23/06",
+          "disposition": "RIGHT",
+          "tubes": [
+            {
+              "color": "#00ff00",
+              "id": 9932,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            },
+            {
+              "color": "#0914f9",
+              "id": 99938,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            }
+          ]
+        },
+        {
+          "id": 1284,
+          "name": "TRAM1 23/06",
+          "disposition": "RIGHT",
+          "tubes": [
+            {
+              "color": "#00ff00",
+              "id": 1232,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            },
+            {
+              "color": "#0914f9",
+              "id": 12938,
+              "name": "T1-Tub 1",
+              "type": "tube"
+            }
+          ]
+        }
+      ]
+    },
+    "id": 10,
+    "name": "CTO1 23/06"
+  }
+}

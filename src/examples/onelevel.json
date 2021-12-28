@@ -1,0 +1,15 @@
+{
+  "res": {
+    "elements": {
+      "wires": [
+        {
+          "id": 21,
+          "name": "TRAM1 23/06",
+          "disposition": "LEFT"
+        }
+      ]
+    },
+    "id": 10,
+    "name": "CTO1 23/06"
+  }
+}
