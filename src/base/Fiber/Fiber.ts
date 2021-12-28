@@ -66,10 +66,10 @@ export class Fiber {
       .map((wire) => wire.attr.size.height)
       .reduce((a, b) => a + b, 0);
 
-    const usedHeightPlusSeparation =
-      Config.separation +
-      usedHeight +
-      sibilingsHigherThanMe.length * Config.separation;
+    const usedHeightPlusSeparation = Math.max(
+      usedHeight + sibilingsHigherThanMe.length + 1 * Config.separation,
+      Config.baseUnits.tube.height / 2 - Config.baseUnits.fiber.height / 2
+    );
 
     const x =
       disposition === "LEFT"

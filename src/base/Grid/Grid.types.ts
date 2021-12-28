@@ -46,5 +46,4 @@ export type TubeConnectionApiType = {
 
 export type ConnectionsApiType = {
   fibers?: FiberConnectionApiType[];
-  tubes?: TubeConnectionApiType[];
 };

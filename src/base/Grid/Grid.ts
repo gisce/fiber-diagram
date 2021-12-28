@@ -121,6 +121,7 @@ export class Grid {
             .concat(this.rightWires)
             .map((wire) => wire.getApiJson()),
         },
+        connections: this.connections,
       },
     };
   }
@@ -133,7 +134,51 @@ export class Grid {
             .concat(this.rightWires)
             .map((wire) => wire.getJson()),
         },
+        connections: this.connections,
       },
     };
+  }
+
+  getAllFibers() {
+    const allWires = this.leftWires.concat(this.rightWires);
+    let allFibers = [];
+
+    for (let i = 0; i < allWires.length; i++) {
+      const tubesForWire = allWires[i].tubes;
+      for (let j = 0; j < tubesForWire.length; j++) {
+        allFibers = [...allFibers, ...tubesForWire[j].fibers];
+      }
+    }
+
+    return allFibers;
+  }
+
+  getFiberById(id: number) {
+    const allFibers = this.getAllFibers();
+    return allFibers.find((fiber) => fiber.id === id);
+  }
+
+  getConnectionForFiberId(id: number) {
+    return this.connections.fibers.find((fiberConnection) => {
+      return (
+        fiberConnection.fiber_in === id || fiberConnection.fiber_out === id
+      );
+    });
+  }
+
+  getAllTubes() {
+    const allWires = this.leftWires.concat(this.rightWires);
+    let allTubes = [];
+
+    for (let i = 0; i < allWires.length; i++) {
+      const tubesForWire = allWires[i].tubes;
+      allTubes = [...allTubes, ...tubesForWire];
+    }
+
+    return allTubes;
+  }
+
+  getTubeById(id: number) {
+    return this.getAllTubes().find((tube) => tube.id === id);
   }
 }

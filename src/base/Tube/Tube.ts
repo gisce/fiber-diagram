@@ -43,7 +43,7 @@ export class Tube {
       return;
     }
 
-    const { id, name, color, expanded = true, fibers: fibersData = [] } = data;
+    const { id, name, color, expanded, fibers: fibersData = [] } = data;
 
     this.id = id;
     this.name = name;
@@ -101,9 +101,12 @@ export class Tube {
     const heightWithSeparation =
       this.expanded === false || this.fibers.length === 0
         ? Config.baseUnits.tube.height
-        : usedChildrenHeight +
-          this.fibers.length * Config.separation +
-          Config.separation;
+        : Math.max(
+            usedChildrenHeight +
+              this.fibers.length * Config.separation +
+              Config.separation,
+            Config.baseUnits.tube.height
+          );
 
     this.attr.size = {
       width: Config.baseUnits.tube.width,
@@ -151,6 +154,10 @@ export class Tube {
   }
 
   beginSizing() {
+    if (this.expanded === undefined) {
+      this.expanded = !this.canWeCollapse();
+    }
+
     if (this.fibers.length === 0 || this.expanded === false) {
       this.calculateSize();
       return;
@@ -193,32 +200,93 @@ export class Tube {
   }
 
   expand() {
+    if (!this.initialized) {
+      return;
+    }
+
     if (this.expanded) {
       return;
     }
 
     this.expanded = true;
+
+    const tubeConnectedTo = this.getTubeConnectedTo();
+    if (tubeConnectedTo) {
+      tubeConnectedTo.expand();
+    }
+
     this.onChangeIfNeeded();
   }
 
-  collapse() {
-    if (!this.expanded) {
+  collapse({ mustCollapseLinkedTubes }: { mustCollapseLinkedTubes: boolean }) {
+    if (!this.initialized) {
+      return;
+    }
+
+    if (!this.expanded && !this.canWeCollapse()) {
       return;
     }
 
     this.expanded = false;
+
+    const tubeConnectedTo = this.getTubeConnectedTo();
+    if (tubeConnectedTo && mustCollapseLinkedTubes) {
+      tubeConnectedTo.collapse({ mustCollapseLinkedTubes: false });
+    }
     this.onChangeIfNeeded();
   }
 
-  getExpandedValue() {
-    const connections = this.parentWire.parentGrid.connections;
-    const tubeConnectedToTube =
-      connections?.tubes?.filter((connection) => {
-        return connection.tub_in === this.id || connection.tub_out === this.id;
-      }).length > 0;
-    if (tubeConnectedToTube) {
+  canWeCollapse() {
+    if (this.getTubeConnectedTo() !== undefined) {
       return true;
+    } else {
+      return false;
     }
-    return false;
+  }
+
+  getTubeConnectedTo() {
+    const indexOfMe = this.index;
+    let value = true;
+    let tubeConnectedTo: Tube | undefined;
+
+    this.fibers.forEach((fiber) => {
+      const fiberConnection =
+        this.parentWire.parentGrid.getConnectionForFiberId(fiber.id);
+
+      if (fiberConnection) {
+        const destinationFiberId =
+          fiberConnection.fiber_in === fiber.id
+            ? fiberConnection.fiber_out
+            : fiberConnection.fiber_in;
+        const destinationFiber =
+          this.parentWire.parentGrid.getFiberById(destinationFiberId);
+
+        if (!destinationFiber) {
+          // Destination fiber with id not found, fiber not connected.
+          value = false;
+          return;
+        }
+
+        const destinationTube = destinationFiber.parentTube;
+        tubeConnectedTo = destinationTube;
+
+        if (
+          destinationTube.index !== indexOfMe ||
+          destinationFiber.index !== fiber.index
+        ) {
+          // Fiber is connected to another tube or to another fiber that is not in the same level (index)
+          value = false;
+        }
+      } else {
+        // Fiber is not connected to anything
+        value = false;
+      }
+    });
+
+    if (value) {
+      return tubeConnectedTo;
+    } else {
+      return undefined;
+    }
   }
 }

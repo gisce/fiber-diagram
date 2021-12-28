@@ -1,6 +1,6 @@
 import { Tube } from "base/Tube";
 import React from "react";
-import { Group, Rect } from "react-konva";
+import { Group, Rect, Text } from "react-konva";
 import { FiberUi } from "ui/FiberUi/FiberUi";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 
@@ -9,6 +9,16 @@ export const TubeUi = ({ tube }: { tube: Tube }) => {
 
   const opts = convertAttrUnitsToPixels(attr);
 
+  function onClick() {
+    if (tube.expanded === true) {
+      tube.collapse({
+        mustCollapseLinkedTubes: true,
+      });
+    } else {
+      tube.expand();
+    }
+  }
+
   return (
     <Group>
       <Rect
@@ -16,14 +26,19 @@ export const TubeUi = ({ tube }: { tube: Tube }) => {
         y={opts.position.y}
         width={opts.size.width}
         height={opts.size.height}
-        onClick={() => {
-          if (tube.expanded) {
-            tube.collapse();
-          } else {
-            tube.expand();
-          }
-        }}
+        onClick={onClick}
         fill={color}
+      />
+      <Text
+        onClick={onClick}
+        text={`#${tube.id}`}
+        x={opts.position.x}
+        y={opts.position.y}
+        width={opts.size.width}
+        height={opts.size.height}
+        fontSize={14}
+        padding={5}
+        fill="red"
       />
       {tube.expanded &&
         tube.fibers.map((fiber, i) => {
