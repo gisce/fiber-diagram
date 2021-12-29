@@ -140,7 +140,9 @@ describe("A Wire", () => {
         parentGrid: testParentGrid,
       });
       wire.calculatePosition();
-      expect(wire.attr.position.x).toBe(Config.initialLeftRightSeparation);
+      expect(wire.attr.position.x).toBe(
+        Config.gridSize.width - Config.baseUnits.wire.width
+      );
       expect(wire.attr.position.y).toBe(0);
     });
   });

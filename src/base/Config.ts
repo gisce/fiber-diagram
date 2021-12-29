@@ -6,6 +6,5 @@ export const Config = {
     fiber: { width: 4, height: 1 },
   },
   separation: 1,
-  initialLeftRightSeparation: 70,
   pixelsPerUnit: 10,
 };

@@ -109,7 +109,10 @@ export class Wire {
       usedHeight + sibilingsHigherThanMe.length * Config.separation;
 
     this.attr.position = {
-      x: this.disposition === "LEFT" ? 0 : Config.initialLeftRightSeparation,
+      x:
+        this.disposition === "LEFT"
+          ? 0
+          : Config.gridSize.width - Config.baseUnits.wire.width,
       y: usedHeightPlusSeparation,
     };
 
