@@ -3,6 +3,7 @@ import { Stage, Layer } from "react-konva";
 import { WireUi } from "ui/WireUi";
 import { Grid, GridDataType } from "base/Grid";
 import { Config } from "base/Config";
+import { FiberConnectionUi } from "ui/Connections/FiberConnectionUi";
 
 export const GridUi = ({
   inputJson,
@@ -56,6 +57,9 @@ export const GridUi = ({
       <Layer>
         {leftWires}
         {rightWires}
+        {grid.connections?.map((connection) => {
+          return <FiberConnectionUi connection={connection} />;
+        })}
       </Layer>
     </Stage>
   );

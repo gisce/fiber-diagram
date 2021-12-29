@@ -6,5 +6,9 @@ export type FiberConnectionApiType = {
 };
 
 export type FiberConnectionDataType = FiberConnectionApiType & {
-  attr?: PositionSize;
+  legs?: PositionSize[];
+};
+
+export type LegType = PositionSize & {
+  color: string;
 };

@@ -110,6 +110,9 @@ export class Grid {
   }
 
   drawConnections() {
+    this.connections.forEach((connection) =>
+      connection.calculatePositionSize()
+    );
     this.initialized = true;
   }
 
