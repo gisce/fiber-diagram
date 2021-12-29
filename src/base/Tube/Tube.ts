@@ -163,6 +163,19 @@ export class Tube {
       return;
     }
 
+    const tubeConnectedTo = this.getTubeConnectedTo();
+
+    // We check if our connected tube is on the same side and we reorder the fibers to ease the connection diagram.
+    if (
+      tubeConnectedTo !== undefined &&
+      tubeConnectedTo.parentWire.disposition === this.parentWire.disposition &&
+      tubeConnectedTo.fibers[0].index === this.fibers[0].index
+    ) {
+      tubeConnectedTo.fibers.forEach(function (fiber) {
+        fiber.index = tubeConnectedTo.fibers.length - fiber.index;
+      });
+    }
+
     this.fibers.forEach(function (fiber) {
       fiber.calculateSize();
     });
@@ -245,9 +258,8 @@ export class Tube {
   }
 
   getTubeConnectedTo() {
-    const indexOfMe = this.index;
     let value = true;
-    let tubeConnectedTo: Tube | undefined;
+    const tubesConnectedTo: { [key: number]: Tube } = {};
 
     this.fibers.forEach((fiber) => {
       const fiberConnection =
@@ -268,14 +280,13 @@ export class Tube {
         }
 
         const destinationTube = destinationFiber.parentTube;
-        tubeConnectedTo = destinationTube;
+        tubesConnectedTo[destinationTube.id] = destinationTube;
 
-        if (
-          destinationTube.index !== indexOfMe ||
-          destinationFiber.index !== fiber.index
-        ) {
-          // Fiber is connected to another tube or to another fiber that is not in the same level (index)
+        // If our fibbers are all connected to the same tube, we can collapse.
+        // If not, we can't collapse.
+        if (Object.values(tubesConnectedTo).length > 1) {
           value = false;
+          return;
         }
       } else {
         // Fiber is not connected to anything
@@ -284,7 +295,7 @@ export class Tube {
     });
 
     if (value) {
-      return tubeConnectedTo;
+      return Object.values(tubesConnectedTo)[0];
     } else {
       return undefined;
     }
