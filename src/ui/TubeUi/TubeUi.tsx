@@ -39,6 +39,8 @@ export const TubeUi = ({ tube }: { tube: Tube }) => {
         fontSize={14}
         padding={5}
         fill="red"
+        strokeWidth={0.5}
+        stroke={"#000000"}
       />
       {tube.expanded &&
         tube.fibers.map((fiber, i) => {
