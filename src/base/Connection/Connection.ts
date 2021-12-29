@@ -1,6 +1,6 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
-import { Grid, PositionSize } from "base/Grid";
+import { Grid } from "base/Grid";
 import { FiberConnectionApiType, FiberConnectionDataType, LegType } from ".";
 
 export class Connection {
