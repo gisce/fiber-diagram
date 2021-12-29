@@ -2,6 +2,7 @@ import { Config } from "base/Config";
 import { Connection, FiberConnectionApiType } from "base/Connection";
 import { Wire, WireDataType } from "base/Wire";
 import { GridApiType, GridDataType, Size } from "./Grid.types";
+import * as PathFinding from "pathfinding";
 
 export class Grid {
   size: Size;
@@ -14,6 +15,7 @@ export class Grid {
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
   connections?: Connection[] = [];
+  pfGrid: PathFinding.Grid;
 
   constructor({
     input,
@@ -22,11 +24,20 @@ export class Grid {
     input?: GridDataType;
     onChange?: (grid: Grid) => void;
   }) {
-    const { width, height } = {...Config.gridSize};
+    const { width, height } = { ...Config.gridSize };
     this.size = { width, height };
     this.leftSideWidth = width / 2;
     this.rightSideWidth = width / 2;
-    
+    this.pfGrid = new PathFinding.Grid(
+      width -
+        (Config.baseUnits.wire.width +
+          Config.baseUnits.tube.width +
+          Config.baseUnits.fiber.width +
+          Config.separation * 2) *
+          2,
+      height
+    );
+
     this.onChange = onChange;
 
     if (!input?.res?.elements) {

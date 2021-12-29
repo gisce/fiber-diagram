@@ -116,4 +116,19 @@ export class Fiber {
       index,
     };
   }
+
+  getConnectedToFiber() {
+    const connection =
+      this.parentTube.parentWire.parentGrid.getConnectionForFiberId(this.id);
+    if (!connection) {
+      return undefined;
+    }
+    const fiberIdConnectedTo =
+      connection.fiber_in === this.id
+        ? connection.fiber_out
+        : connection.fiber_in;
+    return this.parentTube.parentWire.parentGrid.getFiberById(
+      fiberIdConnectedTo
+    );
+  }
 }
