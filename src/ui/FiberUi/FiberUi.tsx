@@ -8,6 +8,8 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
 
   const opts = convertAttrUnitsToPixels(attr);
 
+  const rightFiber = fiber.parentTube.parentWire.disposition === "RIGHT";
+
   return (
     <Group>
       <Rect
@@ -19,9 +21,9 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
       />
       <Text
         text={`#${fiber.id}`}
-        x={opts.position.x}
+        x={opts.position.x - (rightFiber ? opts.size.width * 0.1 : 0)}
         y={opts.position.y}
-        width={opts.size.width * 2}
+        width={opts.size.width * 1.2}
         height={opts.size.height}
         fontSize={10}
         padding={opts.size.height}
