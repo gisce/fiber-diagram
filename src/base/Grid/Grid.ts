@@ -5,6 +5,8 @@ import { GridApiType, GridDataType, Size } from "./Grid.types";
 
 export class Grid {
   size: Size;
+  leftSideWidth: number;
+  rightSideWidth: number;
   leftWires: Wire[] = [];
   rightWires: Wire[] = [];
   onChange?: (grid: Grid) => void;
@@ -22,6 +24,9 @@ export class Grid {
   }) {
     const { width, height } = {...Config.gridSize};
     this.size = { width, height };
+    this.leftSideWidth = width / 2;
+    this.rightSideWidth = width / 2;
+    
     this.onChange = onChange;
 
     if (!input?.res?.elements) {

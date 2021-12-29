@@ -54,10 +54,20 @@ export class Connection {
     const disposition = fiber.parentTube.parentWire.disposition;
 
     let x: number;
+    let width: number;
+
     if (disposition === "LEFT") {
       x = Config.baseUnits.wire.width + Config.baseUnits.tube.width;
+      width =
+        fiber.parentTube.parentWire.parentGrid.leftSideWidth -
+        Config.baseUnits.wire.width -
+        Config.baseUnits.tube.width;
     } else {
-      x = fiber.parentTube.parentWire.parentGrid.size.width / 2;
+      x = fiber.parentTube.parentWire.parentGrid.leftSideWidth;
+      width =
+        fiber.parentTube.parentWire.parentGrid.rightSideWidth -
+        Config.baseUnits.wire.width -
+        Config.baseUnits.tube.width;
     }
 
     this.legs.push({
@@ -66,10 +76,7 @@ export class Connection {
         y: fiber.attr.position.y,
       },
       size: {
-        width:
-          fiber.parentTube.parentWire.parentGrid.size.width / 2 -
-          Config.baseUnits.wire.width -
-          Config.baseUnits.tube.width,
+        width,
         height: fiber.attr.size.height,
       },
       color: fiber.color,
