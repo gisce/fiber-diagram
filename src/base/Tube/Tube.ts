@@ -163,20 +163,6 @@ export class Tube {
       return;
     }
 
-    const tubeConnectedTo = this.getTubeConnectedTo();
-
-    // We check if our connected tube is on the same side and we reorder the fibers to ease the connection diagram.
-    // TODO: this must be improved in order to retrieve the correct order of the fibers when they're all connected to the same tube.
-    if (
-      tubeConnectedTo !== undefined &&
-      tubeConnectedTo.parentWire.disposition === this.parentWire.disposition &&
-      tubeConnectedTo.fibers[0].index === this.fibers[0].index
-    ) {
-      tubeConnectedTo.fibers.forEach(function (fiber) {
-        fiber.index = tubeConnectedTo.fibers.length - fiber.index;
-      });
-    }
-
     this.fibers.forEach(function (fiber) {
       fiber.calculateSize();
     });
