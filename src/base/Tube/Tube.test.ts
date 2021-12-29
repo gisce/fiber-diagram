@@ -66,34 +66,14 @@ describe("A Tube", () => {
     });
   });
   describe("when collapsing/expanding tubes", () => {
-    it("should be expanded by default", () => {
+    it("should be undefined by default", () => {
       const { wire } = getNewGridAndWire(jest.fn());
       const tube = new Tube({
         data: tubeExample,
         parentWire: wire,
         index: 0,
       });
-      expect(tube.expanded).toBe(true);
-    });
-    it("should expand a tube", () => {
-      const { wire } = getNewGridAndWire(jest.fn());
-      const tube = new Tube({
-        data: tubeExample,
-        parentWire: wire,
-        index: 0,
-      });
-      tube.expand();
-      expect(tube.expanded).toBe(true);
-    });
-    it("should collapse a tube", () => {
-      const { wire } = getNewGridAndWire(jest.fn());
-      const tube = new Tube({
-        data: tubeExample,
-        parentWire: wire,
-        index: 0,
-      });
-      tube.collapse();
-      expect(tube.expanded).toBe(false);
+      expect(tube.expanded).toBe(undefined);
     });
     it("shoud not call onChange when collapsing a expanded tube", () => {
       const onChange = jest.fn();
@@ -105,7 +85,9 @@ describe("A Tube", () => {
       });
       wire.addTube(tube);
       onChange.mockClear();
-      tube.collapse();
+      tube.collapse({
+        mustCollapseLinkedTubes: false,
+      });
       expect(onChange).not.toHaveBeenCalled();
     });
     it("shoud not call onChange when expanding an expanded tube", () => {

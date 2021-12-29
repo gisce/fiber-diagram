@@ -39,6 +39,9 @@ const testJsons: GridDataType[] = [
           },
         ],
       },
+      connections: {
+        fibers: [],
+      },
     },
   },
 ];
