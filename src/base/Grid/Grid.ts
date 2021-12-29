@@ -1,11 +1,7 @@
 import { Config } from "base/Config";
+import { Connection, FiberConnectionApiType } from "base/Connection";
 import { Wire, WireDataType } from "base/Wire";
-import {
-  GridApiType,
-  GridDataType,
-  Size,
-  ConnectionsApiType,
-} from "./Grid.types";
+import { GridApiType, GridDataType, Size } from "./Grid.types";
 
 export class Grid {
   size: Size;
@@ -15,7 +11,7 @@ export class Grid {
   initialized: boolean = false;
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
-  connections?: ConnectionsApiType;
+  connections?: Connection[] = [];
 
   constructor({
     input,
@@ -39,7 +35,13 @@ export class Grid {
       return;
     }
 
-    this.connections = input.res.connections;
+    const connectionsData = input.res.connections?.fibers;
+    if (connectionsData) {
+      // We add our connections
+      connectionsData.forEach((connection) => {
+        this.addConnection(connection);
+      });
+    }
 
     // We add our wires
     wiresData.forEach((wire: WireDataType) => this.addWire(wire));
@@ -103,8 +105,12 @@ export class Grid {
       Object.keys(this.wiresPositioned).length ===
       this.leftWires.concat(this.rightWires).length
     ) {
-      this.initialized = true;
+      this.drawConnections();
     }
+  }
+
+  drawConnections() {
+    this.initialized = true;
   }
 
   onChangeIfNeeded() {
@@ -121,7 +127,9 @@ export class Grid {
             .concat(this.rightWires)
             .map((wire) => wire.getApiJson()),
         },
-        connections: this.connections,
+        connections: {
+          fibers: this.connections.map((connection) => connection.getApiJson()),
+        },
       },
     };
   }
@@ -134,7 +142,9 @@ export class Grid {
             .concat(this.rightWires)
             .map((wire) => wire.getJson()),
         },
-        connections: this.connections,
+        connections: {
+          fibers: this.connections.map((connection) => connection.getJson()),
+        },
       },
     };
   }
@@ -159,7 +169,7 @@ export class Grid {
   }
 
   getConnectionForFiberId(id: number) {
-    return this.connections.fibers.find((fiberConnection) => {
+    return this.connections.find((fiberConnection) => {
       return (
         fiberConnection.fiber_in === id || fiberConnection.fiber_out === id
       );
@@ -180,5 +190,11 @@ export class Grid {
 
   getTubeById(id: number) {
     return this.getAllTubes().find((tube) => tube.id === id);
+  }
+
+  addConnection(connection: FiberConnectionApiType) {
+    this.connections.push(
+      new Connection({ data: connection, parentGrid: this })
+    );
   }
 }

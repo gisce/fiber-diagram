@@ -1,3 +1,4 @@
+import { FiberConnectionApiType } from "base/Connection";
 import { WireApiType, WireDataType } from "base/Wire";
 
 export type GridType<T> = {
@@ -32,16 +33,6 @@ export type PositionSize = {
 export const InitialPositionSize = {
   size: { width: 0, height: 0 },
   position: { x: 0, y: 0 },
-};
-
-export type FiberConnectionApiType = {
-  fiber_in: number;
-  fiber_out: number;
-};
-
-export type TubeConnectionApiType = {
-  tub_in: number;
-  tub_out: number;
 };
 
 export type ConnectionsApiType = {
