@@ -62,14 +62,18 @@ export class Fiber {
       return wire.index < this.index;
     });
 
-    const usedHeight = sibilingsHigherThanMe
-      .map((wire) => wire.attr.size.height)
-      .reduce((a, b) => a + b, 0);
+    let usedHeightPlusSeparation: number;
 
-    const usedHeightPlusSeparation = Math.max(
-      usedHeight + sibilingsHigherThanMe.length + 1 * Config.separation,
-      Config.baseUnits.tube.height / 2 - Config.baseUnits.fiber.height / 2
-    );
+    if (this.parentTube.fibers.length === 1) {
+      usedHeightPlusSeparation =
+        Config.baseUnits.tube.height / 2 - Config.baseUnits.fiber.height / 2;
+    } else {
+      usedHeightPlusSeparation =
+        Config.separation +
+        sibilingsHigherThanMe
+          .map((wire) => wire.attr.size.height + Config.separation)
+          .reduce((a, b) => a + b, 0);
+    }
 
     const x =
       disposition === "LEFT"
