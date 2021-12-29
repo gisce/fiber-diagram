@@ -276,6 +276,9 @@ export class Tube {
 
         if (!destinationFiber) {
           // Destination fiber with id not found, fiber not connected.
+          console.error(`Fiber with id ${destinationFiberId} not found`);
+          // TODO: throw error when splitters are implemented.
+          // throw `Fiber with id ${destinationFiberId} not found`;
           value = false;
           return;
         }
