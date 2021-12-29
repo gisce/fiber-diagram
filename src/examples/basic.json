@@ -18,12 +18,6 @@
           "fiber_in": 226,
           "fiber_out": 238
         }
-      ],
-      "tubes": [
-        {
-          "tub_in": 23,
-          "tub_out": 26
-        }
       ]
     },
     "elements": {
