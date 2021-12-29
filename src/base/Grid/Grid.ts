@@ -20,7 +20,7 @@ export class Grid {
     input?: GridDataType;
     onChange?: (grid: Grid) => void;
   }) {
-    const { width, height } = Config.gridSize;
+    const { width, height } = {...Config.gridSize};
     this.size = { width, height };
     this.onChange = onChange;
 

@@ -112,7 +112,7 @@ export class Wire {
       x:
         this.disposition === "LEFT"
           ? 0
-          : Config.gridSize.width - Config.baseUnits.wire.width,
+          : this.parentGrid.size.width - Config.baseUnits.wire.width,
       y: usedHeightPlusSeparation,
     };
 

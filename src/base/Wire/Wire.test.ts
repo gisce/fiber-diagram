@@ -141,7 +141,7 @@ describe("A Wire", () => {
       });
       wire.calculatePosition();
       expect(wire.attr.position.x).toBe(
-        Config.gridSize.width - Config.baseUnits.wire.width
+        testParentGrid.size.width - Config.baseUnits.wire.width
       );
       expect(wire.attr.position.y).toBe(0);
     });

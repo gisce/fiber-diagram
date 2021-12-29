@@ -57,7 +57,7 @@ export class Connection {
     if (disposition === "LEFT") {
       x = Config.baseUnits.wire.width + Config.baseUnits.tube.width;
     } else {
-      x = Config.gridSize.width / 2;
+      x = fiber.parentTube.parentWire.parentGrid.size.width / 2;
     }
 
     this.legs.push({
@@ -67,7 +67,7 @@ export class Connection {
       },
       size: {
         width:
-          Config.gridSize.width / 2 -
+          fiber.parentTube.parentWire.parentGrid.size.width / 2 -
           Config.baseUnits.wire.width -
           Config.baseUnits.tube.width,
         height: fiber.attr.size.height,
