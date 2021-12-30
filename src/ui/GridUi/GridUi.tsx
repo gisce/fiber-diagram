@@ -60,13 +60,13 @@ export const GridUi = ({
         {grid.connections?.map((connection, i) => {
           return <FiberConnectionUi key={i} connection={connection} />;
         })}
-        <Rect
+        {/* <Rect
           x={grid.leftSideWidth * Config.pixelsPerUnit}
           y={0}
           width={1}
           height={grid.size.height * Config.pixelsPerUnit}
           fill={"#cccccc"}
-        />
+        /> */}
       </Layer>
     </Stage>
   );

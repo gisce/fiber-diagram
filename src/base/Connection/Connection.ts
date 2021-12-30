@@ -195,6 +195,10 @@ export class Connection {
     });
   }
 
+  remove() {
+    this.parentGrid.removeConnection(this);
+  }
+
   getApiJson(): FiberConnectionApiType {
     const { fiber_in, fiber_out } = this;
     return {

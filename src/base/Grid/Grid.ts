@@ -14,9 +14,10 @@ export class Grid {
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
   connections?: Connection[] = [];
-
   leftSideComplexConnections?: Connection[] = [];
   rightSideComplexConnections?: Connection[] = [];
+  leftVerticalUsedIndexes: number[] = [];
+  rightverticalUsedIndexes: number[] = [];
 
   constructor({
     input,
@@ -207,5 +208,15 @@ export class Grid {
     this.connections.push(
       new Connection({ data: connection, parentGrid: this })
     );
+  }
+
+  removeConnection(connection: FiberConnectionApiType) {
+    this.connections = this.connections.filter((conn) => {
+      return (
+        conn.fiber_in !== connection.fiber_in &&
+        conn.fiber_out !== connection.fiber_out
+      );
+    });
+    this.onChangeIfNeeded();
   }
 }
