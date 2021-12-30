@@ -4,19 +4,15 @@
       "fibers": [
         {
           "fiber_in": 223,
-          "fiber_out": 235
+          "fiber_out": 231
         },
         {
           "fiber_in": 224,
           "fiber_out": 236
         },
         {
-          "fiber_in": 225,
-          "fiber_out": 237
-        },
-        {
-          "fiber_in": 226,
-          "fiber_out": 238
+          "fiber_in": 235,
+          "fiber_out": 225
         }
       ]
     },
@@ -31,14 +27,14 @@
               "color": "#00ff00",
               "fibers": [
                 {
-                  "color": "#FF0000",
+                  "color": "#448844",
                   "free": true,
                   "id": 223,
                   "name": "F1-F1 - ROJA",
                   "type": "fiber"
                 },
                 {
-                  "color": "#00FF00",
+                  "color": "#00f0ff",
                   "free": true,
                   "id": 224,
                   "name": "F2-F2 - VERDE",
@@ -146,28 +142,28 @@
               "color": "#00ffff",
               "fibers": [
                 {
-                  "color": "#FF0000",
+                  "color": "#F000FF",
                   "free": true,
                   "id": 235,
                   "name": "F1-F1 - ROJA",
                   "type": "fiber"
                 },
                 {
-                  "color": "#00FF00",
+                  "color": "#3F090F",
                   "free": true,
                   "id": 236,
                   "name": "F2-F2 - VERDE",
                   "type": "fiber"
                 },
                 {
-                  "color": "#0000FF",
+                  "color": "#128312",
                   "free": true,
                   "id": 237,
                   "name": "F3-F3 - AZUL",
                   "type": "fiber"
                 },
                 {
-                  "color": "#000000",
+                  "color": "#F39F39",
                   "free": true,
                   "id": 238,
                   "name": "F4-F4 - NEGRA",

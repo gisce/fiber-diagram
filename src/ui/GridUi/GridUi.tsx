@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Stage, Layer } from "react-konva";
+import { Stage, Layer, Rect } from "react-konva";
 import { WireUi } from "ui/WireUi";
 import { Grid, GridDataType } from "base/Grid";
 import { Config } from "base/Config";
@@ -60,6 +60,13 @@ export const GridUi = ({
         {grid.connections?.map((connection, i) => {
           return <FiberConnectionUi key={i} connection={connection} />;
         })}
+        <Rect
+          x={grid.leftSideWidth * Config.pixelsPerUnit}
+          y={0}
+          width={1}
+          height={grid.size.height * Config.pixelsPerUnit}
+          fill={"#cccccc"}
+        />
       </Layer>
     </Stage>
   );

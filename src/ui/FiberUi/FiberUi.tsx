@@ -1,4 +1,3 @@
-import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import React from "react";
 import { Group, Rect, Text } from "react-konva";
@@ -11,24 +10,12 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
 
   const rightFiber = fiber.parentTube.parentWire.disposition === "RIGHT";
 
-  // TODO: we must implement this logic in Fiber class
-  const areWeConnected = fiber.getConnectedToFiber() !== undefined;
-
-  const leftOffsetWidth = areWeConnected
-    ? Config.separation * 2 * Config.pixelsPerUnit
-    : 0;
-  const rightOffsetWidth = areWeConnected
-    ? Config.separation * 2 * Config.pixelsPerUnit
-    : 0;
-
   return (
     <Group>
       <Rect
-        x={opts.position.x - (rightFiber ? rightOffsetWidth : 0)}
+        x={opts.position.x}
         y={opts.position.y}
-        width={
-          opts.size.width + (rightFiber ? rightOffsetWidth : leftOffsetWidth)
-        }
+        width={opts.size.width}
         height={opts.size.height}
         fill={color}
       />
