@@ -1,6 +1,6 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
-import { Grid } from "base/Grid";
+import { Grid, Position } from "base/Grid";
 import { FiberConnectionApiType, FiberConnectionDataType, LegType } from ".";
 
 export class Connection {
@@ -8,6 +8,10 @@ export class Connection {
   fiber_out: number;
   parentGrid: Grid;
   legs: LegType[] = [];
+  center: Position = {
+    x: 0,
+    y: 0,
+  };
 
   constructor({
     data,
@@ -46,6 +50,11 @@ export class Connection {
     if (!fiberIn.parentTube.expanded) {
       return;
     }
+
+    this.center = {
+      x: this.parentGrid.leftSideWidth,
+      y: fiberIn.attr.position.y,
+    };
 
     this.legs = [];
     // First we draw a path from fiberIn to the middle of the grid, same height.

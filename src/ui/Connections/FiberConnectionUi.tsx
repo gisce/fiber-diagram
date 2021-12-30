@@ -1,6 +1,7 @@
+import { Config } from "base/Config";
 import { Connection } from "base/Connection";
 import React from "react";
-import { Rect } from "react-konva";
+import { Rect, Circle, Group } from "react-konva";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 
 export const FiberConnectionUi = ({
@@ -33,5 +34,20 @@ export const FiberConnectionUi = ({
     );
   });
 
-  return <>{legsRects}</>;
+  const fusionPointRaidus =
+    (Config.baseUnits.fiber.height * Config.pixelsPerUnit) / 2;
+
+  return (
+    <Group>
+      {legsRects}
+      <Circle
+        x={connection.center.x * Config.pixelsPerUnit}
+        y={connection.center.y * Config.pixelsPerUnit + fusionPointRaidus}
+        radius={fusionPointRaidus}
+        fill={"#FFFFFF"}
+        stroke={"#000000"}
+        strokeWidth={2}
+      />
+    </Group>
+  );
 };

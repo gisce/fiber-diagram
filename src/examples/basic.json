@@ -13,6 +13,10 @@
         {
           "fiber_in": 235,
           "fiber_out": 225
+        },
+        {
+          "fiber_in": 226,
+          "fiber_out": 238
         }
       ]
     },
