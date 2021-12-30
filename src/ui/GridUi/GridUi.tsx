@@ -4,6 +4,7 @@ import { WireUi } from "ui/WireUi";
 import { Grid, GridDataType } from "base/Grid";
 import { Config } from "base/Config";
 import { FiberConnectionUi } from "ui/Connections/FiberConnectionUi";
+import { ConnectionContextProvider } from "ui/Connections/ConnectionContext";
 
 export const GridUi = ({
   inputJson,
@@ -54,20 +55,22 @@ export const GridUi = ({
       width={grid.size.width * Config.pixelsPerUnit}
       height={grid.size.height * Config.pixelsPerUnit}
     >
-      <Layer>
-        {leftWires}
-        {rightWires}
-        {grid.connections?.map((connection, i) => {
-          return <FiberConnectionUi key={i} connection={connection} />;
-        })}
-        {/* <Rect
+      <ConnectionContextProvider>
+        <Layer>
+          {leftWires}
+          {rightWires}
+          {grid.connections?.map((connection, i) => {
+            return <FiberConnectionUi key={i} connection={connection} />;
+          })}
+          {/* <Rect
           x={grid.leftSideWidth * Config.pixelsPerUnit}
           y={0}
           width={1}
           height={grid.size.height * Config.pixelsPerUnit}
           fill={"#cccccc"}
         /> */}
-      </Layer>
+        </Layer>
+      </ConnectionContextProvider>
     </Stage>
   );
 };

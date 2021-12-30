@@ -1,5 +1,6 @@
 import { Config } from "base/Config";
 import { Connection } from "base/Connection";
+import { Fiber } from "base/Fiber";
 import React from "react";
 import { Rect, Circle, Group } from "react-konva";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
@@ -12,6 +13,19 @@ export const FiberConnectionUi = ({
   const { legs } = connection;
 
   if (!legs) {
+    return null;
+  }
+
+  const fiber_in: Fiber = connection.parentGrid.getFiberById(
+    connection.fiber_in
+  );
+  const fiber_out: Fiber = connection.parentGrid.getFiberById(
+    connection.fiber_out
+  );
+  const expandedFiberIn = fiber_in.parentTube.expanded;
+  const expandedFiberOut = fiber_out.parentTube.expanded;
+
+  if (!expandedFiberIn || !expandedFiberOut) {
     return null;
   }
 
