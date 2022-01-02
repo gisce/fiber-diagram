@@ -1,5 +1,9 @@
 import { Config } from "base/Config";
-import { Connection, FiberConnectionApiType } from "base/Connection";
+import {
+  Connection,
+  FiberConnectionApiType,
+  FiberConnectionDataType,
+} from "base/Connection";
 import { Wire, WireDataType } from "base/Wire";
 import { GridApiType, GridDataType, Size } from "./Grid.types";
 
@@ -16,8 +20,7 @@ export class Grid {
   connections?: Connection[] = [];
   leftSideComplexConnections?: Connection[] = [];
   rightSideComplexConnections?: Connection[] = [];
-  leftVerticalUsedIndexes: number[] = [];
-  rightverticalUsedIndexes: number[] = [];
+  verticalUsedIndexes: { [key: number]: boolean } = {};
 
   constructor({
     input,
@@ -210,7 +213,11 @@ export class Grid {
     );
   }
 
-  removeConnection(connection: FiberConnectionApiType) {
+  removeConnection(connection: FiberConnectionDataType) {
+    Object.keys(connection.usedYpoints).forEach((yPoint) => {
+      this.verticalUsedIndexes[yPoint] = false;
+    });
+
     this.connections = this.connections.filter((conn) => {
       return (
         conn.fiber_in !== connection.fiber_in &&
@@ -218,5 +225,36 @@ export class Grid {
       );
     });
     this.onChangeIfNeeded();
+  }
+
+  setVerticalUsedIndex(yPoint: number) {
+    this.verticalUsedIndexes[yPoint] = true;
+    this.verticalUsedIndexes[yPoint + 1] = true;
+    this.verticalUsedIndexes[yPoint - 1] = true;
+  }
+
+  getFirstFreeIndexFromYpoint(yPoint: number) {
+    let i = yPoint;
+    while (this.verticalUsedIndexes[i] === true) {
+      i++;
+    }
+    let j = yPoint;
+    while (this.verticalUsedIndexes[j] === true) {
+      j--;
+    }
+
+    if (i > this.size.height) {
+      return j;
+    }
+
+    if (j < 0) {
+      return i;
+    }
+
+    if (i - yPoint < j - yPoint) {
+      return i;
+    } else {
+      return j;
+    }
   }
 }

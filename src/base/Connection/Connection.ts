@@ -12,6 +12,7 @@ export class Connection {
     x: 0,
     y: 0,
   };
+  usedYpoints: { [key: number]: boolean } = {};
 
   constructor({
     data,
@@ -51,63 +52,46 @@ export class Connection {
       return;
     }
 
-    this.center = {
-      x: this.parentGrid.leftSideWidth,
-      y: fiberIn.attr.position.y,
-    };
-
     this.legs = [];
-    // First we draw a path from fiberIn to the middle of the grid, same height.
-    this.legs = [...this.legs, ...this.getSimpleLegForFiber(fiberIn)];
 
-    // We get the second part of the path from the middle of the grid to the fiberOut
+    // First, we determine which fusion point of the middle of the grid (connection place) is free
+    let fusionYpoint: number;
 
-    // If both fibers are in the same level, we can connect them directly.
-    if (fiberOut.attr.position.y === fiberIn.attr.position.y) {
-      this.legs = [...this.legs, ...this.getSimpleLegForFiber(fiberOut)];
-      return;
+    if (
+      (this.parentGrid.verticalUsedIndexes[fiberIn.attr.position.y] ===
+        undefined ||
+        this.parentGrid.verticalUsedIndexes[fiberIn.attr.position.y] ===
+          false) &&
+      (this.parentGrid.verticalUsedIndexes[fiberOut.attr.position.y] ===
+        undefined ||
+        this.parentGrid.verticalUsedIndexes[fiberOut.attr.position.y] === false)
+    ) {
+      fusionYpoint = fiberIn.attr.position.y;
+    } else {
+      fusionYpoint = this.parentGrid.getFirstFreeIndexFromYpoint(
+        fiberIn.attr.position.y
+      );
     }
 
-    // Else, we have to calculate the path.
     this.legs = [
       ...this.legs,
-      ...this.getComplexLegForFiber({
+      ...this.getLegsForFiber({
+        fiber: fiberIn,
+        toY: fusionYpoint,
+      }),
+      ...this.getLegsForFiber({
         fiber: fiberOut,
-        toY: fiberIn.attr.position.y,
+        toY: fusionYpoint,
       }),
     ];
+
+    this.center = {
+      x: this.parentGrid.leftSideWidth,
+      y: fusionYpoint,
+    };
   }
 
-  getSimpleLegForFiber(fiber: Fiber) {
-    const path = [];
-
-    if (fiber.attr.position.x <= this.parentGrid.leftSideWidth) {
-      // Left to right
-      for (
-        let iX = fiber.attr.position.x;
-        iX < this.parentGrid.leftSideWidth;
-        iX++
-      ) {
-        path.push([iX, fiber.attr.position.y]);
-      }
-    } else {
-      // Right to left
-      for (
-        let iX = fiber.attr.position.x;
-        iX >= this.parentGrid.leftSideWidth;
-        iX--
-      ) {
-        path.push([iX, fiber.attr.position.y]);
-      }
-    }
-
-    return this.getLegsForPath({
-      path,
-      color: fiber.color,
-    });
-  }
-
-  getComplexLegForFiber({ fiber, toY }: { fiber: Fiber; toY: number }) {
+  getLegsForFiber({ fiber, toY }: { fiber: Fiber; toY: number }) {
     const isLeftToRightConnection =
       fiber.parentTube.parentWire.disposition === "LEFT";
     const previousComplexConnections = isLeftToRightConnection
@@ -166,6 +150,9 @@ export class Connection {
     }
 
     previousComplexConnections.push(this);
+
+    this.parentGrid.setVerticalUsedIndex(fiber.attr.position.y);
+    this.parentGrid.setVerticalUsedIndex(toY);
 
     return this.getLegsForPath({
       path,

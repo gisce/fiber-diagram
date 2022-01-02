@@ -7,6 +7,7 @@ export type FiberConnectionApiType = {
 
 export type FiberConnectionDataType = FiberConnectionApiType & {
   legs?: PositionSize[];
+  usedYpoints?: { [key: number]: boolean };
 };
 
 export type LegType = PositionSize & {

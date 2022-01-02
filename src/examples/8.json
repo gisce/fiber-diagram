@@ -2,278 +2,42 @@
   "res": {
     "connections": {
       "fibers": [
-        {
-          "fiber_in": 156,
-          "fiber_out": 144
-        },
-        {
-          "fiber_in": 157,
-          "fiber_out": 145
-        },
-        {
-          "fiber_in": 158,
-          "fiber_out": 146
-        },
-        {
-          "fiber_in": 159,
-          "fiber_out": 147
-        },
-        {
-          "fiber_in": 160,
-          "fiber_out": 148
-        },
-        {
-          "fiber_in": 161,
-          "fiber_out": 149
-        },
-        {
-          "fiber_in": 162,
-          "fiber_out": 150
-        },
-        {
-          "fiber_in": 163,
-          "fiber_out": 151
-        },
-        {
-          "fiber_in": 164,
-          "fiber_out": 152
-        },
-        {
-          "fiber_in": 165,
-          "fiber_out": 153
-        },
-        {
-          "fiber_in": 166,
-          "fiber_out": 154
-        },
-        {
-          "fiber_in": 167,
-          "fiber_out": 155
-        },
-        {
-          "fiber_in": 320,
-          "fiber_out": 292
-        },
-        {
-          "fiber_in": 168,
-          "fiber_out": 319
-        },
-        {
-          "fiber_in": 321,
-          "fiber_out": 305
-        },
-        {
-          "fiber_in": 269,
-          "fiber_out": 291
-        },
-        {
-          "fiber_in": 293,
-          "fiber_out": 326
-        },
-        {
-          "fiber_in": 294,
-          "fiber_out": 327
-        },
-        {
-          "fiber_in": 295,
-          "fiber_out": 328
-        },
-        {
-          "fiber_in": 296,
-          "fiber_out": 329
-        },
-        {
-          "fiber_in": 297,
-          "fiber_out": 330
-        },
-        {
-          "fiber_in": 298,
-          "fiber_out": 331
-        },
-        {
-          "fiber_in": 299,
-          "fiber_out": 332
-        },
-        {
-          "fiber_in": 300,
-          "fiber_out": 333
-        },
-        {
-          "fiber_in": 301,
-          "fiber_out": 334
-        },
-        {
-          "fiber_in": 302,
-          "fiber_out": 335
-        },
-        {
-          "fiber_in": 303,
-          "fiber_out": 336
-        },
-        {
-          "fiber_in": 304,
-          "fiber_out": 337
-        },
-        {
-          "fiber_in": 270,
-          "fiber_out": 290
-        },
-        {
-          "fiber_in": 289,
-          "fiber_out": 174
-        },
-        {
-          "fiber_in": 179,
-          "fiber_out": 310
-        },
-        {
-          "fiber_in": 306,
-          "fiber_out": 178
-        },
-        {
-          "fiber_in": 275,
-          "fiber_out": 177
-        }
+        { "fiber_in": 156, "fiber_out": 144 },
+        { "fiber_in": 157, "fiber_out": 145 },
+        { "fiber_in": 158, "fiber_out": 146 },
+        { "fiber_in": 159, "fiber_out": 147 },
+        { "fiber_in": 160, "fiber_out": 148 },
+        { "fiber_in": 161, "fiber_out": 149 },
+        { "fiber_in": 162, "fiber_out": 150 },
+        { "fiber_in": 163, "fiber_out": 151 },
+        { "fiber_in": 164, "fiber_out": 152 },
+        { "fiber_in": 165, "fiber_out": 153 },
+        { "fiber_in": 166, "fiber_out": 154 },
+        { "fiber_in": 167, "fiber_out": 155 },
+        { "fiber_in": 321, "fiber_out": 305 },
+        { "fiber_in": 269, "fiber_out": 291 },
+        { "fiber_in": 293, "fiber_out": 326 },
+        { "fiber_in": 294, "fiber_out": 327 },
+        { "fiber_in": 295, "fiber_out": 328 },
+        { "fiber_in": 296, "fiber_out": 329 },
+        { "fiber_in": 297, "fiber_out": 330 },
+        { "fiber_in": 298, "fiber_out": 331 },
+        { "fiber_in": 299, "fiber_out": 332 },
+        { "fiber_in": 300, "fiber_out": 333 },
+        { "fiber_in": 301, "fiber_out": 334 },
+        { "fiber_in": 302, "fiber_out": 335 },
+        { "fiber_in": 303, "fiber_out": 336 },
+        { "fiber_in": 304, "fiber_out": 337 },
+        { "fiber_in": 270, "fiber_out": 290 },
+        { "fiber_in": 289, "fiber_out": 174 },
+        { "fiber_in": 275, "fiber_out": 177 }
+      ],
+      "tubes": [
+        { "tub_in": 19, "tub_out": 18 },
+        { "tub_in": 33, "tub_out": 34 }
       ]
     },
     "elements": {
-      "splitters": [
-        {
-          "fibers_in": [
-            {
-              "free": false,
-              "id": 305,
-              "name": "S-CTO2-1 #in1"
-            }
-          ],
-          "fibers_out": [
-            {
-              "free": false,
-              "id": 306,
-              "name": "S-CTO2-1 #out1"
-            },
-            {
-              "free": true,
-              "id": 307,
-              "name": "S-CTO2-1 #out2"
-            },
-            {
-              "free": true,
-              "id": 308,
-              "name": "S-CTO2-1 #out3"
-            },
-            {
-              "free": true,
-              "id": 309,
-              "name": "S-CTO2-1 #out4"
-            }
-          ],
-          "id": 49,
-          "n_in": 1,
-          "n_out": 4,
-          "type": "splitter"
-        },
-        {
-          "fibers_in": [
-            {
-              "free": false,
-              "id": 310,
-              "name": "S-CTO2-2#in1"
-            }
-          ],
-          "fibers_out": [
-            {
-              "free": true,
-              "id": 311,
-              "name": "S-CTO2-2#out1"
-            },
-            {
-              "free": true,
-              "id": 312,
-              "name": "S-CTO2-2#out2"
-            },
-            {
-              "free": true,
-              "id": 313,
-              "name": "S-CTO2-2#out3"
-            },
-            {
-              "free": true,
-              "id": 314,
-              "name": "S-CTO2-2#out4"
-            },
-            {
-              "free": false,
-              "id": 315,
-              "name": "S-CTO2-2#out5"
-            },
-            {
-              "free": true,
-              "id": 316,
-              "name": "S-CTO2-2#out6"
-            },
-            {
-              "free": true,
-              "id": 317,
-              "name": "S-CTO2-2#out7"
-            },
-            {
-              "free": true,
-              "id": 318,
-              "name": "S-CTO2-2#out8"
-            }
-          ],
-          "id": 50,
-          "n_in": 1,
-          "n_out": 8,
-          "type": "splitter"
-        },
-        {
-          "fibers_in": [
-            {
-              "free": false,
-              "id": 319,
-              "name": "S-CTO2-3#in1"
-            }
-          ],
-          "fibers_out": [
-            {
-              "free": false,
-              "id": 320,
-              "name": "S-CTO2-3#out1"
-            },
-            {
-              "free": false,
-              "id": 321,
-              "name": "S-CTO2-3#out2"
-            },
-            {
-              "free": true,
-              "id": 322,
-              "name": "S-CTO2-3#out3"
-            },
-            {
-              "free": true,
-              "id": 323,
-              "name": "S-CTO2-3#out4"
-            },
-            {
-              "free": true,
-              "id": 324,
-              "name": "S-CTO2-3#out5"
-            },
-            {
-              "free": true,
-              "id": 325,
-              "name": "S-CTO2-3#out6"
-            }
-          ],
-          "id": 51,
-          "n_in": 1,
-          "n_out": 6,
-          "type": "splitter"
-        }
-      ],
       "wires": [
         {
           "id": 16,
@@ -284,10 +48,87 @@
               "color": "#000000",
               "fibers": [
                 {
-                  "color": "#ffccff",
+                  "color": "#FFddff",
                   "free": true,
                   "id": 144,
                   "name": "F1-F1-BLANCO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#FF00FF",
+                  "free": true,
+                  "id": 145,
+                  "name": "F2-F2-ROSA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#C0C0C0",
+                  "free": true,
+                  "id": 146,
+                  "name": "F3-F3-GRIS",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#00CCCC",
+                  "free": true,
+                  "id": 147,
+                  "name": "F4-F4-AZUL_CIELO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#CC6600",
+                  "free": true,
+                  "id": 148,
+                  "name": "F5-F5-NARANJA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#663300",
+                  "free": true,
+                  "id": 149,
+                  "name": "F6-F6-MARRON",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#990099",
+                  "free": true,
+                  "id": 150,
+                  "name": "F7-F7-LILA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#808080",
+                  "free": true,
+                  "id": 151,
+                  "name": "F8-F8-CENIZA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#FFFF00",
+                  "free": true,
+                  "id": 152,
+                  "name": "F9-F9-AMARILLO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#0000FF",
+                  "free": true,
+                  "id": 153,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#FF0000",
+                  "free": true,
+                  "id": 154,
+                  "name": "F11-F11-ROJO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#00FF00",
+                  "free": true,
+                  "id": 155,
+                  "name": "F12-F12-VERDE",
                   "type": "fiber"
                 }
               ],
@@ -307,10 +148,87 @@
               "color": "#000000",
               "fibers": [
                 {
-                  "color": "#ffccff",
+                  "color": "#FFddff",
                   "free": true,
                   "id": 156,
                   "name": "F1-F1-BLANCO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#FF00FF",
+                  "free": true,
+                  "id": 157,
+                  "name": "F2-F2-ROSA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#C0C0C0",
+                  "free": true,
+                  "id": 158,
+                  "name": "F3-F3-GRIS",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#00CCCC",
+                  "free": true,
+                  "id": 159,
+                  "name": "F4-F4-AZUL_CIELO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#CC6600",
+                  "free": true,
+                  "id": 160,
+                  "name": "F5-F5-NARANJA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#663300",
+                  "free": true,
+                  "id": 161,
+                  "name": "F6-F6-MARRON",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#990099",
+                  "free": true,
+                  "id": 162,
+                  "name": "F7-F7-LILA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#808080",
+                  "free": true,
+                  "id": 163,
+                  "name": "F8-F8-CENIZA",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#FFFF00",
+                  "free": true,
+                  "id": 164,
+                  "name": "F9-F9-AMARILLO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#0000FF",
+                  "free": true,
+                  "id": 165,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#FF0000",
+                  "free": true,
+                  "id": 166,
+                  "name": "F11-F11-ROJO",
+                  "type": "fiber"
+                },
+                {
+                  "color": "#00FF00",
+                  "free": true,
+                  "id": 167,
+                  "name": "F12-F12-VERDE",
                   "type": "fiber"
                 }
               ],
@@ -330,7 +248,7 @@
               "color": "#000000",
               "fibers": [
                 {
-                  "color": "#ffccff",
+                  "color": "#FFddff",
                   "free": true,
                   "id": 168,
                   "name": "F1-F1-BLANCO",
@@ -430,7 +348,7 @@
               "color": "#000000",
               "fibers": [
                 {
-                  "color": "#ffccff",
+                  "color": "#FFddff",
                   "free": true,
                   "id": 269,
                   "name": "F1-F1-BLANCO",
@@ -530,7 +448,7 @@
               "color": "#000000",
               "fibers": [
                 {
-                  "color": "#ffccff",
+                  "color": "#FFddff",
                   "free": true,
                   "id": 281,
                   "name": "F1-F1-BLANCO",
@@ -630,7 +548,7 @@
               "color": "#000000",
               "fibers": [
                 {
-                  "color": "#ffccff",
+                  "color": "#FFddff",
                   "free": true,
                   "id": 293,
                   "name": "F1-F1-BLANCO",
@@ -730,7 +648,7 @@
               "color": "#000000",
               "fibers": [
                 {
-                  "color": "#ffccff",
+                  "color": "#FFddff",
                   "free": true,
                   "id": 326,
                   "name": "F1-F1-BLANCO",
