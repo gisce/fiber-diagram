@@ -70,7 +70,10 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
             const container = e.target.getStage().container();
             container.style.cursor = "default";
           }}
-          onClick={() => {
+          onClick={(e) => {
+            const container = e.target.getStage().container();
+            container.style.cursor = "default";
+
             if (fiber_in === undefined) {
               setFiberIn(fiber);
             } else if (

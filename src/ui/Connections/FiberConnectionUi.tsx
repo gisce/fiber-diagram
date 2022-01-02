@@ -72,7 +72,9 @@ export const FiberConnectionUi = ({
         fill={"#FFFFFF"}
         stroke={"#000000"}
         strokeWidth={2}
-        onClick={() => {
+        onClick={(e) => {
+          const container = e.target.getStage().container();
+          container.style.cursor = "default";
           connection.remove();
         }}
         style={{ cursor: "pointer" }}
