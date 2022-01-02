@@ -64,6 +64,15 @@ export const FiberConnectionUi = ({
         onClick={() => {
           connection.remove();
         }}
+        style={{ cursor: "pointer" }}
+        onMouseEnter={(e) => {
+          const container = e.target.getStage().container();
+          container.style.cursor = "pointer";
+        }}
+        onMouseLeave={(e) => {
+          const container = e.target.getStage().container();
+          container.style.cursor = "default";
+        }}
       />
     </Group>
   );

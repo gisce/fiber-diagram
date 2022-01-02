@@ -62,6 +62,14 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
           fill={"#FFff1F"}
           stroke={getStrokeColor()}
           strokeWidth={2}
+          onMouseEnter={(e) => {
+            const container = e.target.getStage().container();
+            container.style.cursor = "pointer";
+          }}
+          onMouseLeave={(e) => {
+            const container = e.target.getStage().container();
+            container.style.cursor = "default";
+          }}
           onClick={() => {
             if (fiber_in === undefined) {
               setFiberIn(fiber);
