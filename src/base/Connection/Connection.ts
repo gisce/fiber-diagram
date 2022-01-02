@@ -176,6 +176,8 @@ export class Connection {
         }
       }
 
+      this.parentGrid.setVerticalUsedIndex(fiber.attr.position.y);
+
       return this.getLegsForPath({
         path,
         color: fiber.color,
