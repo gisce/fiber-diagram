@@ -22,6 +22,17 @@ export const FiberConnectionUi = ({
   const fiber_out: Fiber = connection.parentGrid.getFiberById(
     connection.fiber_out
   );
+
+  if (fiber_in === undefined) {
+    console.error(`Fiber ${connection.fiber_in} not found`);
+    return null;
+  }
+
+  if (fiber_out === undefined) {
+    console.error(`Fiber ${connection.fiber_out} not found`);
+    return null;
+  }
+
   const expandedFiberIn = fiber_in.parentTube.expanded;
   const expandedFiberOut = fiber_out.parentTube.expanded;
 
