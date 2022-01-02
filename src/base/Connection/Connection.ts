@@ -52,8 +52,32 @@ export class Connection {
       return;
     }
 
-    this.legs = [];
+    const getLegsFn =
+      fiberIn.parentTube.parentWire.disposition ===
+      fiberOut.parentTube.parentWire.disposition
+        ? this.getSameSideLegs.bind(this)
+        : this.getLeftToRightLegs.bind(this);
 
+    const { legs, center } = getLegsFn({
+      fiberIn,
+      fiberOut,
+    });
+
+    this.legs = [...legs];
+
+    this.center = {
+      x: this.parentGrid.leftSideWidth,
+      y: center,
+    };
+  }
+
+  getLeftToRightLegs({
+    fiberIn,
+    fiberOut,
+  }: {
+    fiberIn: Fiber;
+    fiberOut: Fiber;
+  }) {
     // First, we determine which fusion point of the middle of the grid (connection place) is free
     let fusionYpoint: number;
 
@@ -73,21 +97,49 @@ export class Connection {
       );
     }
 
-    this.legs = [
-      ...this.legs,
-      ...this.getLegsForFiber({
-        fiber: fiberIn,
-        toY: fusionYpoint,
-      }),
-      ...this.getLegsForFiber({
-        fiber: fiberOut,
-        toY: fusionYpoint,
-      }),
-    ];
+    return {
+      legs: [
+        ...this.getLegsForFiber({
+          fiber: fiberIn,
+          toY: fusionYpoint,
+        }),
+        ...this.getLegsForFiber({
+          fiber: fiberOut,
+          toY: fusionYpoint,
+        }),
+      ],
+      center: fusionYpoint,
+    };
+  }
 
-    this.center = {
-      x: this.parentGrid.leftSideWidth,
-      y: fusionYpoint,
+  getSameSideLegs({ fiberIn, fiberOut }: { fiberIn: Fiber; fiberOut: Fiber }) {
+    // First, we determine which two fusion point of the middle of the grid (connection place) is free
+    const [fusionYpoint1, fusionYpoint2, fusionYpoint3] =
+      this.parentGrid.getFirstTwoFreeIndexesFromYpoint(fiberIn.attr.position.y);
+
+    return {
+      legs: [
+        ...this.getLegsForFiber({
+          fiber: fiberIn,
+          toY: fusionYpoint1,
+        }),
+        ...this.getLegsForFiber({
+          fiber: fiberOut,
+          toY: fusionYpoint3,
+        }),
+        ...this.getLegsForPath({
+          color: fiberIn.color,
+          path: [
+            [this.parentGrid.leftSideWidth - 0.5, fusionYpoint1],
+            [this.parentGrid.leftSideWidth - 0.5, fusionYpoint2],
+          ],
+        }),
+        ...this.getLegsForPath({
+          color: fiberOut.color,
+          path: [[this.parentGrid.leftSideWidth - 0.5, fusionYpoint3]],
+        }),
+      ],
+      center: fusionYpoint2,
     };
   }
 
@@ -103,6 +155,33 @@ export class Connection {
       previousComplexConnections.length * 2 * Config.baseUnits.fiber.height;
 
     let angleXpoint: number;
+    let path = [];
+
+    if (fiber.attr.position.y === toY) {
+      if (isLeftToRightConnection) {
+        for (
+          let iX = fiber.attr.position.x;
+          iX < this.parentGrid.leftSideWidth;
+          iX++
+        ) {
+          path.push([iX, fiber.attr.position.y]);
+        }
+      } else {
+        for (
+          let iX = fiber.attr.position.x;
+          iX >= this.parentGrid.leftSideWidth;
+          iX--
+        ) {
+          path.push([iX, fiber.attr.position.y]);
+        }
+      }
+
+      return this.getLegsForPath({
+        path,
+        color: fiber.color,
+      });
+    }
+
     if (isLeftToRightConnection) {
       angleXpoint =
         this.parentGrid.leftSideWidth -
@@ -111,7 +190,7 @@ export class Connection {
       angleXpoint = this.parentGrid.leftSideWidth + separation;
     }
 
-    const path = [[angleXpoint, fiber.attr.position.y]];
+    path = [[angleXpoint, fiber.attr.position.y]];
 
     // from: fiber.attr.position.x, fiber.attr.position.y
     // to: angleXpoint, fiber.attr.position.y
@@ -149,10 +228,14 @@ export class Connection {
       }
     }
 
-    previousComplexConnections.push(this);
-
     this.parentGrid.setVerticalUsedIndex(fiber.attr.position.y);
     this.parentGrid.setVerticalUsedIndex(toY);
+
+    if (isLeftToRightConnection) {
+      this.parentGrid.addLeftSideComplexConnection(this);
+    } else {
+      this.parentGrid.addRightSideComplexConnection(this);
+    }
 
     return this.getLegsForPath({
       path,

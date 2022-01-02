@@ -29,10 +29,19 @@ export class Grid {
     input?: GridDataType;
     onChange?: (grid: Grid) => void;
   }) {
-    const { width, height } = { ...Config.gridSize };
-    this.size = { width, height };
-    this.leftSideWidth = width / 2;
-    this.rightSideWidth = width / 2;
+    if (input?.res?.leftSideWidth !== undefined) {
+      this.leftSideWidth = input?.res?.leftSideWidth;
+      this.rightSideWidth = input?.res?.rightSideWidth;
+      this.size = {
+        width: this.leftSideWidth + this.rightSideWidth,
+        height: input?.res?.height,
+      };
+    } else {
+      const { width, height } = { ...Config.gridSize };
+      this.size = { width, height };
+      this.leftSideWidth = width / 2;
+      this.rightSideWidth = width / 2;
+    }
 
     this.onChange = onChange;
 
@@ -160,6 +169,9 @@ export class Grid {
         connections: {
           fibers: this.connections.map((connection) => connection.getJson()),
         },
+        leftSideWidth: this.leftSideWidth,
+        rightSideWidth: this.rightSideWidth,
+        height: this.size.height,
       },
     };
   }
@@ -256,5 +268,68 @@ export class Grid {
     } else {
       return j;
     }
+  }
+
+  getFirstTwoFreeIndexesFromYpoint(yPoint: number) {
+    let freeAboveIndexes: number[];
+    let freeBelowIndexes: number[];
+
+    for (let i = yPoint; i < this.size.height; i++) {
+      if (
+        (this.verticalUsedIndexes[i] === false ||
+          this.verticalUsedIndexes[i] === undefined) &&
+        i + 1 < this.size.height &&
+        (this.verticalUsedIndexes[i + 1] === false ||
+          (this.verticalUsedIndexes[i + 1] === undefined &&
+            i + 2 < this.size.height &&
+            (this.verticalUsedIndexes[i + 2] === false ||
+              this.verticalUsedIndexes[i + 2] === undefined)))
+      ) {
+        freeAboveIndexes = [i, i + 1, i + 2];
+        break;
+      }
+    }
+
+    for (let j = yPoint; j >= 0; j--) {
+      if (
+        (this.verticalUsedIndexes[j] === false ||
+          this.verticalUsedIndexes[j] === undefined) &&
+        j - 1 >= 0 &&
+        (this.verticalUsedIndexes[j - 1] === false ||
+          this.verticalUsedIndexes[j - 1] === undefined) &&
+        j - 2 >= 0 &&
+        (this.verticalUsedIndexes[j - 2] === false ||
+          this.verticalUsedIndexes[j - 2] === undefined)
+      ) {
+        (freeBelowIndexes = [j, j + 1]), j + 2;
+        break;
+      }
+    }
+
+    if (freeAboveIndexes === undefined && freeBelowIndexes === undefined) {
+      this.size.height = this.size.height + 3;
+      return [this.size.height + 2, this.size.height + 3, this.size.height + 4];
+    }
+
+    return freeAboveIndexes || freeBelowIndexes;
+  }
+
+  addLeftSideComplexConnection(connection: Connection) {
+    this.leftSideComplexConnections.push(connection);
+    // this.leftSideWidth =
+    //   Config.gridSize.width -
+    //   this.rightSideWidth +
+    //   this.leftSideComplexConnections.length * 3;
+
+    // this.onChangeIfNeeded();
+  }
+
+  addRightSideComplexConnection(connection: Connection) {
+    this.rightSideComplexConnections.push(connection);
+    // this.rightSideWidth =
+    //   Config.gridSize.width -
+    //   this.leftSideWidth +
+    //   this.rightSideComplexConnections.length * 3;
+    // this.onChangeIfNeeded();
   }
 }
