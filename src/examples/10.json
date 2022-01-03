@@ -1,0 +1,250 @@
+{
+  "res": {
+    "elements": {
+      "wires": [
+        {
+          "id": 17,
+          "name": "TRAM4 16/06",
+          "disposition": "LEFT",
+          "tubes": [
+            {
+              "id": 19,
+              "name": "T1-T1",
+              "color": "#000000",
+              "fibers": [
+                { "id": 156, "name": "F1-F1-BLANCO", "color": "#FFddff" },
+                { "id": 157, "name": "F2-F2-ROSA", "color": "#FF00FF" },
+                { "id": 158, "name": "F3-F3-GRIS", "color": "#C0C0C0" },
+                { "id": 159, "name": "F4-F4-AZUL_CIELO", "color": "#00CCCC" },
+                { "id": 160, "name": "F5-F5-NARANJA", "color": "#CC6600" },
+                { "id": 161, "name": "F6-F6-MARRON", "color": "#663300" },
+                { "id": 162, "name": "F7-F7-LILA", "color": "#990099" },
+                { "id": 163, "name": "F8-F8-CENIZA", "color": "#808080" },
+                { "id": 164, "name": "F9-F9-AMARILLO", "color": "#FFFF00" },
+                {
+                  "id": 165,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "color": "#0000FF"
+                },
+                { "id": 166, "name": "F11-F11-ROJO", "color": "#FF0000" },
+                { "id": 167, "name": "F12-F12-VERDE", "color": "#00FF00" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "name": "TRAM5 16/06",
+          "disposition": "LEFT",
+          "tubes": [
+            {
+              "id": 20,
+              "name": "T1-T1",
+              "color": "#000000",
+              "fibers": [
+                { "id": 168, "name": "F1-F1-BLANCO", "color": "#FFddff" },
+                { "id": 169, "name": "F2-F2-ROSA", "color": "#FF00FF" },
+                { "id": 170, "name": "F3-F3-GRIS", "color": "#C0C0C0" },
+                { "id": 171, "name": "F4-F4-AZUL_CIELO", "color": "#00CCCC" },
+                { "id": 172, "name": "F5-F5-NARANJA", "color": "#CC6600" },
+                { "id": 173, "name": "F6-F6-MARRON", "color": "#663300" },
+                { "id": 174, "name": "F7-F7-LILA", "color": "#990099" },
+                { "id": 175, "name": "F8-F8-CENIZA", "color": "#808080" },
+                { "id": 176, "name": "F9-F9-AMARILLO", "color": "#FFFF00" },
+                {
+                  "id": 177,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "color": "#0000FF"
+                },
+                { "id": 178, "name": "F11-F11-ROJO", "color": "#FF0000" },
+                { "id": 179, "name": "F12-F12-VERDE", "color": "#00FF00" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 26,
+          "name": "TRAM4.2 16/06",
+          "disposition": "LEFT",
+          "tubes": [
+            {
+              "id": 31,
+              "name": "T1-T1",
+              "color": "#000000",
+              "fibers": [
+                { "id": 269, "name": "F1-F1-BLANCO", "color": "#FFddff" },
+                { "id": 270, "name": "F2-F2-ROSA", "color": "#FF00FF" },
+                { "id": 271, "name": "F3-F3-GRIS", "color": "#C0C0C0" },
+                { "id": 272, "name": "F4-F4-AZUL_CIELO", "color": "#00CCCC" },
+                { "id": 273, "name": "F5-F5-NARANJA", "color": "#CC6600" },
+                { "id": 274, "name": "F6-F6-MARRON", "color": "#663300" },
+                { "id": 275, "name": "F7-F7-LILA", "color": "#990099" },
+                { "id": 276, "name": "F8-F8-CENIZA", "color": "#808080" },
+                { "id": 277, "name": "F9-F9-AMARILLO", "color": "#FFFF00" },
+                {
+                  "id": 278,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "color": "#0000FF"
+                },
+                { "id": 279, "name": "F11-F11-ROJO", "color": "#FF0000" },
+                { "id": 280, "name": "F12-F12-VERDE", "color": "#00FF00" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "name": "TRAM4.3 16/06",
+          "disposition": "LEFT",
+          "tubes": [
+            {
+              "id": 32,
+              "name": "T1-T1",
+              "color": "#000000",
+              "fibers": [
+                { "id": 281, "name": "F1-F1-BLANCO", "color": "#FFddff" },
+                { "id": 282, "name": "F2-F2-ROSA", "color": "#FF00FF" },
+                { "id": 283, "name": "F3-F3-GRIS", "color": "#C0C0C0" },
+                { "id": 284, "name": "F4-F4-AZUL_CIELO", "color": "#00CCCC" },
+                { "id": 285, "name": "F5-F5-NARANJA", "color": "#CC6600" },
+                { "id": 286, "name": "F6-F6-MARRON", "color": "#663300" },
+                { "id": 287, "name": "F7-F7-LILA", "color": "#990099" },
+                { "id": 288, "name": "F8-F8-CENIZA", "color": "#808080" },
+                { "id": 289, "name": "F9-F9-AMARILLO", "color": "#FFFF00" },
+                {
+                  "id": 290,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "color": "#0000FF"
+                },
+                { "id": 291, "name": "F11-F11-ROJO", "color": "#FF0000" },
+                { "id": 292, "name": "F12-F12-VERDE", "color": "#00FF00" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "TRAM3 16/06",
+          "disposition": "RIGHT",
+          "tubes": [
+            {
+              "id": 18,
+              "name": "T1-T1",
+              "color": "#000000",
+              "fibers": [
+                { "id": 144, "name": "F1-F1-BLANCO", "color": "#FFddff" },
+                { "id": 145, "name": "F2-F2-ROSA", "color": "#FF00FF" },
+                { "id": 146, "name": "F3-F3-GRIS", "color": "#C0C0C0" },
+                { "id": 147, "name": "F4-F4-AZUL_CIELO", "color": "#00CCCC" },
+                { "id": 148, "name": "F5-F5-NARANJA", "color": "#CC6600" },
+                { "id": 149, "name": "F6-F6-MARRON", "color": "#663300" },
+                { "id": 150, "name": "F7-F7-LILA", "color": "#990099" },
+                { "id": 151, "name": "F8-F8-CENIZA", "color": "#808080" },
+                { "id": 152, "name": "F9-F9-AMARILLO", "color": "#FFFF00" },
+                {
+                  "id": 153,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "color": "#0000FF"
+                },
+                { "id": 154, "name": "F11-F11-ROJO", "color": "#FF0000" },
+                { "id": 155, "name": "F12-F12-VERDE", "color": "#00FF00" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 28,
+          "name": "TRAM5.1 16/06",
+          "disposition": "RIGHT",
+          "tubes": [
+            {
+              "id": 33,
+              "name": "T1-T1",
+              "color": "#000000",
+              "fibers": [
+                { "id": 293, "name": "F1-F1-BLANCO", "color": "#FFddff" },
+                { "id": 294, "name": "F2-F2-ROSA", "color": "#FF00FF" },
+                { "id": 295, "name": "F3-F3-GRIS", "color": "#C0C0C0" },
+                { "id": 296, "name": "F4-F4-AZUL_CIELO", "color": "#00CCCC" },
+                { "id": 297, "name": "F5-F5-NARANJA", "color": "#CC6600" },
+                { "id": 298, "name": "F6-F6-MARRON", "color": "#663300" },
+                { "id": 299, "name": "F7-F7-LILA", "color": "#990099" },
+                { "id": 300, "name": "F8-F8-CENIZA", "color": "#808080" },
+                { "id": 301, "name": "F9-F9-AMARILLO", "color": "#FFFF00" },
+                {
+                  "id": 302,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "color": "#0000FF"
+                },
+                { "id": 303, "name": "F11-F11-ROJO", "color": "#FF0000" },
+                { "id": 304, "name": "F12-F12-VERDE", "color": "#00FF00" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 29,
+          "name": "TRAM5.2 16/06",
+          "disposition": "RIGHT",
+          "tubes": [
+            {
+              "id": 34,
+              "name": "T1-T1",
+              "color": "#000000",
+              "fibers": [
+                { "id": 326, "name": "F1-F1-BLANCO", "color": "#FFddff" },
+                { "id": 327, "name": "F2-F2-ROSA", "color": "#FF00FF" },
+                { "id": 328, "name": "F3-F3-GRIS", "color": "#C0C0C0" },
+                { "id": 329, "name": "F4-F4-AZUL_CIELO", "color": "#00CCCC" },
+                { "id": 330, "name": "F5-F5-NARANJA", "color": "#CC6600" },
+                { "id": 331, "name": "F6-F6-MARRON", "color": "#663300" },
+                { "id": 332, "name": "F7-F7-LILA", "color": "#990099" },
+                { "id": 333, "name": "F8-F8-CENIZA", "color": "#808080" },
+                { "id": 334, "name": "F9-F9-AMARILLO", "color": "#FFFF00" },
+                {
+                  "id": 335,
+                  "name": "F10-F10-AZUL_MARINO",
+                  "color": "#0000FF"
+                },
+                { "id": 336, "name": "F11-F11-ROJO", "color": "#FF0000" },
+                { "id": 337, "name": "F12-F12-VERDE", "color": "#00FF00" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "connections": {
+      "fibers": [
+        { "fiber_in": 156, "fiber_out": 144 },
+        { "fiber_in": 157, "fiber_out": 145 },
+        { "fiber_in": 158, "fiber_out": 146 },
+        { "fiber_in": 159, "fiber_out": 147 },
+        { "fiber_in": 160, "fiber_out": 148 },
+        { "fiber_in": 161, "fiber_out": 149 },
+        { "fiber_in": 162, "fiber_out": 150 },
+        { "fiber_in": 163, "fiber_out": 151 },
+        { "fiber_in": 164, "fiber_out": 152 },
+        { "fiber_in": 165, "fiber_out": 153 },
+        { "fiber_in": 166, "fiber_out": 154 },
+        { "fiber_in": 167, "fiber_out": 155 },
+        { "fiber_in": 293, "fiber_out": 326 },
+        { "fiber_in": 294, "fiber_out": 327 },
+        { "fiber_in": 295, "fiber_out": 328 },
+        { "fiber_in": 296, "fiber_out": 329 },
+        { "fiber_in": 297, "fiber_out": 330 },
+        { "fiber_in": 298, "fiber_out": 331 },
+        { "fiber_in": 299, "fiber_out": 332 },
+        { "fiber_in": 300, "fiber_out": 333 },
+        { "fiber_in": 301, "fiber_out": 334 },
+        { "fiber_in": 302, "fiber_out": 335 },
+        { "fiber_in": 303, "fiber_out": 336 },
+        { "fiber_in": 304, "fiber_out": 337 },
+        { "fiber_in": 269, "fiber_out": 281 },
+        { "fiber_in": 270, "fiber_out": 283 },
+        { "fiber_in": 271, "fiber_out": 272 },
+        { "fiber_in": 273, "fiber_out": 274 }
+      ]
+    }
+  }
+}

@@ -7,6 +7,7 @@ import onelevel from "examples/onelevel.json";
 import twolevels from "examples/twolevels.json";
 import eight from "examples/8.json";
 import nine from "examples/9.json";
+import ten from "examples/10.json";
 import simpleConnections from "examples/simpleConnections.json";
 
 export default {
@@ -30,6 +31,9 @@ Eight.args = { inputJson: JSON.stringify(eight) };
 
 export const Nine = Template.bind({});
 Nine.args = { inputJson: JSON.stringify(nine) };
+
+export const Ten = Template.bind({});
+Ten.args = { inputJson: JSON.stringify(ten) };
 
 export const SimpleConnections = Template.bind({});
 SimpleConnections.args = { inputJson: JSON.stringify(simpleConnections) };
