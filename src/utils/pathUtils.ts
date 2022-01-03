@@ -39,3 +39,9 @@ export const checkIfPointIsInPath = (point: number[], path: number[][]) => {
     return pathPoint[0] === point[0] && pathPoint[1] === point[1];
   });
 };
+
+export const pathIsHorizontal = (path: [number, number][]) => {
+  const allYs = {};
+  path.forEach((point) => (allYs[point[1]] = true));
+  return Object.keys(allYs).length === 1;
+};
