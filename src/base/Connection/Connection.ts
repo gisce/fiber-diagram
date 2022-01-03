@@ -114,28 +114,46 @@ export class Connection {
 
   getSameSideLegs({ fiberIn, fiberOut }: { fiberIn: Fiber; fiberOut: Fiber }) {
     // First, we determine which two fusion point of the middle of the grid (connection place) is free
-    const [fusionYpoint1, fusionYpoint2, fusionYpoint3] =
+    const [fusionInYpoint1, fusionInYpoint2, fusionInYpoint3] =
       this.parentGrid.getFirstTwoFreeIndexesFromYpoint(fiberIn.attr.position.y);
+    const [fusionOutYpoint1, fusionOutYpoint2, fusionOutYpoint3] =
+      this.parentGrid.getFirstTwoFreeIndexesFromYpoint(
+        fiberOut.attr.position.y
+      );
+
+    let fusionYpoint1: number, fusionYpoint2: number, fusionYpoint3: number;
+
+    if (fusionInYpoint1 < fusionOutYpoint1) {
+      fusionYpoint1 = fusionInYpoint1;
+      fusionYpoint2 = fusionInYpoint2;
+      fusionYpoint3 = fusionInYpoint3;
+    } else {
+      fusionYpoint1 = fusionOutYpoint1;
+      fusionYpoint2 = fusionOutYpoint2;
+      fusionYpoint3 = fusionOutYpoint3;
+    }
 
     return {
       legs: [
         ...this.getLegsForFiber({
-          fiber: fiberIn,
+          fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut,
           toY: fusionYpoint1,
         }),
         ...this.getLegsForFiber({
-          fiber: fiberOut,
+          fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn,
           toY: fusionYpoint3,
         }),
         ...this.getLegsForPath({
-          color: fiberIn.color,
+          color:
+            fusionInYpoint1 < fusionOutYpoint1 ? fiberIn.color : fiberOut.color,
           path: [
             [this.parentGrid.leftSideWidth - 0.5, fusionYpoint1],
             [this.parentGrid.leftSideWidth - 0.5, fusionYpoint2],
           ],
         }),
         ...this.getLegsForPath({
-          color: fiberOut.color,
+          color:
+            fusionInYpoint1 < fusionOutYpoint1 ? fiberOut.color : fiberIn.color,
           path: [[this.parentGrid.leftSideWidth - 0.5, fusionYpoint3]],
         }),
       ],
@@ -162,7 +180,7 @@ export class Connection {
         for (
           let iX = fiber.attr.position.x;
           iX < this.parentGrid.leftSideWidth;
-          iX++
+          iX += Config.baseUnits.fiber.height
         ) {
           path.push([iX, fiber.attr.position.y]);
         }
@@ -170,7 +188,7 @@ export class Connection {
         for (
           let iX = fiber.attr.position.x;
           iX >= this.parentGrid.leftSideWidth;
-          iX--
+          iX -= Config.baseUnits.fiber.height
         ) {
           path.push([iX, fiber.attr.position.y]);
         }
@@ -197,11 +215,19 @@ export class Connection {
     // from: fiber.attr.position.x, fiber.attr.position.y
     // to: angleXpoint, fiber.attr.position.y
     if (isLeftToRightConnection) {
-      for (let iX = fiber.attr.position.x; iX < angleXpoint; iX++) {
+      for (
+        let iX = fiber.attr.position.x;
+        iX < angleXpoint;
+        iX += Config.baseUnits.fiber.height
+      ) {
         path.push([iX, fiber.attr.position.y]);
       }
     } else {
-      for (let iX = fiber.attr.position.x; iX >= angleXpoint; iX--) {
+      for (
+        let iX = fiber.attr.position.x;
+        iX >= angleXpoint;
+        iX -= Config.baseUnits.fiber.height
+      ) {
         path.push([iX, fiber.attr.position.y]);
       }
     }
@@ -209,11 +235,19 @@ export class Connection {
     // from: angleXpoint, fiber.attr.position.y
     // to: angleXpoint, toY
     if (fiber.attr.position.y < toY) {
-      for (let iY = fiber.attr.position.y; iY < toY; iY++) {
+      for (
+        let iY = fiber.attr.position.y;
+        iY < toY;
+        iY += Config.baseUnits.fiber.height
+      ) {
         path.push([angleXpoint, iY]);
       }
     } else {
-      for (let iY = fiber.attr.position.y; iY > toY; iY--) {
+      for (
+        let iY = fiber.attr.position.y;
+        iY > toY;
+        iY -= Config.baseUnits.fiber.height
+      ) {
         path.push([angleXpoint, iY]);
       }
     }
@@ -221,11 +255,19 @@ export class Connection {
     // from: angleXpoint, toY
     // to: this.parentGrid.leftSideWidth, toY
     if (isLeftToRightConnection) {
-      for (let iX = angleXpoint; iX < this.parentGrid.leftSideWidth; iX++) {
+      for (
+        let iX = angleXpoint;
+        iX < this.parentGrid.leftSideWidth;
+        iX += Config.baseUnits.fiber.height
+      ) {
         path.push([iX, toY]);
       }
     } else {
-      for (let iX = angleXpoint; iX >= this.parentGrid.leftSideWidth; iX--) {
+      for (
+        let iX = angleXpoint;
+        iX >= this.parentGrid.leftSideWidth;
+        iX -= Config.baseUnits.fiber.height
+      ) {
         path.push([iX, toY]);
       }
     }
@@ -259,8 +301,8 @@ export class Connection {
           y: entry[1],
         },
         size: {
-          width: 1,
-          height: 1,
+          width: Config.baseUnits.fiber.height,
+          height: Config.baseUnits.fiber.height,
         },
         color,
       };
