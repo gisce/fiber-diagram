@@ -5,6 +5,7 @@ import { Grid, GridDataType } from "base/Grid";
 import { Config } from "base/Config";
 import { FiberConnectionUi } from "ui/Connections/FiberConnectionUi";
 import { ConnectionContextProvider } from "ui/Connections/ConnectionContext";
+import { sanitize } from "utils/sanitizer";
 
 export const GridUi = ({
   inputJson,
@@ -27,7 +28,7 @@ export const GridUi = ({
   );
 
   useEffect(() => {
-    const input = JSON.parse(inputJson);
+    const input = sanitize(JSON.parse(inputJson));
     setGrid(new Grid({ input, onChange: onChangeGrid }));
   }, [inputJson]);
 
