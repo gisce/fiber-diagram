@@ -9,8 +9,8 @@ export type GridType<T> = {
       wires?: T;
     };
     connections?: ConnectionsApiType;
-    leftSideComplexConnections?: FiberConnectionApiType[];
-    rightSideComplexConnections?: FiberConnectionApiType[];
+    leftSideAngleSegments?: FiberConnectionSegment[];
+    rightSideAngleSegments?: FiberConnectionSegment[];
   };
 };
 
@@ -39,4 +39,9 @@ export const InitialPositionSize = {
 
 export type ConnectionsApiType = {
   fibers?: FiberConnectionApiType[];
+};
+
+export type FiberConnectionSegment = {
+  fiber_id: number;
+  toY: number;
 };

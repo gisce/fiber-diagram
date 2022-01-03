@@ -5,7 +5,12 @@ import {
   FiberConnectionDataType,
 } from "base/Connection";
 import { Wire, WireDataType } from "base/Wire";
-import { GridApiType, GridDataType, Size } from "./Grid.types";
+import {
+  FiberConnectionSegment,
+  GridApiType,
+  GridDataType,
+  Size,
+} from "./Grid.types";
 import { isEqual, reduce } from "lodash";
 import { Tube } from "base/Tube";
 
@@ -21,8 +26,8 @@ export class Grid {
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
   connections?: Connection[] = [];
-  leftSideComplexConnections?: FiberConnectionApiType[] = [];
-  rightSideComplexConnections?: FiberConnectionApiType[] = [];
+  leftSideAngleSegments?: FiberConnectionSegment[] = [];
+  rightSideAngleSegments?: FiberConnectionSegment[] = [];
   verticalUsedIndexes: { [key: number]: boolean } = {};
   connectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
@@ -40,26 +45,34 @@ export class Grid {
     this.initialData = { ...input };
 
     if (
-      input?.res?.leftSideComplexConnections &&
-      input?.res?.leftSideComplexConnections.length > 4
+      input?.res?.leftSideAngleSegments &&
+      input?.res?.leftSideAngleSegments.length > 4
     ) {
-      this.leftSideComplexConnections = input.res.leftSideComplexConnections;
+      this.leftSideAngleSegments = input.res.leftSideAngleSegments;
       this.leftSideWidth +=
-        this.leftSideComplexConnections.length *
-        (Config.baseUnits.fiber.height * 3);
+        this.leftSideAngleSegments.length * (Config.baseUnits.fiber.height * 3);
     }
 
     if (
-      input?.res?.rightSideComplexConnections &&
-      input?.res?.rightSideComplexConnections.length > 4
+      input?.res?.rightSideAngleSegments &&
+      input?.res?.rightSideAngleSegments.length > 4
     ) {
-      this.rightSideComplexConnections = input.res.rightSideComplexConnections;
+      this.rightSideAngleSegments = input.res.rightSideAngleSegments;
 
       this.rightSideWidth =
         width / 2 +
-        this.rightSideComplexConnections.length *
+        this.rightSideAngleSegments.length *
           (Config.baseUnits.fiber.height * 3);
     }
+
+    console.log(
+      "this.rightSideAngleSegments: ",
+      this.rightSideAngleSegments?.length
+    );
+    console.log(
+      "this.leftSideAngleSegments: ",
+      this.leftSideAngleSegments?.length
+    );
 
     this.size = { width: this.leftSideWidth + this.rightSideWidth, height };
 
@@ -215,11 +228,11 @@ export class Grid {
       },
     };
 
-    if (this.leftSideComplexConnections.length > 0) {
-      output.res.leftSideComplexConnections = this.leftSideComplexConnections;
+    if (this.leftSideAngleSegments.length > 0) {
+      output.res.leftSideAngleSegments = this.leftSideAngleSegments;
     }
-    if (this.rightSideComplexConnections.length > 0) {
-      output.res.rightSideComplexConnections = this.rightSideComplexConnections;
+    if (this.rightSideAngleSegments.length > 0) {
+      output.res.rightSideAngleSegments = this.rightSideAngleSegments;
     }
 
     return output;
@@ -313,20 +326,20 @@ export class Grid {
       );
     });
 
-    this.leftSideComplexConnections = this.leftSideComplexConnections.filter(
-      (conn) => {
+    this.leftSideAngleSegments = this.leftSideAngleSegments.filter(
+      (segment) => {
         return (
-          conn.fiber_in !== connection.fiber_in &&
-          conn.fiber_out !== connection.fiber_out
+          segment.fiber_id !== connection.fiber_in &&
+          segment.fiber_id !== connection.fiber_out
         );
       }
     );
 
-    this.rightSideComplexConnections = this.rightSideComplexConnections.filter(
-      (conn) => {
+    this.rightSideAngleSegments = this.rightSideAngleSegments.filter(
+      (segment) => {
         return (
-          conn.fiber_in !== connection.fiber_in &&
-          conn.fiber_out !== connection.fiber_out
+          segment.fiber_id !== connection.fiber_in &&
+          segment.fiber_id !== connection.fiber_out
         );
       }
     );
@@ -416,37 +429,23 @@ export class Grid {
     return freeAboveIndexes || freeBelowIndexes;
   }
 
-  addLeftSideComplexConnection(connection: Connection) {
-    const exists = this.leftSideComplexConnections.find((conn) => {
-      return (
-        conn.fiber_in === connection.fiber_in &&
-        conn.fiber_out === connection.fiber_out
-      );
+  addLeftSideAngleSegment(segment: FiberConnectionSegment) {
+    const exists = this.leftSideAngleSegments.find((sgm) => {
+      return sgm.fiber_id === segment.fiber_id;
     });
 
     if (!exists) {
-      this.leftSideComplexConnections.push({
-        fiber_in: connection.fiber_in,
-        fiber_out: connection.fiber_out,
-      });
-      // this.onChangeIfNeeded();
+      this.leftSideAngleSegments.push(segment);
     }
   }
 
-  addRightSideComplexConnection(connection: Connection) {
-    const exists = this.rightSideComplexConnections.find((conn) => {
-      return (
-        conn.fiber_in === connection.fiber_in &&
-        conn.fiber_out === connection.fiber_out
-      );
+  addRightSideAngleSegment(segment: FiberConnectionSegment) {
+    const exists = this.rightSideAngleSegments.find((sgm) => {
+      return sgm.fiber_id === segment.fiber_id;
     });
 
     if (!exists) {
-      this.rightSideComplexConnections.push({
-        fiber_in: connection.fiber_in,
-        fiber_out: connection.fiber_out,
-      });
-      // this.onChangeIfNeeded();
+      this.rightSideAngleSegments.push(segment);
     }
   }
 
@@ -470,22 +469,21 @@ export class Grid {
         this.verticalUsedIndexes[yPoint] = false;
       });
 
-      this.leftSideComplexConnections = this.leftSideComplexConnections.filter(
-        (conn) => {
+      this.leftSideAngleSegments = this.leftSideAngleSegments.filter((sgm) => {
+        return (
+          sgm.fiber_id !== fiberConnection.fiber_in &&
+          sgm.fiber_id !== fiberConnection.fiber_out
+        );
+      });
+
+      this.rightSideAngleSegments = this.rightSideAngleSegments.filter(
+        (sgm) => {
           return (
-            conn.fiber_in !== fiberConnection.fiber_in &&
-            conn.fiber_out !== fiberConnection.fiber_out
+            sgm.fiber_id !== fiberConnection.fiber_in &&
+            sgm.fiber_id !== fiberConnection.fiber_out
           );
         }
       );
-
-      this.rightSideComplexConnections =
-        this.rightSideComplexConnections.filter((conn) => {
-          return (
-            conn.fiber_in !== fiberConnection.fiber_in &&
-            conn.fiber_out !== fiberConnection.fiber_out
-          );
-        });
 
       this.connectionsInitialized = this.connectionsInitialized.filter(
         (conn) => {

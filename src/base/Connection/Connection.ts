@@ -1,7 +1,7 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { Grid, Position } from "base/Grid";
-import { correctOverlap } from "utils/pathUtils";
+import { correctOverlap, pathIsHorizontal } from "utils/pathUtils";
 import { FiberConnectionApiType, FiberConnectionDataType, LegType } from ".";
 
 export class Connection {
@@ -204,23 +204,22 @@ export class Connection {
   getPathForFiberConnection({ fiber, toY }: { fiber: Fiber; toY: number }) {
     const isLeftToRightConnection =
       fiber.parentTube.parentWire.disposition === "LEFT";
-    const ourSideComplexConnections = isLeftToRightConnection
-      ? this.parentGrid.leftSideComplexConnections
-      : this.parentGrid.rightSideComplexConnections;
+    const ourSideAngleSegments = isLeftToRightConnection
+      ? this.parentGrid.leftSideAngleSegments
+      : this.parentGrid.rightSideAngleSegments;
 
-    const ourConnectionIndex = ourSideComplexConnections.findIndex(
-      (connection) =>
-        connection.fiber_in === this.fiber_in &&
-        connection.fiber_out === this.fiber_out
+    const ourConnectionIndex = ourSideAngleSegments.findIndex(
+      (segment) => segment.fiber_id === fiber.id
     );
-    const numberOfPreviousConnections =
+
+    const numberOfPreviousAngles =
       ourConnectionIndex !== -1
         ? ourConnectionIndex
-        : ourSideComplexConnections.length;
+        : ourSideAngleSegments.length;
 
     const separation =
       Config.baseUnits.fiber.height * 2 +
-      numberOfPreviousConnections * 2 * Config.baseUnits.fiber.height;
+      numberOfPreviousAngles * 2 * Config.baseUnits.fiber.height;
 
     let angleXpoint: number;
     let path = [];
@@ -322,19 +321,23 @@ export class Connection {
     this.parentGrid.setVerticalUsedIndex(fiber.attr.position.y);
     this.parentGrid.setVerticalUsedIndex(toY);
 
+    if (pathIsHorizontal(path)) {
+      return path;
+    }
+
     if (isLeftToRightConnection) {
-      this.parentGrid.addLeftSideComplexConnection(this);
+      this.parentGrid.addLeftSideAngleSegment({
+        fiber_id: fiber.id,
+        toY,
+      });
     } else {
-      this.parentGrid.addRightSideComplexConnection(this);
+      this.parentGrid.addRightSideAngleSegment({
+        fiber_id: fiber.id,
+        toY,
+      });
     }
 
     return path;
-  }
-
-  pathIsHorizontal(path: [number, number][]) {
-    const allYs = {};
-    path.forEach((point) => (allYs[point[1]] = true));
-    return Object.keys(allYs).length === 1;
   }
 
   getUnitsForPath({
