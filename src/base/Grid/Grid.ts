@@ -140,6 +140,11 @@ export class Grid {
       Object.keys(this.wiresPositioned).length ===
       this.leftWires.concat(this.rightWires).length
     ) {
+      const currentWiresHeight: number = this.getCurrentWiresHeight();
+      if (this.size.height < currentWiresHeight) {
+        this.size.height = currentWiresHeight;
+      }
+
       this.drawConnections();
     }
   }
@@ -427,13 +432,13 @@ export class Grid {
     }
   }
 
-  getMaxHeight() {
+  getCurrentWiresHeight() {
     const leftHeight = this.leftWires.reduce(
-      (a, b) => a + b.attr.size.height,
+      (a, b) => a + b.attr.size.height + Config.separation * 2,
       0
     );
     const rightHeight = this.rightWires.reduce(
-      (a, b) => a + b.attr.size.height,
+      (a, b) => a + b.attr.size.height + Config.separation * 2,
       0
     );
     return Math.max(leftHeight, rightHeight);
