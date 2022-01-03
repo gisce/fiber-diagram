@@ -52,8 +52,8 @@ export class Grid {
 
       this.rightSideWidth =
         width / 2 +
-        this.rightSideComplexConnections.length -
-        3 * (Config.baseUnits.fiber.height * 3);
+        this.rightSideComplexConnections.length *
+          (Config.baseUnits.fiber.height * 3);
     }
 
     this.size = { width: this.leftSideWidth + this.rightSideWidth, height };
