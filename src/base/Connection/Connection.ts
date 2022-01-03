@@ -1,6 +1,7 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { Grid, Position } from "base/Grid";
+import { correctOverlap } from "utils/pathUtils";
 import { FiberConnectionApiType, FiberConnectionDataType, LegType } from ".";
 
 export class Connection {
@@ -108,13 +109,19 @@ export class Connection {
 
     return {
       legs: [
-        ...this.getLegsForFiber({
-          fiber: fiberIn,
-          toY: fusionYpoint,
+        ...this.getUnitsForPath({
+          path: this.getPathForFiberConnection({
+            fiber: fiberIn,
+            toY: fusionYpoint,
+          }),
+          color: fiberIn.color,
         }),
-        ...this.getLegsForFiber({
-          fiber: fiberOut,
-          toY: fusionYpoint,
+        ...this.getUnitsForPath({
+          path: this.getPathForFiberConnection({
+            fiber: fiberOut,
+            toY: fusionYpoint,
+          }),
+          color: fiberOut.color,
         }),
       ],
       center: fusionYpoint,
@@ -124,9 +131,11 @@ export class Connection {
   getSameSideLegs({ fiberIn, fiberOut }: { fiberIn: Fiber; fiberOut: Fiber }) {
     // First, we determine which two fusion point of the middle of the grid (connection place) is free
     const [fusionInYpoint1, fusionInYpoint2, fusionInYpoint3] =
-      this.parentGrid.getFirstTwoFreeIndexesFromYpoint(fiberIn.attr.position.y);
+      this.parentGrid.getFirstThreeFreeIndexesFromYpoint(
+        fiberIn.attr.position.y
+      );
     const [fusionOutYpoint1, fusionOutYpoint2, fusionOutYpoint3] =
-      this.parentGrid.getFirstTwoFreeIndexesFromYpoint(
+      this.parentGrid.getFirstThreeFreeIndexesFromYpoint(
         fiberOut.attr.position.y
       );
 
@@ -146,35 +155,53 @@ export class Connection {
     this.parentGrid.setVerticalUsedIndex(fusionYpoint2);
     this.parentGrid.setVerticalUsedIndex(fusionYpoint3);
 
+    const centerUpperMiddleDot = this.getUnitsForPath({
+      color:
+        fusionInYpoint1 < fusionOutYpoint1 ? fiberIn.color : fiberOut.color,
+      path: [
+        [this.parentGrid.leftSideWidth - 0.5, fusionYpoint1],
+        [this.parentGrid.leftSideWidth - 0.5, fusionYpoint2],
+      ],
+    });
+
+    const centerLowerMiddleDot = this.getUnitsForPath({
+      color:
+        fusionInYpoint1 < fusionOutYpoint1 ? fiberOut.color : fiberIn.color,
+      path: [[this.parentGrid.leftSideWidth - 0.5, fusionYpoint3]],
+    });
+
+    const firstPath = this.getPathForFiberConnection({
+      fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut,
+      toY: fusionYpoint1,
+    });
+
+    const secondPath = this.getPathForFiberConnection({
+      fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn,
+      toY: fusionYpoint3,
+    });
+
+    const firstSegment = this.getUnitsForPath({
+      path: firstPath,
+      color: (fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut).color,
+    });
+
+    const secondSegment = this.getUnitsForPath({
+      path: secondPath,
+      color: (fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn).color,
+    });
+
     return {
       legs: [
-        ...this.getLegsForFiber({
-          fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut,
-          toY: fusionYpoint1,
-        }),
-        ...this.getLegsForFiber({
-          fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn,
-          toY: fusionYpoint3,
-        }),
-        ...this.getLegsForPath({
-          color:
-            fusionInYpoint1 < fusionOutYpoint1 ? fiberIn.color : fiberOut.color,
-          path: [
-            [this.parentGrid.leftSideWidth - 0.5, fusionYpoint1],
-            [this.parentGrid.leftSideWidth - 0.5, fusionYpoint2],
-          ],
-        }),
-        ...this.getLegsForPath({
-          color:
-            fusionInYpoint1 < fusionOutYpoint1 ? fiberOut.color : fiberIn.color,
-          path: [[this.parentGrid.leftSideWidth - 0.5, fusionYpoint3]],
-        }),
+        ...firstSegment,
+        ...secondSegment,
+        ...centerUpperMiddleDot,
+        ...centerLowerMiddleDot,
       ],
       center: fusionYpoint2,
     };
   }
 
-  getLegsForFiber({ fiber, toY }: { fiber: Fiber; toY: number }) {
+  getPathForFiberConnection({ fiber, toY }: { fiber: Fiber; toY: number }) {
     const isLeftToRightConnection =
       fiber.parentTube.parentWire.disposition === "LEFT";
     const ourSideComplexConnections = isLeftToRightConnection
@@ -219,10 +246,7 @@ export class Connection {
 
       this.parentGrid.setVerticalUsedIndex(fiber.attr.position.y);
 
-      return this.getLegsForPath({
-        path,
-        color: fiber.color,
-      });
+      return path;
     }
 
     if (isLeftToRightConnection) {
@@ -304,10 +328,7 @@ export class Connection {
       this.parentGrid.addRightSideComplexConnection(this);
     }
 
-    return this.getLegsForPath({
-      path,
-      color: fiber.color,
-    });
+    return path;
   }
 
   pathIsHorizontal(path: [number, number][]) {
@@ -316,7 +337,7 @@ export class Connection {
     return Object.keys(allYs).length === 1;
   }
 
-  getLegsForPath({
+  getUnitsForPath({
     path,
     color,
   }: {

@@ -372,7 +372,7 @@ export class Grid {
     }
   }
 
-  getFirstTwoFreeIndexesFromYpoint(yPoint: number) {
+  getFirstThreeFreeIndexesFromYpoint(yPoint: number) {
     let freeAboveIndexes: number[];
     let freeBelowIndexes: number[];
 
