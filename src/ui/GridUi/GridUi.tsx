@@ -57,11 +57,6 @@ export const GridUi = ({
     >
       <ConnectionContextProvider>
         <Layer>
-          {leftWires}
-          {rightWires}
-          {grid.connections?.map((connection, i) => {
-            return <FiberConnectionUi key={i} connection={connection} />;
-          })}
           <Rect
             x={grid.leftSideWidth * Config.pixelsPerUnit}
             y={0}
@@ -69,6 +64,11 @@ export const GridUi = ({
             height={grid.size.height * Config.pixelsPerUnit}
             fill={"#cccccc"}
           />
+          {leftWires}
+          {rightWires}
+          {grid.connections?.map((connection, i) => {
+            return <FiberConnectionUi key={i} connection={connection} />;
+          })}
         </Layer>
       </ConnectionContextProvider>
     </Stage>
