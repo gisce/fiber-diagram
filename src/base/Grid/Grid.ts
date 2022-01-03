@@ -160,9 +160,6 @@ export class Grid {
         connections: {
           fibers: this.connections.map((connection) => connection.getJson()),
         },
-        leftSideWidth: this.leftSideWidth,
-        rightSideWidth: this.rightSideWidth,
-        height: this.size.height,
       },
     };
   }
