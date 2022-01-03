@@ -9,9 +9,6 @@ export type GridType<T> = {
       wires?: T;
     };
     connections?: ConnectionsApiType;
-    leftSideWidth?: number;
-    rightSideWidth?: number;
-    height?: number;
   };
 };
 

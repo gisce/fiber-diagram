@@ -133,6 +133,10 @@ export class Connection {
       fusionYpoint3 = fusionOutYpoint3;
     }
 
+    this.parentGrid.setVerticalUsedIndex(fusionYpoint1);
+    this.parentGrid.setVerticalUsedIndex(fusionYpoint2);
+    this.parentGrid.setVerticalUsedIndex(fusionYpoint3);
+
     return {
       legs: [
         ...this.getLegsForFiber({

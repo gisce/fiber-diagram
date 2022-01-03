@@ -29,19 +29,10 @@ export class Grid {
     input?: GridDataType;
     onChange?: (grid: Grid) => void;
   }) {
-    if (input?.res?.leftSideWidth !== undefined) {
-      this.leftSideWidth = input?.res?.leftSideWidth;
-      this.rightSideWidth = input?.res?.rightSideWidth;
-      this.size = {
-        width: this.leftSideWidth + this.rightSideWidth,
-        height: input?.res?.height,
-      };
-    } else {
-      const { width, height } = { ...Config.gridSize };
-      this.size = { width, height };
-      this.leftSideWidth = width / 2;
-      this.rightSideWidth = width / 2;
-    }
+    const { width, height } = { ...Config.gridSize };
+    this.size = { width, height };
+    this.leftSideWidth = width / 2;
+    this.rightSideWidth = width / 2;
 
     this.onChange = onChange;
 
