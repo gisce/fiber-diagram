@@ -310,6 +310,12 @@ export class Connection {
     });
   }
 
+  pathIsHorizontal(path: [number, number][]) {
+    const allYs = {};
+    path.forEach((point) => (allYs[point[1]] = true));
+    return Object.keys(allYs).length === 1;
+  }
+
   getLegsForPath({
     path,
     color,
