@@ -85,7 +85,6 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
                 fiber_in: fiber_in.id,
                 fiber_out: fiber.id,
               });
-              fiber.parentTube.parentWire.parentGrid.onChangeIfNeeded();
               setFiberIn(undefined);
             }
           }}

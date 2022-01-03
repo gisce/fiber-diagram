@@ -1,4 +1,4 @@
-import { FiberConnectionApiType } from "base/Connection";
+import { Connection, FiberConnectionApiType } from "base/Connection";
 import { WireApiType, WireDataType } from "base/Wire";
 
 export type GridType<T> = {
@@ -9,6 +9,8 @@ export type GridType<T> = {
       wires?: T;
     };
     connections?: ConnectionsApiType;
+    leftSideComplexConnections?: FiberConnectionApiType[];
+    rightSideComplexConnections?: FiberConnectionApiType[];
   };
 };
 

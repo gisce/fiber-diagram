@@ -18,9 +18,10 @@ export class Grid {
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
   connections?: Connection[] = [];
-  leftSideComplexConnections?: Connection[] = [];
-  rightSideComplexConnections?: Connection[] = [];
+  leftSideComplexConnections?: FiberConnectionApiType[] = [];
+  rightSideComplexConnections?: FiberConnectionApiType[] = [];
   verticalUsedIndexes: { [key: number]: boolean } = {};
+  connectionsInitialized: FiberConnectionApiType[] = [];
 
   constructor({
     input,
@@ -30,9 +31,32 @@ export class Grid {
     onChange?: (grid: Grid) => void;
   }) {
     const { width, height } = { ...Config.gridSize };
-    this.size = { width, height };
     this.leftSideWidth = width / 2;
     this.rightSideWidth = width / 2;
+
+    if (
+      input?.res?.leftSideComplexConnections &&
+      input?.res?.leftSideComplexConnections.length - 3 > 4
+    ) {
+      this.leftSideComplexConnections = input.res.leftSideComplexConnections;
+      this.leftSideWidth +=
+        this.leftSideComplexConnections.length *
+        (Config.baseUnits.fiber.height * 3);
+    }
+
+    if (
+      input?.res?.rightSideComplexConnections &&
+      input?.res?.rightSideComplexConnections.length > 4
+    ) {
+      this.rightSideComplexConnections = input.res.rightSideComplexConnections;
+
+      this.rightSideWidth =
+        width / 2 +
+        this.rightSideComplexConnections.length -
+        3 * (Config.baseUnits.fiber.height * 3);
+    }
+
+    this.size = { width: this.leftSideWidth + this.rightSideWidth, height };
 
     this.onChange = onChange;
 
@@ -76,7 +100,6 @@ export class Grid {
         onPositioningDone: this.onWirePositionedDone.bind(this),
       })
     );
-    this.onChangeIfNeeded();
   }
 
   allWiresAreSized() {
@@ -122,10 +145,13 @@ export class Grid {
   }
 
   drawConnections() {
-    this.connections.forEach((connection) =>
-      connection.calculatePositionSize()
-    );
-    this.initialized = true;
+    if (this.connections.length > 0) {
+      this.connections.forEach((connection) =>
+        connection.calculatePositionSize()
+      );
+    } else {
+      this.initialized = true;
+    }
   }
 
   onChangeIfNeeded() {
@@ -160,6 +186,8 @@ export class Grid {
         connections: {
           fibers: this.connections.map((connection) => connection.getJson()),
         },
+        leftSideComplexConnections: this.leftSideComplexConnections,
+        rightSideComplexConnections: this.rightSideComplexConnections,
       },
     };
   }
@@ -208,9 +236,46 @@ export class Grid {
   }
 
   addConnection(connection: FiberConnectionApiType) {
-    this.connections.push(
-      new Connection({ data: connection, parentGrid: this })
-    );
+    if (this.initialized === true) {
+      const newConnection = new Connection({
+        data: connection,
+        parentGrid: this,
+        onInitializeDone: (conn: Connection) => {
+          this.onConnectionInitialized(conn);
+          this.onChangeIfNeeded();
+        },
+      });
+      this.connections.push(newConnection);
+      newConnection.calculatePositionSize();
+    } else {
+      this.connections.push(
+        new Connection({
+          data: connection,
+          parentGrid: this,
+          onInitializeDone: this.onConnectionInitialized.bind(this),
+        })
+      );
+    }
+  }
+
+  onConnectionInitialized(connection: Connection) {
+    const exists = this.connectionsInitialized.find((conn) => {
+      return (
+        conn.fiber_in === connection.fiber_in &&
+        conn.fiber_out === connection.fiber_out
+      );
+    });
+
+    if (!exists) {
+      this.connectionsInitialized.push({
+        fiber_in: connection.fiber_in,
+        fiber_out: connection.fiber_out,
+      });
+    }
+
+    if (this.connectionsInitialized.length === this.connections.length) {
+      this.initialized = true;
+    }
   }
 
   removeConnection(connection: FiberConnectionDataType) {
@@ -224,6 +289,32 @@ export class Grid {
         conn.fiber_out !== connection.fiber_out
       );
     });
+
+    this.leftSideComplexConnections = this.leftSideComplexConnections.filter(
+      (conn) => {
+        return (
+          conn.fiber_in !== connection.fiber_in &&
+          conn.fiber_out !== connection.fiber_out
+        );
+      }
+    );
+
+    this.rightSideComplexConnections = this.rightSideComplexConnections.filter(
+      (conn) => {
+        return (
+          conn.fiber_in !== connection.fiber_in &&
+          conn.fiber_out !== connection.fiber_out
+        );
+      }
+    );
+
+    this.connectionsInitialized = this.connectionsInitialized.filter((conn) => {
+      return (
+        conn.fiber_in !== connection.fiber_in &&
+        conn.fiber_out !== connection.fiber_out
+      );
+    });
+
     this.onChangeIfNeeded();
   }
 
@@ -303,21 +394,48 @@ export class Grid {
   }
 
   addLeftSideComplexConnection(connection: Connection) {
-    this.leftSideComplexConnections.push(connection);
-    // this.leftSideWidth =
-    //   Config.gridSize.width -
-    //   this.rightSideWidth +
-    //   this.leftSideComplexConnections.length * 3;
+    const exists = this.leftSideComplexConnections.find((conn) => {
+      return (
+        conn.fiber_in === connection.fiber_in &&
+        conn.fiber_out === connection.fiber_out
+      );
+    });
 
-    // this.onChangeIfNeeded();
+    if (!exists) {
+      this.leftSideComplexConnections.push({
+        fiber_in: connection.fiber_in,
+        fiber_out: connection.fiber_out,
+      });
+      this.onChangeIfNeeded();
+    }
   }
 
   addRightSideComplexConnection(connection: Connection) {
-    this.rightSideComplexConnections.push(connection);
-    // this.rightSideWidth =
-    //   Config.gridSize.width -
-    //   this.leftSideWidth +
-    //   this.rightSideComplexConnections.length * 3;
-    // this.onChangeIfNeeded();
+    const exists = this.rightSideComplexConnections.find((conn) => {
+      return (
+        conn.fiber_in === connection.fiber_in &&
+        conn.fiber_out === connection.fiber_out
+      );
+    });
+
+    if (!exists) {
+      this.rightSideComplexConnections.push({
+        fiber_in: connection.fiber_in,
+        fiber_out: connection.fiber_out,
+      });
+      this.onChangeIfNeeded();
+    }
+  }
+
+  getMaxHeight() {
+    const leftHeight = this.leftWires.reduce(
+      (a, b) => a + b.attr.size.height,
+      0
+    );
+    const rightHeight = this.rightWires.reduce(
+      (a, b) => a + b.attr.size.height,
+      0
+    );
+    return Math.max(leftHeight, rightHeight);
   }
 }

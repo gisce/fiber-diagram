@@ -13,18 +13,22 @@ export class Connection {
     y: 0,
   };
   usedYpoints: { [key: number]: boolean } = {};
+  onInitializeDone?: (connection: Connection) => void;
 
   constructor({
     data,
     parentGrid,
+    onInitializeDone,
   }: {
     data: FiberConnectionDataType;
     parentGrid: Grid;
+    onInitializeDone?: (connection: Connection) => void;
   }) {
     const { fiber_in, fiber_out } = data;
     this.fiber_in = fiber_in;
     this.fiber_out = fiber_out;
     this.parentGrid = parentGrid;
+    this.onInitializeDone = onInitializeDone;
   }
 
   calculatePositionSize() {
@@ -37,18 +41,21 @@ export class Connection {
     );
 
     if (!fiberIn) {
+      this.onInitializeDone(this);
       return;
       // TODO: throw error when splitters are implemented.
       // throw `Fiber with id ${this.fiber_in} not found`;
     }
 
     if (!fiberOut) {
+      this.onInitializeDone(this);
       return;
       // TODO: throw error when splitters are implemented.
       // throw `Fiber with id ${this.fiber_out} not found`;
     }
 
     if (!fiberIn.parentTube.expanded) {
+      this.onInitializeDone(this);
       return;
     }
 
@@ -69,6 +76,8 @@ export class Connection {
       x: this.parentGrid.leftSideWidth,
       y: center,
     };
+
+    this.onInitializeDone(this);
   }
 
   getLeftToRightLegs({
@@ -168,13 +177,23 @@ export class Connection {
   getLegsForFiber({ fiber, toY }: { fiber: Fiber; toY: number }) {
     const isLeftToRightConnection =
       fiber.parentTube.parentWire.disposition === "LEFT";
-    const previousComplexConnections = isLeftToRightConnection
+    const ourSideComplexConnections = isLeftToRightConnection
       ? this.parentGrid.leftSideComplexConnections
       : this.parentGrid.rightSideComplexConnections;
 
+    const ourConnectionIndex = ourSideComplexConnections.findIndex(
+      (connection) =>
+        connection.fiber_in === this.fiber_in &&
+        connection.fiber_out === this.fiber_out
+    );
+    const numberOfPreviousConnections =
+      ourConnectionIndex !== -1
+        ? ourConnectionIndex
+        : ourSideComplexConnections.length;
+
     const separation =
       Config.baseUnits.fiber.height * 2 +
-      previousComplexConnections.length * 2 * Config.baseUnits.fiber.height;
+      numberOfPreviousConnections * 2 * Config.baseUnits.fiber.height;
 
     let angleXpoint: number;
     let path = [];
