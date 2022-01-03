@@ -6,15 +6,18 @@ import {
 } from "base/Connection";
 import { Wire, WireDataType } from "base/Wire";
 import { GridApiType, GridDataType, Size } from "./Grid.types";
+import { isEqual, reduce } from "lodash";
+import { Tube } from "base/Tube";
 
 export class Grid {
+  id: number;
+  name: string;
   size: Size;
   leftSideWidth: number;
   rightSideWidth: number;
   leftWires: Wire[] = [];
   rightWires: Wire[] = [];
   onChange?: (grid: Grid) => void;
-  initialized: boolean = false;
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
   connections?: Connection[] = [];
@@ -22,6 +25,7 @@ export class Grid {
   rightSideComplexConnections?: FiberConnectionApiType[] = [];
   verticalUsedIndexes: { [key: number]: boolean } = {};
   connectionsInitialized: FiberConnectionApiType[] = [];
+  initialData: GridDataType;
 
   constructor({
     input,
@@ -33,10 +37,11 @@ export class Grid {
     const { width, height } = { ...Config.gridSize };
     this.leftSideWidth = width / 2;
     this.rightSideWidth = width / 2;
+    this.initialData = { ...input };
 
     if (
       input?.res?.leftSideComplexConnections &&
-      input?.res?.leftSideComplexConnections.length - 3 > 4
+      input?.res?.leftSideComplexConnections.length > 4
     ) {
       this.leftSideComplexConnections = input.res.leftSideComplexConnections;
       this.leftSideWidth +=
@@ -60,14 +65,15 @@ export class Grid {
 
     this.onChange = onChange;
 
+    this.id = input?.res?.id;
+    this.name = input?.res?.name;
+
     if (!input?.res?.elements) {
-      this.initialized = true;
       return;
     }
 
     const { wires: wiresData } = input.res.elements;
     if (!wiresData) {
-      this.initialized = true;
       return;
     }
 
@@ -75,7 +81,13 @@ export class Grid {
     if (connectionsData) {
       // We add our connections
       connectionsData.forEach((connection) => {
-        this.addConnection(connection);
+        this.connections.push(
+          new Connection({
+            data: connection,
+            parentGrid: this,
+            onInitializeDone: this.onConnectionInitialized.bind(this),
+          })
+        );
       });
     }
 
@@ -154,13 +166,18 @@ export class Grid {
       this.connections.forEach((connection) =>
         connection.calculatePositionSize()
       );
-    } else {
-      this.initialized = true;
     }
   }
 
   onChangeIfNeeded() {
-    if (this.initialized) {
+    const initialData = this.initialData;
+    const thisJson = {
+      ...this.getJson(),
+    };
+
+    const dataIsSync = isEqual(initialData, thisJson);
+
+    if (!dataIsSync) {
       this.onChange?.(this);
     }
   }
@@ -168,6 +185,8 @@ export class Grid {
   getApiJson(): GridApiType {
     return {
       res: {
+        id: this.id,
+        name: this.name,
         elements: {
           wires: this.leftWires
             .concat(this.rightWires)
@@ -181,8 +200,10 @@ export class Grid {
   }
 
   getJson(): GridDataType {
-    return {
+    const output: GridDataType = {
       res: {
+        id: this.id,
+        name: this.name,
         elements: {
           wires: this.leftWires
             .concat(this.rightWires)
@@ -191,10 +212,17 @@ export class Grid {
         connections: {
           fibers: this.connections.map((connection) => connection.getJson()),
         },
-        leftSideComplexConnections: this.leftSideComplexConnections,
-        rightSideComplexConnections: this.rightSideComplexConnections,
       },
     };
+
+    if (this.leftSideComplexConnections.length > 0) {
+      output.res.leftSideComplexConnections = this.leftSideComplexConnections;
+    }
+    if (this.rightSideComplexConnections.length > 0) {
+      output.res.rightSideComplexConnections = this.rightSideComplexConnections;
+    }
+
+    return output;
   }
 
   getAllFibers() {
@@ -241,26 +269,16 @@ export class Grid {
   }
 
   addConnection(connection: FiberConnectionApiType) {
-    if (this.initialized === true) {
-      const newConnection = new Connection({
-        data: connection,
-        parentGrid: this,
-        onInitializeDone: (conn: Connection) => {
-          this.onConnectionInitialized(conn);
-          this.onChangeIfNeeded();
-        },
-      });
-      this.connections.push(newConnection);
-      newConnection.calculatePositionSize();
-    } else {
-      this.connections.push(
-        new Connection({
-          data: connection,
-          parentGrid: this,
-          onInitializeDone: this.onConnectionInitialized.bind(this),
-        })
-      );
-    }
+    const newConnection = new Connection({
+      data: connection,
+      parentGrid: this,
+      onInitializeDone: (conn: Connection) => {
+        this.onConnectionInitialized(conn);
+        this.onChangeIfNeeded();
+      },
+    });
+    this.connections.push(newConnection);
+    newConnection.calculatePositionSize();
   }
 
   onConnectionInitialized(connection: Connection) {
@@ -279,7 +297,7 @@ export class Grid {
     }
 
     if (this.connectionsInitialized.length === this.connections.length) {
-      this.initialized = true;
+      this.onChangeIfNeeded();
     }
   }
 
@@ -411,7 +429,7 @@ export class Grid {
         fiber_in: connection.fiber_in,
         fiber_out: connection.fiber_out,
       });
-      this.onChangeIfNeeded();
+      // this.onChangeIfNeeded();
     }
   }
 
@@ -428,7 +446,7 @@ export class Grid {
         fiber_in: connection.fiber_in,
         fiber_out: connection.fiber_out,
       });
-      this.onChangeIfNeeded();
+      // this.onChangeIfNeeded();
     }
   }
 
@@ -442,5 +460,41 @@ export class Grid {
       0
     );
     return Math.max(leftHeight, rightHeight);
+  }
+
+  collapseConnectionsForTube(tube: Tube) {
+    tube.fibers.forEach((fiber) => {
+      const fiberConnection = this.getConnectionForFiberId(fiber.id);
+
+      Object.keys(fiberConnection.usedYpoints).forEach((yPoint) => {
+        this.verticalUsedIndexes[yPoint] = false;
+      });
+
+      this.leftSideComplexConnections = this.leftSideComplexConnections.filter(
+        (conn) => {
+          return (
+            conn.fiber_in !== fiberConnection.fiber_in &&
+            conn.fiber_out !== fiberConnection.fiber_out
+          );
+        }
+      );
+
+      this.rightSideComplexConnections =
+        this.rightSideComplexConnections.filter((conn) => {
+          return (
+            conn.fiber_in !== fiberConnection.fiber_in &&
+            conn.fiber_out !== fiberConnection.fiber_out
+          );
+        });
+
+      this.connectionsInitialized = this.connectionsInitialized.filter(
+        (conn) => {
+          return (
+            conn.fiber_in !== fiberConnection.fiber_in &&
+            conn.fiber_out !== fiberConnection.fiber_out
+          );
+        }
+      );
+    });
   }
 }

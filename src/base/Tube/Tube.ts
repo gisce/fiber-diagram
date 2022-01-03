@@ -233,6 +233,9 @@ export class Tube {
     if (tubeConnectedTo && mustCollapseLinkedTubes) {
       tubeConnectedTo.collapse({ mustCollapseLinkedTubes: false });
     }
+
+    this.parentWire.parentGrid.collapseConnectionsForTube(this);
+
     this.onChangeIfNeeded();
   }
 
