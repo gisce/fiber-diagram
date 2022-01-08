@@ -70,15 +70,6 @@ export class Grid {
           (Config.baseUnits.fiber.height * 3);
     }
 
-    console.log(
-      "this.rightSideAngleSegments: ",
-      this.rightSideAngleSegments?.length
-    );
-    console.log(
-      "this.leftSideAngleSegments: ",
-      this.leftSideAngleSegments?.length
-    );
-
     this.size = { width: this.leftSideWidth + this.rightSideWidth, height };
 
     this.onChange = onChange;
@@ -421,7 +412,7 @@ export class Grid {
         (this.verticalUsedIndexes[j - 2] === false ||
           this.verticalUsedIndexes[j - 2] === undefined)
       ) {
-        freeBelowIndexes = [j - 2, j - 1, j];
+        freeBelowIndexes = [j, j - 1, j - 2];
         break;
       }
     }
