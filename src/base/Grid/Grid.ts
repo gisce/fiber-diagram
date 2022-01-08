@@ -421,7 +421,7 @@ export class Grid {
         (this.verticalUsedIndexes[j - 2] === false ||
           this.verticalUsedIndexes[j - 2] === undefined)
       ) {
-        (freeBelowIndexes = [j, j + 1]), j + 2;
+        freeBelowIndexes = [j - 2, j - 1, j];
         break;
       }
     }
