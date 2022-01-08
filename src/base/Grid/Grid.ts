@@ -170,11 +170,6 @@ export class Grid {
       Object.keys(this.wiresPositioned).length ===
       this.leftWires.concat(this.rightWires).length
     ) {
-      const currentWiresHeight: number = this.getCurrentWiresHeight();
-      if (this.size.height < currentWiresHeight) {
-        this.size.height = currentWiresHeight;
-      }
-
       this.drawConnections();
     }
   }
@@ -312,6 +307,11 @@ export class Grid {
         fiber_in: connection.fiber_in,
         fiber_out: connection.fiber_out,
       });
+    }
+
+    const height: number = this.getHeight();
+    if (this.size.height < height) {
+      this.size.height = height;
     }
 
     if (this.connectionsInitialized.length === this.connections.length) {
@@ -454,6 +454,13 @@ export class Grid {
     }
   }
 
+  getHeight() {
+    return Math.max(
+      this.getCurrentWiresHeight(),
+      this.getVerticalConnectionsHeight()
+    );
+  }
+
   getCurrentWiresHeight() {
     const leftHeight = this.leftWires.reduce(
       (a, b) => a + b.attr.size.height + Config.separation * 2,
@@ -464,6 +471,17 @@ export class Grid {
       0
     );
     return Math.max(leftHeight, rightHeight);
+  }
+
+  getVerticalConnectionsHeight() {
+    const yPoints: number[] = Object.keys(this.verticalUsedIndexes)
+      .filter((entry) => {
+        return this.verticalUsedIndexes[entry] === true;
+      })
+      .map((pointKey: string) => {
+        return parseInt(pointKey, 10);
+      });
+    return Math.max(...yPoints) + Config.baseUnits.fiber.height * 3;
   }
 
   collapseConnectionsForTube(tube: Tube) {
