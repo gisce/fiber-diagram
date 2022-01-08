@@ -7,4 +7,5 @@ export const Config = {
   },
   separation: 1,
   pixelsPerUnit: 10,
+  angleThresholdGrowHorizontal: 12,
 };

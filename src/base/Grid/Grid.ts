@@ -46,22 +46,27 @@ export class Grid {
 
     if (
       input?.res?.leftSideAngleSegments &&
-      input?.res?.leftSideAngleSegments.length > 4
+      input?.res?.leftSideAngleSegments.length >
+        Config.angleThresholdGrowHorizontal
     ) {
       this.leftSideAngleSegments = input.res.leftSideAngleSegments;
       this.leftSideWidth +=
-        this.leftSideAngleSegments.length * (Config.baseUnits.fiber.height * 3);
+        (this.leftSideAngleSegments.length -
+          (Config.angleThresholdGrowHorizontal - 1)) *
+        (Config.baseUnits.fiber.height * 3);
     }
 
     if (
       input?.res?.rightSideAngleSegments &&
-      input?.res?.rightSideAngleSegments.length > 4
+      input?.res?.rightSideAngleSegments.length >
+        Config.angleThresholdGrowHorizontal
     ) {
       this.rightSideAngleSegments = input.res.rightSideAngleSegments;
 
       this.rightSideWidth =
         width / 2 +
-        this.rightSideAngleSegments.length *
+        (this.rightSideAngleSegments.length -
+          (Config.angleThresholdGrowHorizontal - 1)) *
           (Config.baseUnits.fiber.height * 3);
     }
 

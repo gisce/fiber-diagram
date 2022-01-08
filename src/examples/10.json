@@ -243,7 +243,14 @@
         { "fiber_in": 269, "fiber_out": 281 },
         { "fiber_in": 270, "fiber_out": 283 },
         { "fiber_in": 271, "fiber_out": 272 },
-        { "fiber_in": 273, "fiber_out": 274 }
+        { "fiber_in": 273, "fiber_out": 274 },
+        { "fiber_in": 291, "fiber_out": 284 },
+        { "fiber_in": 280, "fiber_out": 292 },
+        { "fiber_in": 278, "fiber_out": 290 },
+        { "fiber_in": 277, "fiber_out": 289 },
+        { "fiber_in": 279, "fiber_out": 288 },
+        { "fiber_in": 276, "fiber_out": 287 },
+        { "fiber_in": 275, "fiber_out": 282 }
       ]
     }
   }
