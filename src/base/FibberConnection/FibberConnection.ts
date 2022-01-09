@@ -1,10 +1,10 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { Grid, Position } from "base/Grid";
-import { correctOverlap, pathIsHorizontal } from "utils/pathUtils";
+import { pathIsHorizontal } from "utils/pathUtils";
 import { FiberConnectionApiType, FiberConnectionDataType, LegType } from ".";
 
-export class Connection {
+export class FibberConnection {
   fiber_in: number;
   fiber_out: number;
   parentGrid: Grid;
@@ -14,7 +14,7 @@ export class Connection {
     y: 0,
   };
   usedYpoints: { [key: number]: boolean } = {};
-  onInitializeDone?: (connection: Connection) => void;
+  onInitializeDone?: (connection: FibberConnection) => void;
 
   constructor({
     data,
@@ -23,7 +23,7 @@ export class Connection {
   }: {
     data: FiberConnectionDataType;
     parentGrid: Grid;
-    onInitializeDone?: (connection: Connection) => void;
+    onInitializeDone?: (connection: FibberConnection) => void;
   }) {
     const { fiber_in, fiber_out } = data;
     this.fiber_in = fiber_in;

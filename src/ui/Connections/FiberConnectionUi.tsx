@@ -1,5 +1,5 @@
 import { Config } from "base/Config";
-import { Connection } from "base/Connection";
+import { FibberConnection } from "base/FibberConnection";
 import { Fiber } from "base/Fiber";
 import React from "react";
 import { Rect, Circle, Group } from "react-konva";
@@ -8,7 +8,7 @@ import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 export const FiberConnectionUi = ({
   connection,
 }: {
-  connection: Connection;
+  connection: FibberConnection;
 }) => {
   const { legs } = connection;
 

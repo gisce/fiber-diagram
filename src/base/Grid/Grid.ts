@@ -1,9 +1,9 @@
 import { Config } from "base/Config";
 import {
-  Connection,
+  FibberConnection,
   FiberConnectionApiType,
   FiberConnectionDataType,
-} from "base/Connection";
+} from "base/FibberConnection";
 import { Wire, WireDataType } from "base/Wire";
 import {
   FiberConnectionSegment,
@@ -25,11 +25,11 @@ export class Grid {
   onChange?: (grid: Grid) => void;
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
-  connections?: Connection[] = [];
+  fibberConnections?: FibberConnection[] = [];
   leftSideAngleSegments?: FiberConnectionSegment[] = [];
   rightSideAngleSegments?: FiberConnectionSegment[] = [];
   verticalUsedIndexes: { [key: number]: boolean } = {};
-  connectionsInitialized: FiberConnectionApiType[] = [];
+  fibberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
 
   constructor({
@@ -90,8 +90,8 @@ export class Grid {
     if (connectionsData) {
       // We add our connections
       connectionsData.forEach((connection) => {
-        this.connections.push(
-          new Connection({
+        this.fibberConnections.push(
+          new FibberConnection({
             data: connection,
             parentGrid: this,
             onInitializeDone: this.onConnectionInitialized.bind(this),
@@ -166,8 +166,8 @@ export class Grid {
   }
 
   drawConnections() {
-    if (this.connections.length > 0) {
-      this.connections.forEach((connection) =>
+    if (this.fibberConnections.length > 0) {
+      this.fibberConnections.forEach((connection) =>
         connection.calculatePositionSize()
       );
     }
@@ -197,7 +197,7 @@ export class Grid {
             .map((wire) => wire.getApiJson()),
         },
         connections: {
-          fibers: this.connections.map((connection) => connection.getApiJson()),
+          fibers: this.fibberConnections.map((connection) => connection.getApiJson()),
         },
       },
     };
@@ -214,7 +214,7 @@ export class Grid {
             .map((wire) => wire.getJson()),
         },
         connections: {
-          fibers: this.connections.map((connection) => connection.getJson()),
+          fibers: this.fibberConnections.map((connection) => connection.getJson()),
         },
       },
     };
@@ -249,7 +249,7 @@ export class Grid {
   }
 
   getConnectionForFiberId(id: number) {
-    return this.connections.find((fiberConnection) => {
+    return this.fibberConnections.find((fiberConnection) => {
       return (
         fiberConnection.fiber_in === id || fiberConnection.fiber_out === id
       );
@@ -272,21 +272,21 @@ export class Grid {
     return this.getAllTubes().find((tube) => tube.id === id);
   }
 
-  addConnection(connection: FiberConnectionApiType) {
-    const newConnection = new Connection({
+  addFibberConnection(connection: FiberConnectionApiType) {
+    const newConnection = new FibberConnection({
       data: connection,
       parentGrid: this,
-      onInitializeDone: (conn: Connection) => {
+      onInitializeDone: (conn: FibberConnection) => {
         this.onConnectionInitialized(conn);
         this.onChangeIfNeeded();
       },
     });
-    this.connections.push(newConnection);
+    this.fibberConnections.push(newConnection);
     newConnection.calculatePositionSize();
   }
 
-  onConnectionInitialized(connection: Connection) {
-    const exists = this.connectionsInitialized.find((conn) => {
+  onConnectionInitialized(connection: FibberConnection) {
+    const exists = this.fibberConnectionsInitialized.find((conn) => {
       return (
         conn.fiber_in === connection.fiber_in &&
         conn.fiber_out === connection.fiber_out
@@ -294,7 +294,7 @@ export class Grid {
     });
 
     if (!exists) {
-      this.connectionsInitialized.push({
+      this.fibberConnectionsInitialized.push({
         fiber_in: connection.fiber_in,
         fiber_out: connection.fiber_out,
       });
@@ -305,7 +305,7 @@ export class Grid {
       this.size.height = height;
     }
 
-    if (this.connectionsInitialized.length === this.connections.length) {
+    if (this.fibberConnectionsInitialized.length === this.fibberConnections.length) {
       this.onChangeIfNeeded();
     }
   }
@@ -315,7 +315,7 @@ export class Grid {
       this.verticalUsedIndexes[yPoint] = false;
     });
 
-    this.connections = this.connections.filter((conn) => {
+    this.fibberConnections = this.fibberConnections.filter((conn) => {
       return (
         conn.fiber_in !== connection.fiber_in &&
         conn.fiber_out !== connection.fiber_out
@@ -340,7 +340,7 @@ export class Grid {
       }
     );
 
-    this.connectionsInitialized = this.connectionsInitialized.filter((conn) => {
+    this.fibberConnectionsInitialized = this.fibberConnectionsInitialized.filter((conn) => {
       return (
         conn.fiber_in !== connection.fiber_in &&
         conn.fiber_out !== connection.fiber_out
@@ -499,7 +499,7 @@ export class Grid {
         }
       );
 
-      this.connectionsInitialized = this.connectionsInitialized.filter(
+      this.fibberConnectionsInitialized = this.fibberConnectionsInitialized.filter(
         (conn) => {
           return (
             conn.fiber_in !== fiberConnection.fiber_in &&

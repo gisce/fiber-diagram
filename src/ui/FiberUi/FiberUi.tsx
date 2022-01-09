@@ -81,7 +81,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
               fiber_in !== undefined &&
               fiber_in.id !== fiber.id
             ) {
-              fiber.parentTube.parentWire.parentGrid.addConnection({
+              fiber.parentTube.parentWire.parentGrid.addFibberConnection({
                 fiber_in: fiber_in.id,
                 fiber_out: fiber.id,
               });

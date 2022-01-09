@@ -67,7 +67,7 @@ export const GridUi = ({
           />
           {leftWires}
           {rightWires}
-          {grid.connections?.map((connection, i) => {
+          {grid.fibberConnections?.map((connection, i) => {
             return <FiberConnectionUi key={i} connection={connection} />;
           })}
         </Layer>
