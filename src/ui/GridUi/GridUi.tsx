@@ -3,9 +3,10 @@ import { Stage, Layer, Rect } from "react-konva";
 import { WireUi } from "ui/WireUi";
 import { Grid, GridDataType } from "base/Grid";
 import { Config } from "base/Config";
-import { FiberConnectionUi } from "ui/Connections/FiberConnectionUi";
-import { ConnectionContextProvider } from "ui/Connections/ConnectionContext";
+import { FiberConnectionUi } from "ui/FiberConnectionUi/FiberConnectionUi";
+import { FiberConnectionContextProvider } from "ui/FiberConnectionUi/FiberConnectionContext";
 import { sanitize } from "utils/sanitizer";
+import { TubeConnectionUi } from "ui/TubeConnectionUi/TubeConnectionUi";
 
 export const GridUi = ({
   inputJson,
@@ -56,7 +57,7 @@ export const GridUi = ({
       width={grid.size.width * Config.pixelsPerUnit}
       height={grid.size.height * Config.pixelsPerUnit}
     >
-      <ConnectionContextProvider>
+      <FiberConnectionContextProvider>
         <Layer>
           <Rect
             x={grid.leftSideWidth * Config.pixelsPerUnit}
@@ -65,13 +66,16 @@ export const GridUi = ({
             height={grid.size.height * Config.pixelsPerUnit}
             fill={"#cccccc"}
           />
-          {leftWires}
-          {rightWires}
-          {grid.fibberConnections?.map((connection, i) => {
+          {grid.fiberConnections?.map((connection, i) => {
             return <FiberConnectionUi key={i} connection={connection} />;
           })}
+          {grid.tubeConnections?.map((connection, i) => {
+            return <TubeConnectionUi key={i} connection={connection} />;
+          })}
+          {leftWires}
+          {rightWires}
         </Layer>
-      </ConnectionContextProvider>
+      </FiberConnectionContextProvider>
     </Stage>
   );
 };

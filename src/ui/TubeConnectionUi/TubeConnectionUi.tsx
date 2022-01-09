@@ -1,14 +1,14 @@
 import { Config } from "base/Config";
-import { FibberConnection } from "base/FibberConnection";
-import { Fiber } from "base/Fiber";
+import { TubeConnection } from "base/TubeConnection";
+import { Tube } from "base/Tube";
 import React from "react";
 import { Rect, Circle, Group } from "react-konva";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 
-export const FiberConnectionUi = ({
+export const TubeConnectionUi = ({
   connection,
 }: {
-  connection: FibberConnection;
+  connection: TubeConnection;
 }) => {
   const { legs } = connection;
 
@@ -16,27 +16,23 @@ export const FiberConnectionUi = ({
     return null;
   }
 
-  const fiber_in: Fiber = connection.parentGrid.getFiberById(
-    connection.fiber_in
-  );
-  const fiber_out: Fiber = connection.parentGrid.getFiberById(
-    connection.fiber_out
-  );
+  const tube_in: Tube = connection.parentGrid.getTubeById(connection.tube_in);
+  const tube_out: Tube = connection.parentGrid.getTubeById(connection.tube_out);
 
-  if (fiber_in === undefined) {
-    console.error(`Fiber ${connection.fiber_in} not found`);
+  if (tube_in === undefined) {
+    console.error(`Tube ${connection.tube_in} not found`);
     return null;
   }
 
-  if (fiber_out === undefined) {
-    console.error(`Fiber ${connection.fiber_out} not found`);
+  if (tube_out === undefined) {
+    console.error(`Tube ${connection.tube_out} not found`);
     return null;
   }
 
-  const expandedFiberIn = fiber_in.parentTube.expanded;
-  const expandedFiberOut = fiber_out.parentTube.expanded;
+  const expandedTubeIn = tube_in.expanded;
+  const expandedTubeOut = tube_out.expanded;
 
-  if (!expandedFiberIn || !expandedFiberOut) {
+  if (expandedTubeIn || expandedTubeOut) {
     return null;
   }
 
@@ -60,7 +56,7 @@ export const FiberConnectionUi = ({
   });
 
   const fusionPointRaidus =
-    (Config.baseUnits.fiber.height * Config.pixelsPerUnit) / 2;
+    (Config.baseUnits.tube.height * Config.pixelsPerUnit) / 2;
 
   return (
     <Group>
@@ -75,7 +71,8 @@ export const FiberConnectionUi = ({
         onClick={(e) => {
           const container = e.target.getStage().container();
           container.style.cursor = "default";
-          connection.remove();
+          tube_in.expand();
+          // connection.remove();
         }}
         style={{ cursor: "pointer" }}
         onMouseEnter={(e) => {

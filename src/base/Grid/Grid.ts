@@ -1,9 +1,9 @@
 import { Config } from "base/Config";
 import {
-  FibberConnection,
+  FiberConnection,
   FiberConnectionApiType,
   FiberConnectionDataType,
-} from "base/FibberConnection";
+} from "base/FiberConnection";
 import { Wire, WireDataType } from "base/Wire";
 import {
   FiberConnectionSegment,
@@ -11,8 +11,9 @@ import {
   GridDataType,
   Size,
 } from "./Grid.types";
-import { isEqual, reduce } from "lodash";
+import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
+import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
 
 export class Grid {
   id: number;
@@ -25,12 +26,13 @@ export class Grid {
   onChange?: (grid: Grid) => void;
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
-  fibberConnections?: FibberConnection[] = [];
+  fiberConnections?: FiberConnection[] = [];
   leftSideAngleSegments?: FiberConnectionSegment[] = [];
   rightSideAngleSegments?: FiberConnectionSegment[] = [];
   verticalUsedIndexes: { [key: number]: boolean } = {};
-  fibberConnectionsInitialized: FiberConnectionApiType[] = [];
+  fiberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
+  tubeConnections?: TubeConnection[] = [];
 
   constructor({
     input,
@@ -90,11 +92,11 @@ export class Grid {
     if (connectionsData) {
       // We add our connections
       connectionsData.forEach((connection) => {
-        this.fibberConnections.push(
-          new FibberConnection({
+        this.fiberConnections.push(
+          new FiberConnection({
             data: connection,
             parentGrid: this,
-            onInitializeDone: this.onConnectionInitialized.bind(this),
+            onInitializeDone: this.onFiberConnectionInitialized.bind(this),
           })
         );
       });
@@ -166,11 +168,15 @@ export class Grid {
   }
 
   drawConnections() {
-    if (this.fibberConnections.length > 0) {
-      this.fibberConnections.forEach((connection) =>
+    if (this.fiberConnections.length > 0) {
+      this.fiberConnections.forEach((connection) =>
         connection.calculatePositionSize()
       );
     }
+
+    this.tubeConnections = this.getConnectedPairTubes().map((pair) => {
+      return new TubeConnection({ data: pair, parentGrid: this });
+    });
   }
 
   onChangeIfNeeded() {
@@ -197,7 +203,9 @@ export class Grid {
             .map((wire) => wire.getApiJson()),
         },
         connections: {
-          fibers: this.fibberConnections.map((connection) => connection.getApiJson()),
+          fibers: this.fiberConnections.map((connection) =>
+            connection.getApiJson()
+          ),
         },
       },
     };
@@ -214,7 +222,9 @@ export class Grid {
             .map((wire) => wire.getJson()),
         },
         connections: {
-          fibers: this.fibberConnections.map((connection) => connection.getJson()),
+          fibers: this.fiberConnections.map((connection) =>
+            connection.getJson()
+          ),
         },
       },
     };
@@ -249,7 +259,7 @@ export class Grid {
   }
 
   getConnectionForFiberId(id: number) {
-    return this.fibberConnections.find((fiberConnection) => {
+    return this.fiberConnections.find((fiberConnection) => {
       return (
         fiberConnection.fiber_in === id || fiberConnection.fiber_out === id
       );
@@ -272,21 +282,21 @@ export class Grid {
     return this.getAllTubes().find((tube) => tube.id === id);
   }
 
-  addFibberConnection(connection: FiberConnectionApiType) {
-    const newConnection = new FibberConnection({
+  addFiberConnection(connection: FiberConnectionApiType) {
+    const newConnection = new FiberConnection({
       data: connection,
       parentGrid: this,
-      onInitializeDone: (conn: FibberConnection) => {
-        this.onConnectionInitialized(conn);
+      onInitializeDone: (conn: FiberConnection) => {
+        this.onFiberConnectionInitialized(conn);
         this.onChangeIfNeeded();
       },
     });
-    this.fibberConnections.push(newConnection);
+    this.fiberConnections.push(newConnection);
     newConnection.calculatePositionSize();
   }
 
-  onConnectionInitialized(connection: FibberConnection) {
-    const exists = this.fibberConnectionsInitialized.find((conn) => {
+  onFiberConnectionInitialized(connection: FiberConnection) {
+    const exists = this.fiberConnectionsInitialized.find((conn) => {
       return (
         conn.fiber_in === connection.fiber_in &&
         conn.fiber_out === connection.fiber_out
@@ -294,7 +304,7 @@ export class Grid {
     });
 
     if (!exists) {
-      this.fibberConnectionsInitialized.push({
+      this.fiberConnectionsInitialized.push({
         fiber_in: connection.fiber_in,
         fiber_out: connection.fiber_out,
       });
@@ -305,17 +315,19 @@ export class Grid {
       this.size.height = height;
     }
 
-    if (this.fibberConnectionsInitialized.length === this.fibberConnections.length) {
+    if (
+      this.fiberConnectionsInitialized.length === this.fiberConnections.length
+    ) {
       this.onChangeIfNeeded();
     }
   }
 
-  removeConnection(connection: FiberConnectionDataType) {
+  removeFiberConnection(connection: FiberConnectionDataType) {
     Object.keys(connection.usedYpoints).forEach((yPoint) => {
       this.verticalUsedIndexes[yPoint] = false;
     });
 
-    this.fibberConnections = this.fibberConnections.filter((conn) => {
+    this.fiberConnections = this.fiberConnections.filter((conn) => {
       return (
         conn.fiber_in !== connection.fiber_in &&
         conn.fiber_out !== connection.fiber_out
@@ -340,12 +352,14 @@ export class Grid {
       }
     );
 
-    this.fibberConnectionsInitialized = this.fibberConnectionsInitialized.filter((conn) => {
-      return (
-        conn.fiber_in !== connection.fiber_in &&
-        conn.fiber_out !== connection.fiber_out
-      );
-    });
+    this.fiberConnectionsInitialized = this.fiberConnectionsInitialized.filter(
+      (conn) => {
+        return (
+          conn.fiber_in !== connection.fiber_in &&
+          conn.fiber_out !== connection.fiber_out
+        );
+      }
+    );
 
     this.onChangeIfNeeded();
   }
@@ -499,14 +513,41 @@ export class Grid {
         }
       );
 
-      this.fibberConnectionsInitialized = this.fibberConnectionsInitialized.filter(
-        (conn) => {
+      this.fiberConnectionsInitialized =
+        this.fiberConnectionsInitialized.filter((conn) => {
           return (
             conn.fiber_in !== fiberConnection.fiber_in &&
             conn.fiber_out !== fiberConnection.fiber_out
           );
-        }
-      );
+        });
     });
+  }
+
+  getConnectedPairTubes() {
+    const connectedPairTubes: TubeConnectionApiType[] = [];
+
+    const allTubes = this.getAllTubes();
+
+    allTubes.forEach((tube: Tube) => {
+      if (tube.expanded) {
+        return;
+      }
+      if (
+        connectedPairTubes.find(
+          (conn) => conn.tube_in === tube.id || conn.tube_out === tube.id
+        )
+      ) {
+        return;
+      }
+      const tubeConnectedTo = tube.getTubeConnectedTo();
+      if (tubeConnectedTo) {
+        connectedPairTubes.push({
+          tube_in: tube.id,
+          tube_out: tubeConnectedTo.id,
+        });
+      }
+    });
+
+    return connectedPairTubes;
   }
 }

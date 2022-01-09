@@ -4,22 +4,22 @@ import React, { useContext } from "react";
 import { Group, Rect, Text, Circle } from "react-konva";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 import {
-  ConnectionContext,
-  ConnectionContextType,
-} from "ui/Connections/ConnectionContext";
+  FiberConnectionContext,
+  FiberConnectionContextType,
+} from "ui/FiberConnectionUi/FiberConnectionContext";
 
 export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
   const { attr, color } = fiber;
 
   const { fiber_in, fiber_out, setFiberIn } = useContext(
-    ConnectionContext
-  ) as ConnectionContextType;
+    FiberConnectionContext
+  ) as FiberConnectionContextType;
 
   const opts = convertAttrUnitsToPixels(attr);
 
   const rightFiber = fiber.parentTube.parentWire.disposition === "RIGHT";
 
-  const fibberIsConnected =
+  const FiberIsConnected =
     fiber.parentTube.parentWire.parentGrid.getConnectionForFiberId(fiber.id) !==
     undefined;
 
@@ -54,7 +54,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
         strokeWidth={0.5}
         stroke={"#000000"}
       />
-      {!fibberIsConnected && (
+      {!FiberIsConnected && (
         <Circle
           x={opts.position.x + opts.size.width * (rightFiber ? 0 : 1)}
           y={opts.position.y + connectorRadius}
@@ -81,7 +81,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
               fiber_in !== undefined &&
               fiber_in.id !== fiber.id
             ) {
-              fiber.parentTube.parentWire.parentGrid.addFibberConnection({
+              fiber.parentTube.parentWire.parentGrid.addFiberConnection({
                 fiber_in: fiber_in.id,
                 fiber_out: fiber.id,
               });

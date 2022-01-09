@@ -275,7 +275,7 @@ export class Tube {
         const destinationTube = destinationFiber.parentTube;
         tubesConnectedTo[destinationTube.id] = destinationTube;
 
-        // If our fibbers are all connected to the same tube, we can collapse.
+        // If our Fibers are all connected to the same tube, we can collapse.
         // If not, we can't collapse.
         if (Object.values(tubesConnectedTo).length > 1) {
           value = false;
