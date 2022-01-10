@@ -89,23 +89,12 @@ export class FiberConnection {
     fiberOut: Fiber;
   }) {
     // First, we determine which fusion point of the middle of the grid (connection place) is free
-    let fusionYpoint: number;
+    const freeIndexes = this.parentGrid.getNFreeIndexesFromYpoint(
+      fiberIn.attr.position.y,
+      Config.baseUnits.fiber.height * 3
+    );
 
-    if (
-      (this.parentGrid.verticalUsedIndexes[fiberIn.attr.position.y] ===
-        undefined ||
-        this.parentGrid.verticalUsedIndexes[fiberIn.attr.position.y] ===
-          false) &&
-      (this.parentGrid.verticalUsedIndexes[fiberOut.attr.position.y] ===
-        undefined ||
-        this.parentGrid.verticalUsedIndexes[fiberOut.attr.position.y] === false)
-    ) {
-      fusionYpoint = fiberIn.attr.position.y;
-    } else {
-      fusionYpoint = this.parentGrid.getFirstFreeIndexFromYpoint(
-        fiberIn.attr.position.y
-      );
-    }
+    const fusionYpoint: number = freeIndexes[0];
 
     return {
       legs: [
@@ -131,12 +120,15 @@ export class FiberConnection {
   getSameSideLegs({ fiberIn, fiberOut }: { fiberIn: Fiber; fiberOut: Fiber }) {
     // First, we determine which two fusion point of the middle of the grid (connection place) is free
     const [fusionInYpoint1, fusionInYpoint2, fusionInYpoint3] =
-      this.parentGrid.getFirstThreeFreeIndexesFromYpoint(
-        fiberIn.attr.position.y
+      this.parentGrid.getNFreeIndexesFromYpoint(
+        fiberIn.attr.position.y,
+        Config.baseUnits.fiber.height * 3
       );
+
     const [fusionOutYpoint1, fusionOutYpoint2, fusionOutYpoint3] =
-      this.parentGrid.getFirstThreeFreeIndexesFromYpoint(
-        fiberOut.attr.position.y
+      this.parentGrid.getNFreeIndexesFromYpoint(
+        fiberOut.attr.position.y,
+        Config.baseUnits.fiber.height * 3
       );
 
     let fusionYpoint1: number, fusionYpoint2: number, fusionYpoint3: number;
@@ -151,23 +143,43 @@ export class FiberConnection {
       fusionYpoint3 = fusionOutYpoint3;
     }
 
-    this.parentGrid.setVerticalUsedIndex(fusionYpoint1);
-    this.parentGrid.setVerticalUsedIndex(fusionYpoint2);
-    this.parentGrid.setVerticalUsedIndex(fusionYpoint3);
+    this.parentGrid.setVerticalUsedIndexWithHeight(
+      fusionYpoint1,
+      Config.baseUnits.fiber.height
+    );
+    this.parentGrid.setVerticalUsedIndexWithHeight(
+      fusionYpoint2,
+      Config.baseUnits.fiber.height
+    );
+    this.parentGrid.setVerticalUsedIndexWithHeight(
+      fusionYpoint3,
+      Config.baseUnits.fiber.height
+    );
 
     const centerUpperMiddleDot = this.getUnitsForPath({
       color:
         fusionInYpoint1 < fusionOutYpoint1 ? fiberIn.color : fiberOut.color,
       path: [
-        [this.parentGrid.leftSideWidth - 0.5, fusionYpoint1],
-        [this.parentGrid.leftSideWidth - 0.5, fusionYpoint2],
+        [
+          this.parentGrid.leftSideWidth - Config.baseUnits.fiber.height / 2,
+          fusionYpoint1,
+        ],
+        [
+          this.parentGrid.leftSideWidth - Config.baseUnits.fiber.height / 2,
+          fusionYpoint2,
+        ],
       ],
     });
 
     const centerLowerMiddleDot = this.getUnitsForPath({
       color:
         fusionInYpoint1 < fusionOutYpoint1 ? fiberOut.color : fiberIn.color,
-      path: [[this.parentGrid.leftSideWidth - 0.5, fusionYpoint3]],
+      path: [
+        [
+          this.parentGrid.leftSideWidth - Config.baseUnits.fiber.height / 2,
+          fusionYpoint3,
+        ],
+      ],
     });
 
     const firstPath = this.getPathForFiberConnection({
@@ -243,7 +255,10 @@ export class FiberConnection {
         }
       }
 
-      this.parentGrid.setVerticalUsedIndex(fiber.attr.position.y);
+      this.parentGrid.setVerticalUsedIndexWithHeight(
+        fiber.attr.position.y,
+        Config.baseUnits.fiber.height
+      );
 
       return path;
     }
@@ -318,8 +333,15 @@ export class FiberConnection {
       }
     }
 
-    this.parentGrid.setVerticalUsedIndex(fiber.attr.position.y);
-    this.parentGrid.setVerticalUsedIndex(toY);
+    this.parentGrid.setVerticalUsedIndexWithHeight(
+      fiber.attr.position.y,
+      Config.baseUnits.fiber.height
+    );
+
+    this.parentGrid.setVerticalUsedIndexWithHeight(
+      toY,
+      Config.baseUnits.fiber.height
+    );
 
     if (pathIsHorizontal(path)) {
       return path;

@@ -45,3 +45,19 @@ export const pathIsHorizontal = (path: [number, number][]) => {
   path.forEach((point) => (allYs[point[1]] = true));
   return Object.keys(allYs).length === 1;
 };
+
+export const getNPointsBelowYpoint = (yPoint: number, n: number) => {
+  const indexes = [];
+  for (let i = 0; i < n; i++) {
+    indexes.push(yPoint + i);
+  }
+  return indexes;
+};
+
+export const getNPointsAboveYpoint = (yPoint: number, n: number) => {
+  const indexes = [];
+  for (let i = 0; i < n; i++) {
+    indexes.push(yPoint - i);
+  }
+  return indexes;
+};

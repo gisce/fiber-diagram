@@ -62,17 +62,6 @@
         }
       ]
     },
-    "connections": {
-      "fibers": [
-        { "fiber_in": 227, "fiber_out": 231 },
-        { "fiber_in": 232, "fiber_out": 228 },
-        { "fiber_in": 229, "fiber_out": 233 },
-        { "fiber_in": 234, "fiber_out": 230 },
-        { "fiber_in": 226, "fiber_out": 238 },
-        { "fiber_in": 237, "fiber_out": 225 },
-        { "fiber_in": 224, "fiber_out": 235 },
-        { "fiber_in": 236, "fiber_out": 223 }
-      ]
-    }
+    "connections": { "fibers": [] }
   }
 }

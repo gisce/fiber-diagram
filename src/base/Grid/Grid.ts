@@ -14,6 +14,7 @@ import {
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
+import { getNPointsAboveYpoint, getNPointsBelowYpoint } from "utils/pathUtils";
 
 export class Grid {
   id: number;
@@ -370,6 +371,27 @@ export class Grid {
     this.verticalUsedIndexes[yPoint - 1] = true;
   }
 
+  setVerticalUsedIndexWithHeight(yPoint: number, height: number) {
+    this.verticalUsedIndexes[yPoint] = true;
+
+    const pointA = yPoint;
+    const pointB = yPoint - 1 + height;
+
+    for (let i = yPoint; i < yPoint + height; i++) {
+      this.verticalUsedIndexes[i] = true;
+    }
+
+    // We add separation below
+    for (let j = pointB; j < pointB + Config.separation * 2; j++) {
+      this.verticalUsedIndexes[j] = true;
+    }
+
+    // And above
+    for (let k = pointA - 1; k >= pointA - Config.separation * 2; k--) {
+      this.verticalUsedIndexes[k] = true;
+    }
+  }
+
   getFirstFreeIndexFromYpoint(yPoint: number) {
     let i = yPoint;
     while (this.verticalUsedIndexes[i] === true) {
@@ -434,6 +456,52 @@ export class Grid {
     if (freeAboveIndexes === undefined && freeBelowIndexes === undefined) {
       this.size.height = this.size.height + 3;
       return [this.size.height + 2, this.size.height + 3, this.size.height + 4];
+    }
+
+    return freeAboveIndexes || freeBelowIndexes;
+  }
+
+  checkIfIndexIsFree(index: number) {
+    return (
+      (this.verticalUsedIndexes[index] === false ||
+        this.verticalUsedIndexes[index] === undefined) &&
+      index < this.size.height
+    );
+  }
+
+  getNFreeIndexesFromYpoint(yPoint: number, n: number) {
+    let freeAboveIndexes: number[];
+    let freeBelowIndexes: number[];
+
+    for (let i = yPoint; i < this.size.height; i++) {
+      const indexes = getNPointsBelowYpoint(i, n);
+
+      const indexesAreFree = indexes.every((index) => {
+        return this.checkIfIndexIsFree(index);
+      });
+
+      if (indexesAreFree) {
+        freeAboveIndexes = indexes;
+        break;
+      }
+    }
+
+    for (let j = yPoint; j >= 0; j--) {
+      const indexes = getNPointsAboveYpoint(j, n);
+      const indexesAreFree = indexes.every((index) => {
+        return this.checkIfIndexIsFree(index);
+      });
+      if (indexesAreFree) {
+        freeBelowIndexes = indexes;
+        break;
+      }
+    }
+
+    // If we couldn't find any free indexes above or below the yPoint, we just add more height
+    if (freeAboveIndexes === undefined && freeBelowIndexes === undefined) {
+      this.size.height = this.size.height + n;
+
+      return getNPointsAboveYpoint(this.size.height + 2, n);
     }
 
     return freeAboveIndexes || freeBelowIndexes;
