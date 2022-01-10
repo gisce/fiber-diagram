@@ -1,25 +1,5 @@
 {
   "res": {
-    "connections": {
-      "fibers": [
-        {
-          "fiber_in": 223,
-          "fiber_out": 231
-        },
-        {
-          "fiber_in": 224,
-          "fiber_out": 236
-        },
-        {
-          "fiber_in": 235,
-          "fiber_out": 225
-        },
-        {
-          "fiber_in": 226,
-          "fiber_out": 238
-        }
-      ]
-    },
     "elements": {
       "wires": [
         {
@@ -28,76 +8,26 @@
           "disposition": "LEFT",
           "tubes": [
             {
-              "color": "#00ff00",
-              "fibers": [
-                {
-                  "color": "#448844",
-                  "free": true,
-                  "id": 223,
-                  "name": "F1-F1 - ROJA",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#00f0ff",
-                  "free": true,
-                  "id": 224,
-                  "name": "F2-F2 - VERDE",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#0000FF",
-                  "free": true,
-                  "id": 225,
-                  "name": "F3-F3 - AZUL",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#000000",
-                  "free": true,
-                  "id": 226,
-                  "name": "F4-F4 - NEGRA",
-                  "type": "fiber"
-                }
-              ],
               "id": 23,
               "name": "T1-Tub 1",
-              "type": "tube"
+              "color": "#00ff00",
+              "fibers": [
+                { "id": 223, "name": "F1-F1 - ROJA", "color": "#448844" },
+                { "id": 224, "name": "F2-F2 - VERDE", "color": "#00f0ff" },
+                { "id": 225, "name": "F3-F3 - AZUL", "color": "#0000FF" },
+                { "id": 226, "name": "F4-F4 - NEGRA", "color": "#000000" }
+              ]
             },
             {
-              "color": "#0000ff",
-              "fibers": [
-                {
-                  "color": "#FF0000",
-                  "free": true,
-                  "id": 227,
-                  "name": "F1-F1 - ROJA",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#00FF00",
-                  "free": true,
-                  "id": 228,
-                  "name": "F2-F2 - VERDE",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#0000FF",
-                  "free": true,
-                  "id": 229,
-                  "name": "F3-F3 - AZUL",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#000000",
-                  "free": true,
-                  "id": 230,
-                  "name": "F4-F4 - NEGRA",
-                  "type": "fiber"
-                }
-              ],
               "id": 24,
               "name": "T2-Tub 2",
-              "type": "tube"
+              "color": "#0000ff",
+              "fibers": [
+                { "id": 227, "name": "F1-F1 - ROJA", "color": "#FF0000" },
+                { "id": 228, "name": "F2-F2 - VERDE", "color": "#00FF00" },
+                { "id": 229, "name": "F3-F3 - AZUL", "color": "#0000FF" },
+                { "id": 230, "name": "F4-F4 - NEGRA", "color": "#000000" }
+              ]
             }
           ]
         },
@@ -107,82 +37,42 @@
           "disposition": "RIGHT",
           "tubes": [
             {
-              "color": "#ff00ff",
-              "fibers": [
-                {
-                  "color": "#FF0000",
-                  "free": true,
-                  "id": 231,
-                  "name": "F1-F1 - ROJA",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#00FF00",
-                  "free": true,
-                  "id": 232,
-                  "name": "F2-F2 - VERDE",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#0000FF",
-                  "free": true,
-                  "id": 233,
-                  "name": "F3-F3 - AZUL",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#000000",
-                  "free": true,
-                  "id": 234,
-                  "name": "F4-F4 - NEGRA",
-                  "type": "fiber"
-                }
-              ],
               "id": 25,
               "name": "T1-Tub 1",
-              "type": "tube"
+              "color": "#ff00ff",
+              "fibers": [
+                { "id": 231, "name": "F1-F1 - ROJA", "color": "#FF0000" },
+                { "id": 232, "name": "F2-F2 - VERDE", "color": "#00FF00" },
+                { "id": 233, "name": "F3-F3 - AZUL", "color": "#0000FF" },
+                { "id": 234, "name": "F4-F4 - NEGRA", "color": "#000000" }
+              ]
             },
             {
-              "color": "#00ffff",
-              "fibers": [
-                {
-                  "color": "#F000FF",
-                  "free": true,
-                  "id": 235,
-                  "name": "F1-F1 - ROJA",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#3F090F",
-                  "free": true,
-                  "id": 236,
-                  "name": "F2-F2 - VERDE",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#128312",
-                  "free": true,
-                  "id": 237,
-                  "name": "F3-F3 - AZUL",
-                  "type": "fiber"
-                },
-                {
-                  "color": "#F39F39",
-                  "free": true,
-                  "id": 238,
-                  "name": "F4-F4 - NEGRA",
-                  "type": "fiber"
-                }
-              ],
               "id": 26,
               "name": "T2-Tub 2",
-              "type": "tube"
+              "color": "#00ffff",
+              "fibers": [
+                { "id": 235, "name": "F1-F1 - ROJA", "color": "#F000FF" },
+                { "id": 236, "name": "F2-F2 - VERDE", "color": "#3F090F" },
+                { "id": 237, "name": "F3-F3 - AZUL", "color": "#128312" },
+                { "id": 238, "name": "F4-F4 - NEGRA", "color": "#F39F39" }
+              ]
             }
           ]
         }
       ]
     },
-    "id": 10,
-    "name": "CTO1 23/06"
+    "connections": {
+      "fibers": [
+        { "fiber_in": 227, "fiber_out": 231 },
+        { "fiber_in": 232, "fiber_out": 228 },
+        { "fiber_in": 229, "fiber_out": 233 },
+        { "fiber_in": 234, "fiber_out": 230 },
+        { "fiber_in": 226, "fiber_out": 238 },
+        { "fiber_in": 237, "fiber_out": 225 },
+        { "fiber_in": 224, "fiber_out": 235 },
+        { "fiber_in": 236, "fiber_out": 223 }
+      ]
+    }
   }
 }

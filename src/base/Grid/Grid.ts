@@ -168,15 +168,15 @@ export class Grid {
   }
 
   drawConnections() {
+    this.tubeConnections = this.getConnectedPairTubes().map((pair) => {
+      return new TubeConnection({ data: pair, parentGrid: this });
+    });
+
     if (this.fiberConnections.length > 0) {
       this.fiberConnections.forEach((connection) =>
         connection.calculatePositionSize()
       );
     }
-
-    this.tubeConnections = this.getConnectedPairTubes().map((pair) => {
-      return new TubeConnection({ data: pair, parentGrid: this });
-    });
   }
 
   onChangeIfNeeded() {
