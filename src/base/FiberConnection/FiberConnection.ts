@@ -1,7 +1,8 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
-import { Grid, Position } from "base/Grid";
-import { FiberConnectionApiType, FiberConnectionDataType, LegType } from ".";
+import { Grid, LegType, Position } from "base/Grid";
+import { getUnitsForPath } from "utils/pathUtils";
+import { FiberConnectionApiType, FiberConnectionDataType } from ".";
 
 export class FiberConnection {
   fiber_in: number;
@@ -103,19 +104,21 @@ export class FiberConnection {
 
     return {
       legs: [
-        ...this.getUnitsForPath({
+        ...getUnitsForPath({
           path: this.getPathForFiberConnection({
             fiber: fiberIn,
             toY: fusionYpoint,
           }),
           color: fiberIn.color,
+          unitSize: Config.baseUnits.fiber.height,
         }),
-        ...this.getUnitsForPath({
+        ...getUnitsForPath({
           path: this.getPathForFiberConnection({
             fiber: fiberOut,
             toY: fusionYpoint,
           }),
           color: fiberOut.color,
+          unitSize: Config.baseUnits.fiber.height,
         }),
       ],
       center: fusionYpoint,
@@ -176,7 +179,8 @@ export class FiberConnection {
       height: Config.baseUnits.fiber.height,
     });
 
-    const centerUpperMiddleDot = this.getUnitsForPath({
+    const centerUpperMiddleDot = getUnitsForPath({
+      unitSize: Config.baseUnits.fiber.height,
       color:
         fusionInYpoint1 < fusionOutYpoint1 ? fiberIn.color : fiberOut.color,
       path: [
@@ -191,7 +195,8 @@ export class FiberConnection {
       ],
     });
 
-    const centerLowerMiddleDot = this.getUnitsForPath({
+    const centerLowerMiddleDot = getUnitsForPath({
+      unitSize: Config.baseUnits.fiber.height,
       color:
         fusionInYpoint1 < fusionOutYpoint1 ? fiberOut.color : fiberIn.color,
       path: [
@@ -212,12 +217,14 @@ export class FiberConnection {
       toY: fusionYpoint3,
     });
 
-    const firstSegment = this.getUnitsForPath({
+    const firstSegment = getUnitsForPath({
+      unitSize: Config.baseUnits.fiber.height,
       path: firstPath,
       color: (fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut).color,
     });
 
-    const secondSegment = this.getUnitsForPath({
+    const secondSegment = getUnitsForPath({
+      unitSize: Config.baseUnits.fiber.height,
       path: secondPath,
       color: (fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn).color,
     });
@@ -376,28 +383,6 @@ export class FiberConnection {
     }
 
     return path;
-  }
-
-  getUnitsForPath({
-    path,
-    color,
-  }: {
-    path: number[][];
-    color: string;
-  }): LegType[] {
-    return path.map((entry) => {
-      return {
-        position: {
-          x: entry[0],
-          y: entry[1],
-        },
-        size: {
-          width: Config.baseUnits.fiber.height,
-          height: Config.baseUnits.fiber.height,
-        },
-        color,
-      };
-    });
   }
 
   remove() {

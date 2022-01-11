@@ -45,3 +45,7 @@ export type FiberConnectionSegment = {
   fiber_id: number;
   toY: number;
 };
+
+export type LegType = PositionSize & {
+  color: string;
+};

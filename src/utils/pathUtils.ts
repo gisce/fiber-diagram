@@ -1,4 +1,6 @@
 import { Config } from "base/Config";
+import { LegType } from "base/Grid";
+
 export type Columns = { [key: number]: boolean };
 export type Grid = { [key: number]: Columns };
 
@@ -179,4 +181,28 @@ export const getNFreeIndexesFromYpoint = ({
   }
 
   return { freeIndexes: freeAboveIndexes || freeBelowIndexes };
+};
+
+export const getUnitsForPath = ({
+  path,
+  color,
+  unitSize,
+}: {
+  path: number[][];
+  unitSize: number;
+  color: string;
+}): LegType[] => {
+  return path.map((entry) => {
+    return {
+      position: {
+        x: entry[0],
+        y: entry[1],
+      },
+      size: {
+        width: unitSize,
+        height: unitSize,
+      },
+      color,
+    };
+  });
 };

@@ -9,7 +9,3 @@ export type TubeConnectionDataType = TubeConnectionApiType & {
   legs?: PositionSize[];
   usedYpoints?: { [key: number]: boolean };
 };
-
-export type LegType = PositionSize & {
-  color: string;
-};
