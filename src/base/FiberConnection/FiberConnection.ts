@@ -1,7 +1,6 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { Grid, Position } from "base/Grid";
-import { pathIsHorizontal } from "utils/pathUtils";
 import { FiberConnectionApiType, FiberConnectionDataType, LegType } from ".";
 
 export class FiberConnection {
@@ -89,10 +88,15 @@ export class FiberConnection {
     fiberOut: Fiber;
   }) {
     // First, we determine which fusion point of the middle of the grid (connection place) is free
-    const freeIndexes = this.parentGrid.getNFreeIndexesFromYpoint(
-      fiberIn.attr.position.y,
-      Config.baseUnits.fiber.height * 3
-    );
+    const { modifiedHeight, freeIndexes } =
+      this.parentGrid.getNFreeIndexesFromYpoint({
+        n: Config.baseUnits.fiber.height * 3,
+        fromY: fiberIn.attr.position.y,
+      });
+
+    if (modifiedHeight) {
+      this.parentGrid.size.height = modifiedHeight;
+    }
 
     const fusionYpoint: number = freeIndexes[0];
 
@@ -118,43 +122,56 @@ export class FiberConnection {
   }
 
   getSameSideLegs({ fiberIn, fiberOut }: { fiberIn: Fiber; fiberOut: Fiber }) {
+    let modifiedHeight: number | undefined;
+
     // First, we determine which two fusion point of the middle of the grid (connection place) is free
-    const [fusionInYpoint1, fusionInYpoint2, fusionInYpoint3] =
-      this.parentGrid.getNFreeIndexesFromYpoint(
-        fiberIn.attr.position.y,
-        Config.baseUnits.fiber.height * 3
-      );
+    const { modifiedHeight: inModifiedHeight, freeIndexes: inFreeIndexes } =
+      this.parentGrid.getNFreeIndexesFromYpoint({
+        n: Config.baseUnits.fiber.height * 3,
+        fromY: fiberIn.attr.position.y,
+      });
+
+    const [fusionInYpoint1, fusionInYpoint2, fusionInYpoint3] = inFreeIndexes;
+
+    const { modifiedHeight: outModifiedHeight, freeIndexes: outFreeIndexes } =
+      this.parentGrid.getNFreeIndexesFromYpoint({
+        n: Config.baseUnits.fiber.height * 3,
+        fromY: fiberOut.attr.position.y,
+      });
 
     const [fusionOutYpoint1, fusionOutYpoint2, fusionOutYpoint3] =
-      this.parentGrid.getNFreeIndexesFromYpoint(
-        fiberOut.attr.position.y,
-        Config.baseUnits.fiber.height * 3
-      );
+      outFreeIndexes;
 
     let fusionYpoint1: number, fusionYpoint2: number, fusionYpoint3: number;
 
     if (fusionInYpoint1 < fusionOutYpoint1) {
+      modifiedHeight = inModifiedHeight;
       fusionYpoint1 = fusionInYpoint1;
       fusionYpoint2 = fusionInYpoint2;
       fusionYpoint3 = fusionInYpoint3;
     } else {
+      modifiedHeight = outModifiedHeight;
       fusionYpoint1 = fusionOutYpoint1;
       fusionYpoint2 = fusionOutYpoint2;
       fusionYpoint3 = fusionOutYpoint3;
     }
 
-    this.parentGrid.setVerticalUsedIndexWithHeight(
-      fusionYpoint1,
-      Config.baseUnits.fiber.height
-    );
-    this.parentGrid.setVerticalUsedIndexWithHeight(
-      fusionYpoint2,
-      Config.baseUnits.fiber.height
-    );
-    this.parentGrid.setVerticalUsedIndexWithHeight(
-      fusionYpoint3,
-      Config.baseUnits.fiber.height
-    );
+    if (modifiedHeight) {
+      this.parentGrid.size.height = modifiedHeight;
+    }
+
+    this.parentGrid.setVerticalUsedIndexWithHeight({
+      yPoint: fusionYpoint1,
+      height: Config.baseUnits.fiber.height,
+    });
+    this.parentGrid.setVerticalUsedIndexWithHeight({
+      yPoint: fusionYpoint2,
+      height: Config.baseUnits.fiber.height,
+    });
+    this.parentGrid.setVerticalUsedIndexWithHeight({
+      yPoint: fusionYpoint3,
+      height: Config.baseUnits.fiber.height,
+    });
 
     const centerUpperMiddleDot = this.getUnitsForPath({
       color:
@@ -255,10 +272,10 @@ export class FiberConnection {
         }
       }
 
-      this.parentGrid.setVerticalUsedIndexWithHeight(
-        fiber.attr.position.y,
-        Config.baseUnits.fiber.height
-      );
+      this.parentGrid.setVerticalUsedIndexWithHeight({
+        yPoint: fiber.attr.position.y,
+        height: Config.baseUnits.fiber.height,
+      });
 
       return path;
     }
@@ -333,19 +350,15 @@ export class FiberConnection {
       }
     }
 
-    this.parentGrid.setVerticalUsedIndexWithHeight(
-      fiber.attr.position.y,
-      Config.baseUnits.fiber.height
-    );
+    this.parentGrid.setVerticalUsedIndexWithHeight({
+      yPoint: fiber.attr.position.y,
+      height: Config.baseUnits.fiber.height,
+    });
 
-    this.parentGrid.setVerticalUsedIndexWithHeight(
-      toY,
-      Config.baseUnits.fiber.height
-    );
-
-    if (pathIsHorizontal(path)) {
-      return path;
-    }
+    this.parentGrid.setVerticalUsedIndexWithHeight({
+      yPoint: toY,
+      height: Config.baseUnits.fiber.height,
+    });
 
     if (isLeftToRightConnection) {
       this.parentGrid.addLeftSideAngleSegment({

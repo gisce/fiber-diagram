@@ -14,7 +14,10 @@ import {
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
-import { getNPointsAboveYpoint, getNPointsBelowYpoint } from "utils/pathUtils";
+import {
+  Columns,
+  getNFreeIndexesFromYpoint,
+} from "utils/pathUtils";
 
 export class Grid {
   id: number;
@@ -30,7 +33,7 @@ export class Grid {
   fiberConnections?: FiberConnection[] = [];
   leftSideAngleSegments?: FiberConnectionSegment[] = [];
   rightSideAngleSegments?: FiberConnectionSegment[] = [];
-  verticalUsedIndexes: { [key: number]: boolean } = {};
+  verticalUsedIndexes: Columns = {};
   fiberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
   tubeConnections?: TubeConnection[] = [];
@@ -267,6 +270,21 @@ export class Grid {
     });
   }
 
+  getNFreeIndexesFromYpoint({
+    n,
+    fromY,
+  }: {
+    n: number; // Number of units to check
+    fromY: number; // Y point to start from
+  }) {
+    return getNFreeIndexesFromYpoint({
+      n,
+      fromY,
+      height: this.size.height,
+      columns: this.verticalUsedIndexes,
+    });
+  }
+
   getAllTubes() {
     const allWires = this.leftWires.concat(this.rightWires);
     let allTubes = [];
@@ -365,13 +383,13 @@ export class Grid {
     this.onChangeIfNeeded();
   }
 
-  setVerticalUsedIndex(yPoint: number) {
-    this.verticalUsedIndexes[yPoint] = true;
-    this.verticalUsedIndexes[yPoint + 1] = true;
-    this.verticalUsedIndexes[yPoint - 1] = true;
-  }
-
-  setVerticalUsedIndexWithHeight(yPoint: number, height: number) {
+  setVerticalUsedIndexWithHeight({
+    yPoint,
+    height,
+  }: {
+    yPoint: number;
+    height: number;
+  }) {
     this.verticalUsedIndexes[yPoint] = true;
 
     const pointA = yPoint;
@@ -390,121 +408,6 @@ export class Grid {
     for (let k = pointA - 1; k >= pointA - Config.separation * 2; k--) {
       this.verticalUsedIndexes[k] = true;
     }
-  }
-
-  getFirstFreeIndexFromYpoint(yPoint: number) {
-    let i = yPoint;
-    while (this.verticalUsedIndexes[i] === true) {
-      i++;
-    }
-    let j = yPoint;
-    while (this.verticalUsedIndexes[j] === true) {
-      j--;
-    }
-
-    if (i > this.size.height) {
-      return j;
-    }
-
-    if (j < 0) {
-      return i;
-    }
-
-    if (i - yPoint < j - yPoint) {
-      return i;
-    } else {
-      return j;
-    }
-  }
-
-  getFirstThreeFreeIndexesFromYpoint(yPoint: number) {
-    let freeAboveIndexes: number[];
-    let freeBelowIndexes: number[];
-
-    for (let i = yPoint; i < this.size.height; i++) {
-      if (
-        (this.verticalUsedIndexes[i] === false ||
-          this.verticalUsedIndexes[i] === undefined) &&
-        i + 1 < this.size.height &&
-        (this.verticalUsedIndexes[i + 1] === false ||
-          (this.verticalUsedIndexes[i + 1] === undefined &&
-            i + 2 < this.size.height &&
-            (this.verticalUsedIndexes[i + 2] === false ||
-              this.verticalUsedIndexes[i + 2] === undefined)))
-      ) {
-        freeAboveIndexes = [i, i + 1, i + 2];
-        break;
-      }
-    }
-
-    for (let j = yPoint; j >= 0; j--) {
-      if (
-        (this.verticalUsedIndexes[j] === false ||
-          this.verticalUsedIndexes[j] === undefined) &&
-        j - 1 >= 0 &&
-        (this.verticalUsedIndexes[j - 1] === false ||
-          this.verticalUsedIndexes[j - 1] === undefined) &&
-        j - 2 >= 0 &&
-        (this.verticalUsedIndexes[j - 2] === false ||
-          this.verticalUsedIndexes[j - 2] === undefined)
-      ) {
-        freeBelowIndexes = [j, j - 1, j - 2];
-        break;
-      }
-    }
-
-    if (freeAboveIndexes === undefined && freeBelowIndexes === undefined) {
-      this.size.height = this.size.height + 3;
-      return [this.size.height + 2, this.size.height + 3, this.size.height + 4];
-    }
-
-    return freeAboveIndexes || freeBelowIndexes;
-  }
-
-  checkIfIndexIsFree(index: number) {
-    return (
-      (this.verticalUsedIndexes[index] === false ||
-        this.verticalUsedIndexes[index] === undefined) &&
-      index < this.size.height
-    );
-  }
-
-  getNFreeIndexesFromYpoint(yPoint: number, n: number) {
-    let freeAboveIndexes: number[];
-    let freeBelowIndexes: number[];
-
-    for (let i = yPoint; i < this.size.height; i++) {
-      const indexes = getNPointsBelowYpoint(i, n);
-
-      const indexesAreFree = indexes.every((index) => {
-        return this.checkIfIndexIsFree(index);
-      });
-
-      if (indexesAreFree) {
-        freeAboveIndexes = indexes;
-        break;
-      }
-    }
-
-    for (let j = yPoint; j >= 0; j--) {
-      const indexes = getNPointsAboveYpoint(j, n);
-      const indexesAreFree = indexes.every((index) => {
-        return this.checkIfIndexIsFree(index);
-      });
-      if (indexesAreFree) {
-        freeBelowIndexes = indexes;
-        break;
-      }
-    }
-
-    // If we couldn't find any free indexes above or below the yPoint, we just add more height
-    if (freeAboveIndexes === undefined && freeBelowIndexes === undefined) {
-      this.size.height = this.size.height + n;
-
-      return getNPointsAboveYpoint(this.size.height + 2, n);
-    }
-
-    return freeAboveIndexes || freeBelowIndexes;
   }
 
   addLeftSideAngleSegment(segment: FiberConnectionSegment) {
