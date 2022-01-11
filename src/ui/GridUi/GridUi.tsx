@@ -66,11 +66,11 @@ export const GridUi = ({
             height={grid.size.height * Config.pixelsPerUnit}
             fill={"#cccccc"}
           />
-          {grid.fiberConnections?.map((connection, i) => {
-            return <FiberConnectionUi key={i} connection={connection} />;
-          })}
           {grid.tubeConnections?.map((connection, i) => {
             return <TubeConnectionUi key={i} connection={connection} />;
+          })}
+          {grid.fiberConnections?.map((connection, i) => {
+            return <FiberConnectionUi key={i} connection={connection} />;
           })}
           {leftWires}
           {rightWires}
