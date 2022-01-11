@@ -285,10 +285,18 @@ export const getPathForConnection = ({
   if (source.y < toY) {
     for (let iY = source.y; iY < toY; iY += unitSize) {
       path.push([angleXpoint, iY]);
+      grid.setVerticalUsedIndexWithHeight({
+        yPoint: iY,
+        height: unitSize,
+      });
     }
   } else {
     for (let iY = source.y; iY > toY; iY -= unitSize) {
       path.push([angleXpoint, iY]);
+      grid.setVerticalUsedIndexWithHeight({
+        yPoint: iY,
+        height: unitSize,
+      });
     }
   }
 
