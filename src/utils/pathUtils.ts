@@ -50,28 +50,32 @@ export const pathIsHorizontal = (path: [number, number][]) => {
 
 export const getNPointsBelowYpoint = ({
   fromY,
+  unitSize,
   n,
 }: {
   fromY: number;
+  unitSize: number;
   n: number;
 }) => {
   const indexes = [];
   for (let i = 0; i < n; i++) {
-    indexes.push(fromY + i);
+    indexes.push(fromY + i * unitSize);
   }
   return indexes;
 };
 
 export const getNPointsAboveYpoint = ({
   fromY,
+  unitSize,
   n,
 }: {
   fromY: number;
+  unitSize: number;
   n: number;
 }) => {
   const indexes = [];
   for (let i = 0; i < n; i++) {
-    indexes.push(fromY - i);
+    indexes.push(fromY - i * unitSize);
   }
   return indexes;
 };
@@ -79,35 +83,39 @@ export const getNPointsAboveYpoint = ({
 export const checkIfIndexIsFree = ({
   index,
   columns,
-  height,
+  gridHeight,
 }: {
   index: number;
   columns: Columns;
-  height: number;
+  gridHeight: number;
 }) => {
   return (
-    (columns[index] === false || columns[index] === undefined) && index < height
+    (columns[index] === false || columns[index] === undefined) &&
+    index < gridHeight
   );
 };
 
 export const getNFreeIndexesFromYpoint = ({
   columns,
+  unitSize,
   n,
   fromY,
-  height,
+  gridHeight,
 }: {
-  n: number; // Number of units to check
+  n: number; // Number of indexes to find
+  unitSize: number; // Size of the unit
   fromY: number; // Y point to start from
   columns: Columns; // Columns to check
-  height: number; // Max height of the grid
+  gridHeight: number; // Max height of the grid
 }) => {
   let freeAboveIndexes: number[];
   let freeBelowIndexes: number[];
 
   // First, we check if for free units *BELOW* the y point, and store them in freeAboveIndexes
-  for (let i = fromY; i < height; i++) {
+  for (let i = fromY; i < gridHeight; i++) {
     const indexes = getNPointsBelowYpoint({
       fromY: i,
+      unitSize,
       n,
     });
 
@@ -115,7 +123,7 @@ export const getNFreeIndexesFromYpoint = ({
       return checkIfIndexIsFree({
         index,
         columns,
-        height,
+        gridHeight,
       });
     });
 
@@ -129,13 +137,14 @@ export const getNFreeIndexesFromYpoint = ({
   for (let j = fromY; j >= 0 + n; j--) {
     const indexes = getNPointsAboveYpoint({
       fromY: j,
+      unitSize,
       n,
     });
     const indexesAreFree = indexes.every((index) => {
       return checkIfIndexIsFree({
         index,
         columns,
-        height,
+        gridHeight,
       });
     });
     if (indexesAreFree) {
@@ -147,9 +156,10 @@ export const getNFreeIndexesFromYpoint = ({
   // If we couldn't find any free indexes above or below the yPoint, we just add more height, and place them below
   if (freeAboveIndexes === undefined && freeBelowIndexes === undefined) {
     return {
-      modifiedHeight: height + 2 + n,
+      modifiedHeight: gridHeight + n * unitSize,
       freeIndexes: getNPointsAboveYpoint({
-        fromY: height,
+        fromY: gridHeight,
+        unitSize,
         n,
       }),
     };

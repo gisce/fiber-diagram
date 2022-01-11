@@ -14,10 +14,7 @@ import {
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
 import { TubeConnectionApiType } from "base/TubeConnection";
-import {
-  Columns,
-  getNFreeIndexesFromYpoint,
-} from "utils/pathUtils";
+import { Columns, getNFreeIndexesFromYpoint } from "utils/pathUtils";
 
 export class Grid {
   id: number;
@@ -272,15 +269,18 @@ export class Grid {
 
   getNFreeIndexesFromYpoint({
     n,
+    unitSize,
     fromY,
   }: {
-    n: number; // Number of units to check
+    n: number; // Number of indexes to return
+    unitSize: number; // Size of a unit
     fromY: number; // Y point to start from
   }) {
     return getNFreeIndexesFromYpoint({
       n,
       fromY,
-      height: this.size.height,
+      unitSize,
+      gridHeight: this.size.height,
       columns: this.verticalUsedIndexes,
     });
   }

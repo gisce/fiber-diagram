@@ -90,7 +90,8 @@ export class FiberConnection {
     // First, we determine which fusion point of the middle of the grid (connection place) is free
     const { modifiedHeight, freeIndexes } =
       this.parentGrid.getNFreeIndexesFromYpoint({
-        n: Config.baseUnits.fiber.height * 3,
+        unitSize: Config.baseUnits.fiber.height,
+        n: 3,
         fromY: fiberIn.attr.position.y,
       });
 
@@ -127,7 +128,8 @@ export class FiberConnection {
     // First, we determine which two fusion point of the middle of the grid (connection place) is free
     const { modifiedHeight: inModifiedHeight, freeIndexes: inFreeIndexes } =
       this.parentGrid.getNFreeIndexesFromYpoint({
-        n: Config.baseUnits.fiber.height * 3,
+        unitSize: Config.baseUnits.fiber.height,
+        n: 3,
         fromY: fiberIn.attr.position.y,
       });
 
@@ -135,7 +137,8 @@ export class FiberConnection {
 
     const { modifiedHeight: outModifiedHeight, freeIndexes: outFreeIndexes } =
       this.parentGrid.getNFreeIndexesFromYpoint({
-        n: Config.baseUnits.fiber.height * 3,
+        unitSize: Config.baseUnits.fiber.height,
+        n: 3,
         fromY: fiberOut.attr.position.y,
       });
 
