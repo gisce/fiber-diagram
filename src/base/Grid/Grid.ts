@@ -511,11 +511,27 @@ export class Grid {
         return;
       }
       const tubeConnectedTo = tube.getTubeConnectedTo();
+
       if (tubeConnectedTo) {
-        connectedPairTubes.push({
-          tube_in: tube.id,
-          tube_out: tubeConnectedTo.id,
+        const fibersConnectedWithSameOrder = tube.fibers.every((fiber) => {
+          const fiberConnection = this.getConnectionForFiberId(fiber.id);
+          const otherFiberId =
+            fiberConnection.fiber_in === fiber.id
+              ? fiberConnection.fiber_out
+              : fiberConnection.fiber_in;
+          const otherFiber = this.getFiberById(otherFiberId);
+
+          const indexOfFiber = tube.fibers.indexOf(fiber);
+          const indexOfOtherFiber = otherFiber.parentTube.indexOf(otherFiber);
+          return indexOfFiber === indexOfOtherFiber;
         });
+
+        if (fibersConnectedWithSameOrder) {
+          connectedPairTubes.push({
+            tube_in: tube.id,
+            tube_out: tubeConnectedTo.id,
+          });
+        }
       }
     });
 
