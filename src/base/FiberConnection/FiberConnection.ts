@@ -1,7 +1,7 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { Grid, LegType, Position } from "base/Grid";
-import { getUnitsForPath } from "utils/pathUtils";
+import { getPathForConnection, getUnitsForPath } from "utils/pathUtils";
 import { FiberConnectionApiType, FiberConnectionDataType } from ".";
 
 export class FiberConnection {
@@ -105,17 +105,25 @@ export class FiberConnection {
     return {
       legs: [
         ...getUnitsForPath({
-          path: this.getPathForFiberConnection({
-            fiber: fiberIn,
+          path: getPathForConnection({
+            source: fiberIn.attr.position,
+            disposition: fiberIn.parentTube.parentWire.disposition,
+            element_id: fiberIn.id,
             toY: fusionYpoint,
+            type: "fiber",
+            grid: this.parentGrid,
           }),
           color: fiberIn.color,
           unitSize: Config.baseUnits.fiber.height,
         }),
         ...getUnitsForPath({
-          path: this.getPathForFiberConnection({
-            fiber: fiberOut,
+          path: getPathForConnection({
+            source: fiberOut.attr.position,
             toY: fusionYpoint,
+            grid: this.parentGrid,
+            type: "fiber",
+            element_id: fiberOut.id,
+            disposition: fiberOut.parentTube.parentWire.disposition,
           }),
           color: fiberOut.color,
           unitSize: Config.baseUnits.fiber.height,
@@ -207,13 +215,24 @@ export class FiberConnection {
       ],
     });
 
-    const firstPath = this.getPathForFiberConnection({
-      fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut,
+    const firstFiber = fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut;
+    const firstPath = getPathForConnection({
+      source: firstFiber.attr.position,
+      element_id: firstFiber.id,
+      disposition: firstFiber.parentTube.parentWire.disposition,
+      type: "fiber",
+      grid: this.parentGrid,
       toY: fusionYpoint1,
     });
 
-    const secondPath = this.getPathForFiberConnection({
-      fiber: fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn,
+    const secondFiber = fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn;
+
+    const secondPath = getPathForConnection({
+      source: secondFiber.attr.position,
+      disposition: secondFiber.parentTube.parentWire.disposition,
+      element_id: secondFiber.id,
+      grid: this.parentGrid,
+      type: "fiber",
       toY: fusionYpoint3,
     });
 
@@ -238,153 +257,6 @@ export class FiberConnection {
       ],
       center: fusionYpoint2,
     };
-  }
-
-  getPathForFiberConnection({ fiber, toY }: { fiber: Fiber; toY: number }) {
-    const isLeftToRightConnection =
-      fiber.parentTube.parentWire.disposition === "LEFT";
-    const ourSideAngleSegments = isLeftToRightConnection
-      ? this.parentGrid.leftSideAngleSegments
-      : this.parentGrid.rightSideAngleSegments;
-
-    const ourConnectionIndex = ourSideAngleSegments.findIndex(
-      (segment) => segment.type === "fiber" && segment.element_id === fiber.id
-    );
-
-    const numberOfPreviousAngles =
-      ourConnectionIndex !== -1
-        ? ourConnectionIndex
-        : ourSideAngleSegments.length;
-
-    const separation =
-      Config.baseUnits.fiber.height * 2 +
-      numberOfPreviousAngles * 2 * Config.baseUnits.fiber.height;
-
-    let angleXpoint: number;
-    let path = [];
-
-    if (fiber.attr.position.y === toY) {
-      if (isLeftToRightConnection) {
-        for (
-          let iX = fiber.attr.position.x;
-          iX < this.parentGrid.leftSideWidth;
-          iX += Config.baseUnits.fiber.height
-        ) {
-          path.push([iX, fiber.attr.position.y]);
-        }
-      } else {
-        for (
-          let iX = fiber.attr.position.x;
-          iX >= this.parentGrid.leftSideWidth;
-          iX -= Config.baseUnits.fiber.height
-        ) {
-          path.push([iX, fiber.attr.position.y]);
-        }
-      }
-
-      this.parentGrid.setVerticalUsedIndexWithHeight({
-        yPoint: fiber.attr.position.y,
-        height: Config.baseUnits.fiber.height,
-      });
-
-      return path;
-    }
-
-    if (isLeftToRightConnection) {
-      angleXpoint =
-        this.parentGrid.leftSideWidth -
-        (separation + Config.baseUnits.fiber.height);
-    } else {
-      angleXpoint = this.parentGrid.leftSideWidth + separation;
-    }
-
-    path = [[angleXpoint, fiber.attr.position.y]];
-
-    // from: fiber.attr.position.x, fiber.attr.position.y
-    // to: angleXpoint, fiber.attr.position.y
-    if (isLeftToRightConnection) {
-      for (
-        let iX = fiber.attr.position.x;
-        iX < angleXpoint;
-        iX += Config.baseUnits.fiber.height
-      ) {
-        path.push([iX, fiber.attr.position.y]);
-      }
-    } else {
-      for (
-        let iX = fiber.attr.position.x;
-        iX >= angleXpoint;
-        iX -= Config.baseUnits.fiber.height
-      ) {
-        path.push([iX, fiber.attr.position.y]);
-      }
-    }
-
-    // from: angleXpoint, fiber.attr.position.y
-    // to: angleXpoint, toY
-    if (fiber.attr.position.y < toY) {
-      for (
-        let iY = fiber.attr.position.y;
-        iY < toY;
-        iY += Config.baseUnits.fiber.height
-      ) {
-        path.push([angleXpoint, iY]);
-      }
-    } else {
-      for (
-        let iY = fiber.attr.position.y;
-        iY > toY;
-        iY -= Config.baseUnits.fiber.height
-      ) {
-        path.push([angleXpoint, iY]);
-      }
-    }
-
-    // from: angleXpoint, toY
-    // to: this.parentGrid.leftSideWidth, toY
-    if (isLeftToRightConnection) {
-      for (
-        let iX = angleXpoint;
-        iX < this.parentGrid.leftSideWidth;
-        iX += Config.baseUnits.fiber.height
-      ) {
-        path.push([iX, toY]);
-      }
-    } else {
-      for (
-        let iX = angleXpoint;
-        iX >= this.parentGrid.leftSideWidth;
-        iX -= Config.baseUnits.fiber.height
-      ) {
-        path.push([iX, toY]);
-      }
-    }
-
-    this.parentGrid.setVerticalUsedIndexWithHeight({
-      yPoint: fiber.attr.position.y,
-      height: Config.baseUnits.fiber.height,
-    });
-
-    this.parentGrid.setVerticalUsedIndexWithHeight({
-      yPoint: toY,
-      height: Config.baseUnits.fiber.height,
-    });
-
-    if (isLeftToRightConnection) {
-      this.parentGrid.addLeftSideAngleSegment({
-        type: "fiber",
-        element_id: fiber.id,
-        toY,
-      });
-    } else {
-      this.parentGrid.addRightSideAngleSegment({
-        type: "fiber",
-        element_id: fiber.id,
-        toY,
-      });
-    }
-
-    return path;
   }
 
   remove() {

@@ -1,8 +1,7 @@
 import { Config } from "base/Config";
-import { LegType } from "base/Grid";
+import { Grid, LegType, Position } from "base/Grid";
 
 export type Columns = { [key: number]: boolean };
-export type Grid = { [key: number]: Columns };
 
 export const correctOverlap = (
   firstPath: number[][],
@@ -167,7 +166,6 @@ export const getNFreeIndexesFromYpoint = ({
     };
   }
 
-  // TODO: find betwheen freeAboveIndexes and freeBelowIndexes the indexes which are closest to fromY
   if (freeAboveIndexes && freeBelowIndexes) {
     const firstPointAbove = freeAboveIndexes[0];
     const firstPointBelow = freeBelowIndexes[0];
@@ -205,4 +203,130 @@ export const getUnitsForPath = ({
       color,
     };
   });
+};
+
+export const getPathForConnection = ({
+  disposition,
+  element_id,
+  source,
+  type,
+  toY,
+  grid,
+}: {
+  disposition: "LEFT" | "RIGHT";
+  source: Position;
+  element_id: number;
+  type: "tube" | "fiber";
+  toY: number;
+  grid: Grid;
+}) => {
+  const unitSize = Config.baseUnits[type].height;
+
+  const isLeftToRightConnection = disposition === "LEFT";
+  const ourSideAngleSegments = isLeftToRightConnection
+    ? grid.leftSideAngleSegments
+    : grid.rightSideAngleSegments;
+
+  const ourConnectionIndex = ourSideAngleSegments.findIndex(
+    (segment) => segment.type === type && segment.element_id === element_id
+  );
+
+  const numberOfPreviousAngles =
+    ourConnectionIndex !== -1
+      ? ourConnectionIndex
+      : ourSideAngleSegments.length;
+
+  const separation = unitSize * 2 + numberOfPreviousAngles * 2 * unitSize;
+
+  let angleXpoint: number;
+  let path = [];
+
+  if (source.y === toY) {
+    if (isLeftToRightConnection) {
+      for (let iX = source.x; iX < grid.leftSideWidth; iX += unitSize) {
+        path.push([iX, source.y]);
+      }
+    } else {
+      for (let iX = source.x; iX >= grid.leftSideWidth; iX -= unitSize) {
+        path.push([iX, source.y]);
+      }
+    }
+
+    grid.setVerticalUsedIndexWithHeight({
+      yPoint: source.y,
+      height: unitSize,
+    });
+
+    return path;
+  }
+
+  if (isLeftToRightConnection) {
+    angleXpoint = grid.leftSideWidth - (separation + unitSize);
+  } else {
+    angleXpoint = grid.leftSideWidth + separation;
+  }
+
+  path = [[angleXpoint, source.y]];
+
+  // from: source.x, source.y
+  // to: angleXpoint, source.y
+  if (isLeftToRightConnection) {
+    for (let iX = source.x; iX < angleXpoint; iX += unitSize) {
+      path.push([iX, source.y]);
+    }
+  } else {
+    for (let iX = source.x; iX >= angleXpoint; iX -= unitSize) {
+      path.push([iX, source.y]);
+    }
+  }
+
+  // from: angleXpoint, source.y
+  // to: angleXpoint, toY
+  if (source.y < toY) {
+    for (let iY = source.y; iY < toY; iY += unitSize) {
+      path.push([angleXpoint, iY]);
+    }
+  } else {
+    for (let iY = source.y; iY > toY; iY -= unitSize) {
+      path.push([angleXpoint, iY]);
+    }
+  }
+
+  // from: angleXpoint, toY
+  // to: grid.leftSideWidth, toY
+  if (isLeftToRightConnection) {
+    for (let iX = angleXpoint; iX < grid.leftSideWidth; iX += unitSize) {
+      path.push([iX, toY]);
+    }
+  } else {
+    for (let iX = angleXpoint; iX >= grid.leftSideWidth; iX -= unitSize) {
+      path.push([iX, toY]);
+    }
+  }
+
+  grid.setVerticalUsedIndexWithHeight({
+    yPoint: source.y,
+    height: unitSize,
+  });
+
+  grid.setVerticalUsedIndexWithHeight({
+    yPoint: toY,
+    height: unitSize,
+  });
+
+  if (isLeftToRightConnection) {
+    grid.addLeftSideAngleSegment({
+      type,
+      element_id,
+      toY,
+    });
+  } else {
+    grid.addRightSideAngleSegment({
+      type,
+      element_id,
+      toY,
+    });
+  }
+
+  return path;
 };
