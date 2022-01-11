@@ -248,47 +248,29 @@ export class Tube {
   }
 
   getTubeConnectedTo() {
-    let value = true;
-    const tubesConnectedTo: { [key: number]: Tube } = {};
-
-    this.fibers.forEach((fiber) => {
-      const fiberConnection =
-        this.parentWire.parentGrid.getConnectionForFiberId(fiber.id);
-
-      if (fiberConnection) {
-        const destinationFiberId =
-          fiberConnection.fiber_in === fiber.id
-            ? fiberConnection.fiber_out
-            : fiberConnection.fiber_in;
-        const destinationFiber =
-          this.parentWire.parentGrid.getFiberById(destinationFiberId);
-
-        if (!destinationFiber) {
-          // Destination fiber with id not found, fiber not connected.
-          console.error(`Fiber with id ${destinationFiberId} not found`);
-          // TODO: throw error when splitters are implemented.
-          // throw `Fiber with id ${destinationFiberId} not found`;
-          value = false;
-          return;
-        }
-
-        const destinationTube = destinationFiber.parentTube;
-        tubesConnectedTo[destinationTube.id] = destinationTube;
-
-        // If our Fibers are all connected to the same tube, we can collapse.
-        // If not, we can't collapse.
-        if (Object.values(tubesConnectedTo).length > 1) {
-          value = false;
-          return;
-        }
-      } else {
-        // Fiber is not connected to anything
-        value = false;
+    if (
+      this.parentWire.parentGrid.checkFibersAreConnectedInSameOrder(this.fibers)
+    ) {
+      const connection = this.parentWire.parentGrid.getConnectionForFiberId(
+        this.fibers[0].id
+      );
+      if (!connection) {
+        // Fiber is not connected to anywhere
+        return undefined;
       }
-    });
 
-    if (value) {
-      return Object.values(tubesConnectedTo)[0];
+      const otherEndFiberId =
+        connection.fiber_in === this.fibers[0].id
+          ? connection.fiber_out
+          : connection.fiber_in;
+      const otherEndFiber =
+        this.parentWire.parentGrid.getFiberById(otherEndFiberId);
+
+      if (!otherEndFiber) {
+        return undefined;
+      }
+
+      return otherEndFiber.parentTube;
     } else {
       return undefined;
     }

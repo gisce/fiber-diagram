@@ -13,8 +13,9 @@ import {
 } from "./Grid.types";
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
-import { TubeConnectionApiType } from "base/TubeConnection";
+import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
 import { Columns, getNFreeIndexesFromYpoint } from "utils/pathUtils";
+import { Fiber } from "base/Fiber";
 
 export class Grid {
   id: number;
@@ -33,7 +34,7 @@ export class Grid {
   verticalUsedIndexes: Columns = {};
   fiberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
-  // tubeConnections?: TubeConnection[] = [];
+  tubeConnections?: TubeConnection[] = [];
 
   constructor({
     input,
@@ -170,9 +171,9 @@ export class Grid {
   }
 
   drawConnections() {
-    // this.tubeConnections = this.getConnectedPairTubes().map((pair) => {
-    //   return new TubeConnection({ data: pair, parentGrid: this });
-    // });
+    this.tubeConnections = this.getConnectedPairTubes().map((pair) => {
+      return new TubeConnection({ data: pair, parentGrid: this });
+    });
 
     if (this.fiberConnections.length > 0) {
       this.fiberConnections.forEach((connection) =>
@@ -499,6 +500,40 @@ export class Grid {
     });
   }
 
+  checkFibersAreConnectedInSameOrder(fibers: Fiber[]) {
+    const tubesConnectedTo: { [key: number]: Tube } = {};
+
+    const sameOrder = fibers.every((fiber) => {
+      const fiberConnection = this.getConnectionForFiberId(fiber.id);
+
+      if (!fiberConnection) {
+        // Fiber is not connected anywhere
+        return false;
+      }
+
+      const otherFiberId =
+        fiberConnection.fiber_in === fiber.id
+          ? fiberConnection.fiber_out
+          : fiberConnection.fiber_in;
+
+      const otherFiber: Fiber = this.getFiberById(otherFiberId);
+
+      if (!otherFiber) {
+        // TODO: throw error when splitters are implemented
+        return false;
+      }
+
+      tubesConnectedTo[otherFiber.parentTube.id] = otherFiber.parentTube;
+
+      const indexOfFiber = fiber.parentTube.fibers.indexOf(fiber);
+      const indexOfOtherFiber =
+        otherFiber.parentTube.fibers.indexOf(otherFiber);
+      return indexOfFiber === indexOfOtherFiber;
+    });
+
+    return sameOrder && Object.values(tubesConnectedTo).length === 1;
+  }
+
   getConnectedPairTubes() {
     const connectedPairTubes: TubeConnectionApiType[] = [];
 
@@ -518,25 +553,10 @@ export class Grid {
       const tubeConnectedTo = tube.getTubeConnectedTo();
 
       if (tubeConnectedTo) {
-        const fibersConnectedWithSameOrder = tube.fibers.every((fiber) => {
-          const fiberConnection = this.getConnectionForFiberId(fiber.id);
-          const otherFiberId =
-            fiberConnection.fiber_in === fiber.id
-              ? fiberConnection.fiber_out
-              : fiberConnection.fiber_in;
-          const otherFiber = this.getFiberById(otherFiberId);
-
-          const indexOfFiber = tube.fibers.indexOf(fiber);
-          const indexOfOtherFiber = otherFiber.parentTube.indexOf(otherFiber);
-          return indexOfFiber === indexOfOtherFiber;
+        connectedPairTubes.push({
+          tube_in: tube.id,
+          tube_out: tubeConnectedTo.id,
         });
-
-        if (fibersConnectedWithSameOrder) {
-          connectedPairTubes.push({
-            tube_in: tube.id,
-            tube_out: tubeConnectedTo.id,
-          });
-        }
       }
     });
 
