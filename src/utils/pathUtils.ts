@@ -236,7 +236,7 @@ export const getPathForConnection = ({
       ? ourConnectionIndex
       : ourSideAngleSegments.length;
 
-  const separation = unitSize * 2 + numberOfPreviousAngles * 2 * unitSize;
+  const separation = unitSize * 3 + numberOfPreviousAngles * 2 * unitSize;
 
   let angleXpoint: number;
   let path = [];
