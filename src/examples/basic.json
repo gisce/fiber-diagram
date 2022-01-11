@@ -10,7 +10,7 @@
             {
               "id": 23,
               "name": "T1-Tub 1",
-              "color": "#00ff00",
+              "color": "#cfc",
               "fibers": [
                 { "id": 223, "name": "F1-F1 - ROJA", "color": "#448844" },
                 { "id": 224, "name": "F2-F2 - VERDE", "color": "#00f0ff" },
@@ -21,7 +21,7 @@
             {
               "id": 24,
               "name": "T2-Tub 2",
-              "color": "#0000ff",
+              "color": "#bbf",
               "fibers": [
                 { "id": 227, "name": "F1-F1 - ROJA", "color": "#FF0000" },
                 { "id": 228, "name": "F2-F2 - VERDE", "color": "#00FF00" },
@@ -39,7 +39,7 @@
             {
               "id": 25,
               "name": "T1-Tub 1",
-              "color": "#ff00ff",
+              "color": "#faf",
               "fibers": [
                 { "id": 231, "name": "F1-F1 - ROJA", "color": "#FF0000" },
                 { "id": 232, "name": "F2-F2 - VERDE", "color": "#00FF00" },
@@ -50,7 +50,7 @@
             {
               "id": 26,
               "name": "T2-Tub 2",
-              "color": "#00ffff",
+              "color": "#aafaff",
               "fibers": [
                 { "id": 235, "name": "F1-F1 - ROJA", "color": "#F000FF" },
                 { "id": 236, "name": "F2-F2 - VERDE", "color": "#3F090F" },
