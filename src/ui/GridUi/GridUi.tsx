@@ -6,7 +6,6 @@ import { Config } from "base/Config";
 import { FiberConnectionUi } from "ui/FiberConnectionUi/FiberConnectionUi";
 import { FiberConnectionContextProvider } from "ui/FiberConnectionUi/FiberConnectionContext";
 import { sanitize } from "utils/sanitizer";
-import { TubeConnectionUi } from "ui/TubeConnectionUi/TubeConnectionUi";
 
 export const GridUi = ({
   inputJson,
@@ -69,9 +68,9 @@ export const GridUi = ({
           {grid.fiberConnections?.map((connection, i) => {
             return <FiberConnectionUi key={i} connection={connection} />;
           })}
-          {grid.tubeConnections?.map((connection, i) => {
+          {/* {grid.tubeConnections?.map((connection, i) => {
             return <TubeConnectionUi key={i} connection={connection} />;
-          })}
+          })} */}
           {leftWires}
           {rightWires}
         </Layer>

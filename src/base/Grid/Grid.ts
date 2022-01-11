@@ -13,7 +13,7 @@ import {
 } from "./Grid.types";
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
-import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
+import { TubeConnectionApiType } from "base/TubeConnection";
 import {
   Columns,
   getNFreeIndexesFromYpoint,
@@ -36,7 +36,7 @@ export class Grid {
   verticalUsedIndexes: Columns = {};
   fiberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
-  tubeConnections?: TubeConnection[] = [];
+  // tubeConnections?: TubeConnection[] = [];
 
   constructor({
     input,
@@ -172,9 +172,9 @@ export class Grid {
   }
 
   drawConnections() {
-    this.tubeConnections = this.getConnectedPairTubes().map((pair) => {
-      return new TubeConnection({ data: pair, parentGrid: this });
-    });
+    // this.tubeConnections = this.getConnectedPairTubes().map((pair) => {
+    //   return new TubeConnection({ data: pair, parentGrid: this });
+    // });
 
     if (this.fiberConnections.length > 0) {
       this.fiberConnections.forEach((connection) =>
