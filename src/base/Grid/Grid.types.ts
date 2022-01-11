@@ -9,8 +9,8 @@ export type GridType<T> = {
       wires?: T;
     };
     connections?: ConnectionsApiType;
-    leftSideAngleSegments?: FiberConnectionSegment[];
-    rightSideAngleSegments?: FiberConnectionSegment[];
+    leftSideAngleSegments?: ConnectionSegment[];
+    rightSideAngleSegments?: ConnectionSegment[];
   };
 };
 
@@ -41,8 +41,9 @@ export type ConnectionsApiType = {
   fibers?: FiberConnectionApiType[];
 };
 
-export type FiberConnectionSegment = {
-  fiber_id: number;
+export type ConnectionSegment = {
+  type: "fiber" | "tube";
+  element_id: number;
   toY: number;
 };
 

@@ -6,7 +6,7 @@ import {
 } from "base/FiberConnection";
 import { Wire, WireDataType } from "base/Wire";
 import {
-  FiberConnectionSegment,
+  ConnectionSegment,
   GridApiType,
   GridDataType,
   Size,
@@ -28,8 +28,8 @@ export class Grid {
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
   fiberConnections?: FiberConnection[] = [];
-  leftSideAngleSegments?: FiberConnectionSegment[] = [];
-  rightSideAngleSegments?: FiberConnectionSegment[] = [];
+  leftSideAngleSegments?: ConnectionSegment[] = [];
+  rightSideAngleSegments?: ConnectionSegment[] = [];
   verticalUsedIndexes: Columns = {};
   fiberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
@@ -57,6 +57,7 @@ export class Grid {
         (this.leftSideAngleSegments.length -
           (Config.angleThresholdGrowHorizontal - 1)) *
         (Config.baseUnits.fiber.height * 3);
+      // TODO: change fiber.height * 3 to value depending of angle type (fiber, tube)
     }
 
     if (
@@ -356,8 +357,9 @@ export class Grid {
     this.leftSideAngleSegments = this.leftSideAngleSegments.filter(
       (segment) => {
         return (
-          segment.fiber_id !== connection.fiber_in &&
-          segment.fiber_id !== connection.fiber_out
+          segment.type === "fiber" &&
+          segment.element_id !== connection.fiber_in &&
+          segment.element_id !== connection.fiber_out
         );
       }
     );
@@ -365,8 +367,9 @@ export class Grid {
     this.rightSideAngleSegments = this.rightSideAngleSegments.filter(
       (segment) => {
         return (
-          segment.fiber_id !== connection.fiber_in &&
-          segment.fiber_id !== connection.fiber_out
+          segment.type === "fiber" &&
+          segment.element_id !== connection.fiber_in &&
+          segment.element_id !== connection.fiber_out
         );
       }
     );
@@ -410,9 +413,9 @@ export class Grid {
     }
   }
 
-  addLeftSideAngleSegment(segment: FiberConnectionSegment) {
+  addLeftSideAngleSegment(segment: ConnectionSegment) {
     const exists = this.leftSideAngleSegments.find((sgm) => {
-      return sgm.fiber_id === segment.fiber_id;
+      return sgm.type === segment.type && sgm.element_id === segment.element_id;
     });
 
     if (!exists) {
@@ -420,9 +423,9 @@ export class Grid {
     }
   }
 
-  addRightSideAngleSegment(segment: FiberConnectionSegment) {
+  addRightSideAngleSegment(segment: ConnectionSegment) {
     const exists = this.rightSideAngleSegments.find((sgm) => {
-      return sgm.fiber_id === segment.fiber_id;
+      return sgm.type === segment.type && sgm.element_id === segment.element_id;
     });
 
     if (!exists) {
@@ -470,16 +473,18 @@ export class Grid {
 
       this.leftSideAngleSegments = this.leftSideAngleSegments.filter((sgm) => {
         return (
-          sgm.fiber_id !== fiberConnection.fiber_in &&
-          sgm.fiber_id !== fiberConnection.fiber_out
+          sgm.type === "fiber" &&
+          sgm.element_id !== fiberConnection.fiber_in &&
+          sgm.element_id !== fiberConnection.fiber_out
         );
       });
 
       this.rightSideAngleSegments = this.rightSideAngleSegments.filter(
         (sgm) => {
           return (
-            sgm.fiber_id !== fiberConnection.fiber_in &&
-            sgm.fiber_id !== fiberConnection.fiber_out
+            sgm.type === "fiber" &&
+            sgm.element_id !== fiberConnection.fiber_in &&
+            sgm.element_id !== fiberConnection.fiber_out
           );
         }
       );

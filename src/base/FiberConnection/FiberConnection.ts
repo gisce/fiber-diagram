@@ -248,7 +248,7 @@ export class FiberConnection {
       : this.parentGrid.rightSideAngleSegments;
 
     const ourConnectionIndex = ourSideAngleSegments.findIndex(
-      (segment) => segment.fiber_id === fiber.id
+      (segment) => segment.type === "fiber" && segment.element_id === fiber.id
     );
 
     const numberOfPreviousAngles =
@@ -372,12 +372,14 @@ export class FiberConnection {
 
     if (isLeftToRightConnection) {
       this.parentGrid.addLeftSideAngleSegment({
-        fiber_id: fiber.id,
+        type: "fiber",
+        element_id: fiber.id,
         toY,
       });
     } else {
       this.parentGrid.addRightSideAngleSegment({
-        fiber_id: fiber.id,
+        type: "fiber",
+        element_id: fiber.id,
         toY,
       });
     }
