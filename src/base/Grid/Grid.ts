@@ -5,12 +5,7 @@ import {
   FiberConnectionDataType,
 } from "base/FiberConnection";
 import { Wire, WireDataType } from "base/Wire";
-import {
-  ConnectionSegment,
-  GridApiType,
-  GridDataType,
-  Size,
-} from "./Grid.types";
+import { GridApiType, GridDataType, Size } from "./Grid.types";
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
@@ -29,12 +24,12 @@ export class Grid {
   wiresSized: { [key: number]: boolean } = {};
   wiresPositioned: { [key: number]: boolean } = {};
   fiberConnections?: FiberConnection[] = [];
-  leftSideAngleSegments?: ConnectionSegment[] = [];
-  rightSideAngleSegments?: ConnectionSegment[] = [];
   verticalUsedIndexes: Columns = {};
   fiberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
   tubeConnections?: TubeConnection[] = [];
+  leftUsedSpace: number = 0;
+  rightUsedSpace: number = 0;
 
   constructor({
     input,
@@ -48,31 +43,26 @@ export class Grid {
     this.rightSideWidth = width / 2;
     this.initialData = { ...input };
 
-    if (
-      input?.res?.leftSideAngleSegments &&
-      input?.res?.leftSideAngleSegments.length >
-        Config.angleThresholdGrowHorizontal
-    ) {
-      this.leftSideAngleSegments = input.res.leftSideAngleSegments;
-      this.leftSideWidth +=
-        (this.leftSideAngleSegments.length -
-          (Config.angleThresholdGrowHorizontal - 1)) *
-        (Config.baseUnits.fiber.height * 3);
-      // TODO: change fiber.height * 3 to value depending of angle type (fiber, tube)
+    if (input?.res?.leftUsedSpace) {
+      if (
+        input?.res?.leftUsedSpace >
+        this.leftSideWidth * Config.growHorizontalFactor
+      ) {
+        this.leftSideWidth +=
+          input?.res?.leftUsedSpace -
+          this.leftSideWidth * Config.growHorizontalFactor;
+      }
     }
 
-    if (
-      input?.res?.rightSideAngleSegments &&
-      input?.res?.rightSideAngleSegments.length >
-        Config.angleThresholdGrowHorizontal
-    ) {
-      this.rightSideAngleSegments = input.res.rightSideAngleSegments;
-
-      this.rightSideWidth =
-        width / 2 +
-        (this.rightSideAngleSegments.length -
-          (Config.angleThresholdGrowHorizontal - 1)) *
-          (Config.baseUnits.fiber.height * 3);
+    if (input?.res?.rightUsedSpace) {
+      if (
+        input?.res?.rightUsedSpace >
+        this.rightSideWidth * Config.growHorizontalFactor
+      ) {
+        this.rightSideWidth +=
+          input?.res?.rightUsedSpace -
+          this.rightSideWidth * Config.growHorizontalFactor;
+      }
     }
 
     this.size = { width: this.leftSideWidth + this.rightSideWidth, height };
@@ -229,15 +219,10 @@ export class Grid {
             connection.getJson()
           ),
         },
+        leftUsedSpace: this.leftUsedSpace,
+        rightUsedSpace: this.rightUsedSpace,
       },
     };
-
-    if (this.leftSideAngleSegments.length > 0) {
-      output.res.leftSideAngleSegments = this.leftSideAngleSegments;
-    }
-    if (this.rightSideAngleSegments.length > 0) {
-      output.res.rightSideAngleSegments = this.rightSideAngleSegments;
-    }
 
     return output;
   }
@@ -349,31 +334,33 @@ export class Grid {
     });
 
     this.fiberConnections = this.fiberConnections.filter((conn) => {
+      let fiberId: number;
+
+      if (conn.fiber_in === connection.fiber_in) {
+        fiberId = conn.fiber_in;
+      }
+
+      if (conn.fiber_out === connection.fiber_out) {
+        fiberId = conn.fiber_out;
+      }
+
+      const fiber: Fiber = this.getFiberById(fiberId);
+
+      if (fiber) {
+        if (fiber.parentTube.parentWire.disposition === "LEFT") {
+          this.leftUsedSpace -=
+            Config.baseUnits.fiber.height * Config.angleSeparatorFactor;
+        } else {
+          this.rightUsedSpace -=
+            Config.baseUnits.fiber.height * Config.angleSeparatorFactor;
+        }
+      }
+
       return (
         conn.fiber_in !== connection.fiber_in &&
         conn.fiber_out !== connection.fiber_out
       );
     });
-
-    this.leftSideAngleSegments = this.leftSideAngleSegments.filter(
-      (segment) => {
-        return (
-          segment.type === "fiber" &&
-          segment.element_id !== connection.fiber_in &&
-          segment.element_id !== connection.fiber_out
-        );
-      }
-    );
-
-    this.rightSideAngleSegments = this.rightSideAngleSegments.filter(
-      (segment) => {
-        return (
-          segment.type === "fiber" &&
-          segment.element_id !== connection.fiber_in &&
-          segment.element_id !== connection.fiber_out
-        );
-      }
-    );
 
     this.fiberConnectionsInitialized = this.fiberConnectionsInitialized.filter(
       (conn) => {
@@ -414,26 +401,6 @@ export class Grid {
     }
   }
 
-  addLeftSideAngleSegment(segment: ConnectionSegment) {
-    const exists = this.leftSideAngleSegments.find((sgm) => {
-      return sgm.type === segment.type && sgm.element_id === segment.element_id;
-    });
-
-    if (!exists) {
-      this.leftSideAngleSegments.push(segment);
-    }
-  }
-
-  addRightSideAngleSegment(segment: ConnectionSegment) {
-    const exists = this.rightSideAngleSegments.find((sgm) => {
-      return sgm.type === segment.type && sgm.element_id === segment.element_id;
-    });
-
-    if (!exists) {
-      this.rightSideAngleSegments.push(segment);
-    }
-  }
-
   getHeight() {
     return Math.max(
       this.getCurrentWiresHeight(),
@@ -471,24 +438,6 @@ export class Grid {
       Object.keys(fiberConnection.usedYpoints).forEach((yPoint) => {
         this.verticalUsedIndexes[yPoint] = false;
       });
-
-      this.leftSideAngleSegments = this.leftSideAngleSegments.filter((sgm) => {
-        return (
-          sgm.type === "fiber" &&
-          sgm.element_id !== fiberConnection.fiber_in &&
-          sgm.element_id !== fiberConnection.fiber_out
-        );
-      });
-
-      this.rightSideAngleSegments = this.rightSideAngleSegments.filter(
-        (sgm) => {
-          return (
-            sgm.type === "fiber" &&
-            sgm.element_id !== fiberConnection.fiber_in &&
-            sgm.element_id !== fiberConnection.fiber_out
-          );
-        }
-      );
 
       this.fiberConnectionsInitialized =
         this.fiberConnectionsInitialized.filter((conn) => {

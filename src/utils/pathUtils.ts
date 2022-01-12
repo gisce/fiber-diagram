@@ -1,5 +1,5 @@
 import { Config } from "base/Config";
-import { Grid, LegType, Position } from "base/Grid";
+import { ConnectionSegment, Grid, LegType, Position } from "base/Grid";
 
 export type Columns = { [key: number]: boolean };
 
@@ -223,20 +223,12 @@ export const getPathForConnection = ({
   const unitSize = Config.baseUnits[type].height;
 
   const isLeftToRightConnection = disposition === "LEFT";
-  const ourSideAngleSegments = isLeftToRightConnection
-    ? grid.leftSideAngleSegments
-    : grid.rightSideAngleSegments;
+  const ourSideUsedSpace = isLeftToRightConnection
+    ? grid.leftUsedSpace
+    : grid.rightUsedSpace;
 
-  const ourConnectionIndex = ourSideAngleSegments.findIndex(
-    (segment) => segment.type === type && segment.element_id === element_id
-  );
-
-  const numberOfPreviousAngles =
-    ourConnectionIndex !== -1
-      ? ourConnectionIndex
-      : ourSideAngleSegments.length;
-
-  const separation = unitSize * 3 + numberOfPreviousAngles * 2 * unitSize;
+  const spaceForThisPath = unitSize * Config.angleSeparatorFactor;
+  const separation = spaceForThisPath + ourSideUsedSpace;
 
   let angleXpoint: number;
   let path = [];
@@ -262,8 +254,10 @@ export const getPathForConnection = ({
 
   if (isLeftToRightConnection) {
     angleXpoint = grid.leftSideWidth - (separation + unitSize);
+    grid.leftUsedSpace += spaceForThisPath;
   } else {
     angleXpoint = grid.leftSideWidth + separation;
+    grid.rightUsedSpace += spaceForThisPath;
   }
 
   path = [[angleXpoint, source.y]];
@@ -313,20 +307,6 @@ export const getPathForConnection = ({
     yPoint: toY,
     height: unitSize,
   });
-
-  if (isLeftToRightConnection) {
-    grid.addLeftSideAngleSegment({
-      type,
-      element_id,
-      toY,
-    });
-  } else {
-    grid.addRightSideAngleSegment({
-      type,
-      element_id,
-      toY,
-    });
-  }
 
   return path;
 };

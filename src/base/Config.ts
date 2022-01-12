@@ -8,5 +8,6 @@ export const Config = {
   wireSeparation: 6,
   separation: 1,
   pixelsPerUnit: 10,
-  angleThresholdGrowHorizontal: 12,
+  growHorizontalFactor: 0.5,
+  angleSeparatorFactor: 2.5,
 };
