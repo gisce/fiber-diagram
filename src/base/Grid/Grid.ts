@@ -410,11 +410,11 @@ export class Grid {
 
   getCurrentWiresHeight() {
     const leftHeight = this.leftWires.reduce(
-      (a, b) => a + b.attr.size.height + Config.separation * 2,
+      (a, b) => a + b.attr.size.height + Config.wireSeparation,
       0
     );
     const rightHeight = this.rightWires.reduce(
-      (a, b) => a + b.attr.size.height + Config.separation * 2,
+      (a, b) => a + b.attr.size.height + Config.wireSeparation,
       0
     );
     return Math.max(leftHeight, rightHeight);
