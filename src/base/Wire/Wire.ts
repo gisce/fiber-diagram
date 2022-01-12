@@ -106,7 +106,7 @@ export class Wire {
       .reduce((a, b) => a + b, 0);
 
     const usedHeightPlusSeparation =
-      usedHeight + sibilingsHigherThanMe.length * Config.separation;
+      usedHeight + sibilingsHigherThanMe.length * Config.wireSeparation;
 
     this.attr.position = {
       x:

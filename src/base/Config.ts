@@ -5,6 +5,7 @@ export const Config = {
     tube: { width: 4, height: 2 },
     fiber: { width: 4, height: 1 },
   },
+  wireSeparation: 6,
   separation: 1,
   pixelsPerUnit: 10,
   angleThresholdGrowHorizontal: 12,
