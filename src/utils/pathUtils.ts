@@ -243,11 +243,11 @@ export const getPathForConnection = ({
 
   if (source.y === toY) {
     if (isLeftToRightConnection) {
-      for (let iX = source.x; iX < grid.leftSideWidth; iX += unitSize) {
+      for (let iX = source.x; iX < grid.leftSideWidth; iX += 1) {
         path.push([iX, source.y]);
       }
     } else {
-      for (let iX = source.x; iX >= grid.leftSideWidth; iX -= unitSize) {
+      for (let iX = source.x; iX >= grid.leftSideWidth; iX -= 1) {
         path.push([iX, source.y]);
       }
     }
@@ -271,11 +271,11 @@ export const getPathForConnection = ({
   // from: source.x, source.y
   // to: angleXpoint, source.y
   if (isLeftToRightConnection) {
-    for (let iX = source.x; iX < angleXpoint; iX += unitSize) {
+    for (let iX = source.x; iX < angleXpoint; iX += 1) {
       path.push([iX, source.y]);
     }
   } else {
-    for (let iX = source.x; iX >= angleXpoint; iX -= unitSize) {
+    for (let iX = source.x; iX >= angleXpoint; iX -= 1) {
       path.push([iX, source.y]);
     }
   }
@@ -283,11 +283,11 @@ export const getPathForConnection = ({
   // from: angleXpoint, source.y
   // to: angleXpoint, toY
   if (source.y < toY) {
-    for (let iY = source.y; iY < toY; iY += unitSize) {
+    for (let iY = source.y; iY < toY; iY += 1) {
       path.push([angleXpoint, iY]);
     }
   } else {
-    for (let iY = source.y; iY > toY; iY -= unitSize) {
+    for (let iY = source.y; iY > toY; iY -= 1) {
       path.push([angleXpoint, iY]);
     }
   }
@@ -295,11 +295,11 @@ export const getPathForConnection = ({
   // from: angleXpoint, toY
   // to: grid.leftSideWidth, toY
   if (isLeftToRightConnection) {
-    for (let iX = angleXpoint; iX < grid.leftSideWidth; iX += unitSize) {
+    for (let iX = angleXpoint; iX < grid.leftSideWidth; iX += 1) {
       path.push([iX, toY]);
     }
   } else {
-    for (let iX = angleXpoint; iX >= grid.leftSideWidth; iX -= unitSize) {
+    for (let iX = angleXpoint; iX >= grid.leftSideWidth; iX -= 1) {
       path.push([iX, toY]);
     }
   }
