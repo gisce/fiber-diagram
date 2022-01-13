@@ -5,11 +5,20 @@ import {
   FiberConnectionDataType,
 } from "base/FiberConnection";
 import { Wire, WireDataType } from "base/Wire";
-import { GridApiType, GridDataType, Size } from "./Grid.types";
+import {
+  GridApiType,
+  GridDataType,
+  Size,
+  VerticalIndexElement,
+} from "./Grid.types";
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
-import { Columns, getNFreeIndexesFromYpoint } from "utils/pathUtils";
+import {
+  Columns,
+  getNFreeIndexesFromYpoint,
+  getClearedVerticalIndexesForElement,
+} from "utils/pathUtils";
 import { Fiber } from "base/Fiber";
 
 export class Grid {
@@ -329,8 +338,19 @@ export class Grid {
   }
 
   removeFiberConnection(connection: FiberConnectionDataType) {
-    Object.keys(connection.usedYpoints).forEach((yPoint) => {
-      this.verticalUsedIndexes[yPoint] = false;
+    this.verticalUsedIndexes = getClearedVerticalIndexesForElement({
+      element: {
+        type: "fiber",
+        id: connection.fiber_in,
+      },
+      verticalUsedIndexes: this.verticalUsedIndexes,
+    });
+    this.verticalUsedIndexes = getClearedVerticalIndexesForElement({
+      element: {
+        type: "fiber",
+        id: connection.fiber_out,
+      },
+      verticalUsedIndexes: this.verticalUsedIndexes,
     });
 
     this.fiberConnections = this.fiberConnections.filter((conn) => {
@@ -377,27 +397,16 @@ export class Grid {
   setVerticalUsedIndexWithHeight({
     yPoint,
     height,
+    element,
   }: {
     yPoint: number;
     height: number;
+    element: VerticalIndexElement;
   }) {
-    this.verticalUsedIndexes[yPoint] = true;
+    this.verticalUsedIndexes[yPoint] = element;
 
-    const pointA = yPoint;
-    const pointB = yPoint - 1 + height;
-
-    for (let i = yPoint; i < yPoint + height; i++) {
-      this.verticalUsedIndexes[i] = true;
-    }
-
-    // We add separation below
-    for (let j = pointB; j < pointB + Config.separation * 2; j++) {
-      this.verticalUsedIndexes[j] = true;
-    }
-
-    // And above
-    for (let k = pointA - 1; k >= pointA - Config.separation * 2; k--) {
-      this.verticalUsedIndexes[k] = true;
+    for (let i = yPoint; i < yPoint + height - 1; i++) {
+      this.verticalUsedIndexes[i] = element;
     }
   }
 

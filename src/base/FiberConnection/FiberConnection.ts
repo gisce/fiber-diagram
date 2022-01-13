@@ -92,7 +92,7 @@ export class FiberConnection {
     const { modifiedHeight, freeIndexes } =
       this.parentGrid.getNFreeIndexesFromYpoint({
         unitSize: Config.baseUnits.fiber.height,
-        n: 3,
+        n: 1,
         fromY: fiberIn.attr.position.y,
       });
 
@@ -177,14 +177,26 @@ export class FiberConnection {
     this.parentGrid.setVerticalUsedIndexWithHeight({
       yPoint: fusionYpoint1,
       height: Config.baseUnits.fiber.height,
+      element: {
+        type: "fiber",
+        id: fiberIn.id,
+      },
     });
     this.parentGrid.setVerticalUsedIndexWithHeight({
       yPoint: fusionYpoint2,
       height: Config.baseUnits.fiber.height,
+      element: {
+        type: "fiber",
+        id: fiberIn.id,
+      },
     });
     this.parentGrid.setVerticalUsedIndexWithHeight({
       yPoint: fusionYpoint3,
       height: Config.baseUnits.fiber.height,
+      element: {
+        type: "fiber",
+        id: fiberIn.id,
+      },
     });
 
     const centerUpperMiddleDot = getUnitsForPath({

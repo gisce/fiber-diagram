@@ -1,53 +1,7 @@
 import { Config } from "base/Config";
-import { ConnectionSegment, Grid, LegType, Position } from "base/Grid";
+import { Grid, LegType, Position, VerticalIndexElement } from "base/Grid";
 
-export type Columns = { [key: number]: boolean };
-
-export const correctOverlap = (
-  firstPath: number[][],
-  secondPath: number[][],
-  side: "LEFT" | "RIGHT"
-) => {
-  const correctedPath: number[][] = [];
-
-  const vector = side === "LEFT" ? -1 : 1;
-
-  secondPath.forEach((point: number[]) => {
-    if (
-      !checkIfPointIsInPath(point, firstPath) &&
-      !checkIfPointIsInPath(
-        [point[0] + vector * (Config.baseUnits.fiber.height * 1), point[1]],
-        firstPath
-      ) &&
-      !checkIfPointIsInPath(
-        [point[0] + vector * (Config.baseUnits.fiber.height * 2), point[1]],
-        firstPath
-      ) &&
-      !checkIfPointIsInPath(
-        [point[0] + vector * (Config.baseUnits.fiber.height * 3), point[1]],
-        firstPath
-      )
-    ) {
-      correctedPath.push(point);
-    } else {
-      correctedPath.push([point[0] - 3, point[1]]);
-    }
-  });
-
-  return correctedPath;
-};
-
-export const checkIfPointIsInPath = (point: number[], path: number[][]) => {
-  return path.some((pathPoint: number[]) => {
-    return pathPoint[0] === point[0] && pathPoint[1] === point[1];
-  });
-};
-
-export const pathIsHorizontal = (path: [number, number][]) => {
-  const allYs = {};
-  path.forEach((point) => (allYs[point[1]] = true));
-  return Object.keys(allYs).length === 1;
-};
+export type Columns = { [key: number]: VerticalIndexElement };
 
 export const getNPointsBelowYpoint = ({
   fromY,
@@ -59,10 +13,14 @@ export const getNPointsBelowYpoint = ({
   n: number;
 }) => {
   const indexes = [];
+
   for (let i = 0; i < n; i++) {
     indexes.push(fromY + i * unitSize);
   }
-  return indexes;
+
+  return indexes.sort(function (a, b) {
+    return a - b;
+  });
 };
 
 export const getNPointsAboveYpoint = ({
@@ -75,10 +33,14 @@ export const getNPointsAboveYpoint = ({
   n: number;
 }) => {
   const indexes = [];
+
   for (let i = 0; i < n; i++) {
     indexes.push(fromY - i * unitSize);
   }
-  return indexes;
+
+  return indexes.sort(function (a, b) {
+    return a - b;
+  });
 };
 
 export const checkIfIndexIsFree = ({
@@ -90,10 +52,7 @@ export const checkIfIndexIsFree = ({
   columns: Columns;
   gridHeight: number;
 }) => {
-  return (
-    (columns[index] === false || columns[index] === undefined) &&
-    index < gridHeight
-  );
+  return columns[index] === undefined && index < gridHeight;
 };
 
 export const getNFreeIndexesFromYpoint = ({
@@ -120,7 +79,16 @@ export const getNFreeIndexesFromYpoint = ({
       n,
     });
 
-    const indexesAreFree = indexes.every((index) => {
+    const first = indexes[0];
+    const last = indexes[indexes.length - 1];
+
+    const indexesWithSeparation = [
+      ...indexes,
+      first - unitSize,
+      last + unitSize,
+    ];
+
+    const indexesAreFree = indexesWithSeparation.every((index) => {
       return checkIfIndexIsFree({
         index,
         columns,
@@ -141,7 +109,21 @@ export const getNFreeIndexesFromYpoint = ({
       unitSize,
       n,
     });
-    const indexesAreFree = indexes.every((index) => {
+
+    const first = indexes[0];
+    const last = indexes[indexes.length - 1];
+
+    const indexesWithSeparation = [...indexes];
+
+    for (let i = first; i >= first - unitSize; i -= 1) {
+      indexesWithSeparation.push(i);
+    }
+
+    for (let i = last; i <= last + unitSize; i += 1) {
+      indexesWithSeparation.push(i);
+    }
+
+    const indexesAreFree = indexesWithSeparation.every((index) => {
       return checkIfIndexIsFree({
         index,
         columns,
@@ -157,9 +139,9 @@ export const getNFreeIndexesFromYpoint = ({
   // If we couldn't find any free indexes above or below the yPoint, we just add more height, and place them below
   if (freeAboveIndexes === undefined && freeBelowIndexes === undefined) {
     return {
-      modifiedHeight: gridHeight + n * unitSize,
+      modifiedHeight: gridHeight + unitSize + n * unitSize,
       freeIndexes: getNPointsAboveYpoint({
-        fromY: gridHeight,
+        fromY: gridHeight + unitSize,
         unitSize,
         n,
       }),
@@ -247,6 +229,10 @@ export const getPathForConnection = ({
     grid.setVerticalUsedIndexWithHeight({
       yPoint: source.y,
       height: unitSize,
+      element: {
+        type: type,
+        id: element_id,
+      },
     });
 
     return path;
@@ -301,12 +287,39 @@ export const getPathForConnection = ({
   grid.setVerticalUsedIndexWithHeight({
     yPoint: source.y,
     height: unitSize,
+    element: {
+      type: type,
+      id: element_id,
+    },
   });
 
   grid.setVerticalUsedIndexWithHeight({
     yPoint: toY,
     height: unitSize,
+    element: {
+      type: type,
+      id: element_id,
+    },
   });
 
   return path;
+};
+
+export const getClearedVerticalIndexesForElement = ({
+  element,
+  verticalUsedIndexes,
+}: {
+  element: VerticalIndexElement;
+  verticalUsedIndexes: Columns;
+}) => {
+  const output: Columns = {};
+
+  Object.keys(verticalUsedIndexes).forEach((key) => {
+    const entry = verticalUsedIndexes[key];
+
+    if (entry.type !== element.type || entry.id !== element.id) {
+      output[key] = entry;
+    }
+  });
+  return output;
 };

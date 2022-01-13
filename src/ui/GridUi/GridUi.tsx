@@ -74,6 +74,20 @@ export const GridUi = ({
           })}
           {leftWires}
           {rightWires}
+          {
+            // Used for debugging verticalUsedIndexes
+            /* {Object.keys(grid.verticalUsedIndexes).map((key, i) => {
+            return (
+              <Rect
+                x={grid.leftSideWidth * Config.pixelsPerUnit}
+                y={parseInt(key) * Config.pixelsPerUnit}
+                width={1}
+                height={1 * Config.pixelsPerUnit}
+                fill={"#ff0000"}
+              />
+            );
+          })} */
+          }
         </Layer>
       </FiberConnectionContextProvider>
     </Stage>

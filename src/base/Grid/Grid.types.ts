@@ -50,3 +50,8 @@ export type ConnectionSegment = {
 export type LegType = PositionSize & {
   color: string;
 };
+
+export type VerticalIndexElement = {
+  type: "fiber" | "tube";
+  id: number;
+}

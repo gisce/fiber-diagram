@@ -1,6 +1,6 @@
 import { Config } from "base/Config";
 import { Tube } from "base/Tube";
-import { Grid, LegType, Position } from "base/Grid";
+import { Grid, LegType, Position, VerticalIndexElement } from "base/Grid";
 import { TubeConnectionApiType, TubeConnectionDataType } from ".";
 import { getPathForConnection, getUnitsForPath } from "utils/pathUtils";
 
@@ -13,7 +13,7 @@ export class TubeConnection {
     x: 0,
     y: 0,
   };
-  usedYpoints: { [key: number]: boolean } = {};
+  usedYpoints: { [key: number]: VerticalIndexElement } = {};
   onInitializeDone?: (connection: TubeConnection) => void;
 
   constructor({
@@ -169,14 +169,28 @@ export class TubeConnection {
     this.parentGrid.setVerticalUsedIndexWithHeight({
       yPoint: fusionYpoint1,
       height: Config.baseUnits.tube.height,
+      element: {
+        type: "tube",
+        id: tubeIn.id,
+      },
     });
+
     this.parentGrid.setVerticalUsedIndexWithHeight({
       yPoint: fusionYpoint2,
       height: Config.baseUnits.tube.height,
+      element: {
+        type: "tube",
+        id: tubeIn.id,
+      },
     });
+
     this.parentGrid.setVerticalUsedIndexWithHeight({
       yPoint: fusionYpoint3,
       height: Config.baseUnits.tube.height,
+      element: {
+        type: "tube",
+        id: tubeIn.id,
+      },
     });
 
     const centerUpperMiddleDot = getUnitsForPath({
