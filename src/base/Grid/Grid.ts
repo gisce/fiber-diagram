@@ -405,7 +405,7 @@ export class Grid {
   }) {
     this.verticalUsedIndexes[yPoint] = element;
 
-    for (let i = yPoint; i < yPoint + height - 1; i++) {
+    for (let i = yPoint; i < yPoint + height; i++) {
       this.verticalUsedIndexes[i] = element;
     }
   }
