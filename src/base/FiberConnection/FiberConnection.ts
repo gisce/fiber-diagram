@@ -199,10 +199,48 @@ export class FiberConnection {
       },
     });
 
+    let firstFiber: Fiber;
+    let secondFiber: Fiber;
+
+    if (fusionInYpoint1 === fiberIn.attr.position.y) {
+      firstFiber = fiberIn;
+    }
+
+    if (fusionYpoint3 === fiberIn.attr.position.y) {
+      secondFiber = fiberIn;
+    }
+
+    if (fusionInYpoint1 === fiberOut.attr.position.y) {
+      firstFiber = fiberOut;
+    }
+
+    if (fusionYpoint3 === fiberOut.attr.position.y) {
+      secondFiber = fiberOut;
+    }
+
+    if (!firstFiber) {
+      if (!secondFiber) {
+        firstFiber = fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut;
+      } else if (secondFiber === fiberIn) {
+        firstFiber = fiberOut;
+      } else if (secondFiber === fiberOut) {
+        firstFiber = fiberIn;
+      }
+    }
+
+    if (!secondFiber) {
+      if (!firstFiber) {
+        secondFiber = fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn;
+      } else if (firstFiber === fiberIn) {
+        secondFiber = fiberOut;
+      } else if (firstFiber === fiberOut) {
+        secondFiber = fiberIn;
+      }
+    }
+
     const centerUpperMiddleDot = getUnitsForPath({
       unitSize: Config.baseUnits.fiber.height,
-      color:
-        fusionInYpoint1 < fusionOutYpoint1 ? fiberIn.color : fiberOut.color,
+      color: firstFiber.color,
       path: [
         [
           this.parentGrid.leftSideWidth - Config.baseUnits.fiber.height / 2,
@@ -217,8 +255,7 @@ export class FiberConnection {
 
     const centerLowerMiddleDot = getUnitsForPath({
       unitSize: Config.baseUnits.fiber.height,
-      color:
-        fusionInYpoint1 < fusionOutYpoint1 ? fiberOut.color : fiberIn.color,
+      color: secondFiber.color,
       path: [
         [
           this.parentGrid.leftSideWidth - Config.baseUnits.fiber.height / 2,
@@ -226,8 +263,6 @@ export class FiberConnection {
         ],
       ],
     });
-
-    const firstFiber = fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut;
     const firstPath = getPathForConnection({
       source: firstFiber.attr.position,
       element_id: firstFiber.id,
@@ -236,8 +271,6 @@ export class FiberConnection {
       grid: this.parentGrid,
       toY: fusionYpoint1,
     });
-
-    const secondFiber = fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn;
 
     const secondPath = getPathForConnection({
       source: secondFiber.attr.position,
@@ -251,13 +284,13 @@ export class FiberConnection {
     const firstSegment = getUnitsForPath({
       unitSize: Config.baseUnits.fiber.height,
       path: firstPath,
-      color: (fusionInYpoint1 < fusionOutYpoint1 ? fiberIn : fiberOut).color,
+      color: firstFiber.color,
     });
 
     const secondSegment = getUnitsForPath({
       unitSize: Config.baseUnits.fiber.height,
       path: secondPath,
-      color: (fusionInYpoint1 < fusionOutYpoint1 ? fiberOut : fiberIn).color,
+      color: secondFiber.color,
     });
 
     return {
