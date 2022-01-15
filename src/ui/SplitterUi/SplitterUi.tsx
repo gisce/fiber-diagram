@@ -31,9 +31,8 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
       {splitter.fibersIn.map((splitterFiber, index) => {
         const sfOpts = convertAttrUnitsToPixels(splitterFiber.attr);
         return (
-          <Group>
+          <Group key={index}>
             <Rect
-              key={index}
               x={sfOpts.position.x}
               y={strokeWidth + opts.position.y + sfOpts.position.y}
               width={sfOpts.size.width}
@@ -72,9 +71,8 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
       {splitter.fibersOut.map((splitterFiber, index) => {
         const sfOpts = convertAttrUnitsToPixels(splitterFiber.attr);
         return (
-          <Group>
+          <Group key={index}>
             <Rect
-              key={index}
               x={sfOpts.position.x}
               y={strokeWidth + opts.position.y + sfOpts.position.y}
               width={sfOpts.size.width}
