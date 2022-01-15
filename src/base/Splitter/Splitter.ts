@@ -60,8 +60,10 @@ export class Splitter {
     this.attr.position = {
       x: this.parentGrid.leftSideWidth,
       y:
-        this.parentGrid.getVerticalConnectionsHeight() +
-        previousSibilingsHeight,
+        Math.max(
+          this.parentGrid.getCurrentWiresHeight(),
+          this.parentGrid.getVerticalConnectionsHeight()
+        ) + previousSibilingsHeight,
     };
 
     this.fibersIn = this.calculateFibersPositions(this.fibers_in, "LEFT");

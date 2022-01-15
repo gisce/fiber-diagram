@@ -180,6 +180,9 @@ export class Grid {
       this.fiberConnections.forEach((connection) =>
         connection.calculatePositionSize()
       );
+    } else {
+      this.placeSplitters();
+      this.onChangeIfNeeded();
     }
   }
 
