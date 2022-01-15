@@ -19,7 +19,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
 
   const rightFiber = fiber.parentTube.parentWire.disposition === "RIGHT";
 
-  const FiberIsConnected =
+  const fiberIsConnected =
     fiber.parentTube.parentWire.parentGrid.getConnectionForFiberId(fiber.id) !==
     undefined;
 
@@ -54,7 +54,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
         strokeWidth={0.5}
         stroke={"#000000"}
       />
-      {!FiberIsConnected && (
+      {!fiberIsConnected && (
         <Circle
           x={opts.position.x + opts.size.width * (rightFiber ? 0 : 1)}
           y={opts.position.y + connectorRadius}

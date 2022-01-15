@@ -28,5 +28,16 @@ export const sanitize = (input: any) => {
     };
   });
 
+  output.res.elements.splitters = input.res.elements.splitters?.map(
+    (splitter: any) => {
+      const { id, fibers_in, fibers_out } = splitter;
+      return {
+        id,
+        fibers_in,
+        fibers_out,
+      };
+    }
+  );
+
   return output;
 };

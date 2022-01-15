@@ -7,6 +7,7 @@ import { FiberConnectionUi } from "ui/FiberConnectionUi/FiberConnectionUi";
 import { FiberConnectionContextProvider } from "ui/FiberConnectionUi/FiberConnectionContext";
 import { sanitize } from "utils/sanitizer";
 import { TubeConnectionUi } from "ui/TubeConnectionUi/TubeConnectionUi";
+import { SplitterUi } from "ui/SplitterUi/SplitterUi";
 
 export const GridUi = ({
   inputJson,
@@ -66,6 +67,7 @@ export const GridUi = ({
             height={grid.size.height * Config.pixelsPerUnit}
             fill={"#cccccc"}
           />
+
           {grid.tubeConnections?.map((connection, i) => {
             return <TubeConnectionUi key={i} connection={connection} />;
           })}
@@ -75,19 +77,22 @@ export const GridUi = ({
           {leftWires}
           {rightWires}
           {
-            // Used for debugging verticalUsedIndexes
-            /* {Object.keys(grid.verticalUsedIndexes).map((key, i) => {
-            return (
-              <Rect
-                x={grid.leftSideWidth * Config.pixelsPerUnit}
-                y={parseInt(key) * Config.pixelsPerUnit}
-                width={1}
-                height={1 * Config.pixelsPerUnit}
-                fill={"#ff0000"}
-              />
-            );
-          })} */
+            // For debugging purposes
+            // Object.keys(grid.verticalUsedIndexes).map((key, i) => {
+            //   return (
+            //     <Rect
+            //       x={grid.leftSideWidth * Config.pixelsPerUnit}
+            //       y={parseInt(key) * Config.pixelsPerUnit}
+            //       width={1}
+            //       height={1 * Config.pixelsPerUnit}
+            //       fill={"#ff0000"}
+            //     />
+            //   );
+            // })
           }
+          {grid.splitters?.map((splitter) => {
+            return <SplitterUi key={splitter.id} splitter={splitter} />;
+          })}
         </Layer>
       </FiberConnectionContextProvider>
     </Stage>

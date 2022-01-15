@@ -1,4 +1,5 @@
-import { FiberConnection, FiberConnectionApiType } from "base/FiberConnection";
+import { FiberConnectionApiType } from "base/FiberConnection";
+import { SplitterApiType } from "base/Splitter/Splitter.types";
 import { WireApiType, WireDataType } from "base/Wire";
 
 export type GridType<T> = {
@@ -7,6 +8,7 @@ export type GridType<T> = {
     name?: string;
     elements?: {
       wires?: T;
+      splitters?: SplitterApiType[];
     };
     connections?: ConnectionsApiType;
     leftUsedSpace?: number;
@@ -54,4 +56,4 @@ export type LegType = PositionSize & {
 export type VerticalIndexElement = {
   type: "fiber" | "tube";
   id: number;
-}
+};

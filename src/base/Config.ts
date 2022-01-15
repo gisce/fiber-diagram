@@ -10,4 +10,5 @@ export const Config = {
   pixelsPerUnit: 10,
   growHorizontalFactor: 0.5,
   angleSeparatorFactor: 2.5,
+  splitterWidth: 2,
 };

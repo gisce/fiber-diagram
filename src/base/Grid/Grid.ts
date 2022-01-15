@@ -20,6 +20,7 @@ import {
   getClearedVerticalIndexesForElement,
 } from "utils/pathUtils";
 import { Fiber } from "base/Fiber";
+import { Splitter } from "base/Splitter";
 
 export class Grid {
   id: number;
@@ -39,6 +40,7 @@ export class Grid {
   tubeConnections?: TubeConnection[] = [];
   leftUsedSpace: number = 0;
   rightUsedSpace: number = 0;
+  splitters: Splitter[] = [];
 
   constructor({
     input,
@@ -181,6 +183,31 @@ export class Grid {
     }
   }
 
+  placeSplitters() {
+    if (this.initialData.res?.elements?.splitters) {
+      this.splitters = this.initialData.res?.elements?.splitters.map(
+        (splitter) => {
+          const { id, fibers_in, fibers_out } = splitter;
+
+          return new Splitter({
+            id,
+            fibers_in,
+            fibers_out,
+            parentGrid: this,
+          });
+        }
+      );
+
+      this.splitters.forEach((splitter) => {
+        splitter.calculateSize();
+      });
+    }
+
+    if (this.splitters.length === 0) {
+      return;
+    }
+  }
+
   onChangeIfNeeded() {
     const initialData = this.initialData;
     const thisJson = {
@@ -203,6 +230,7 @@ export class Grid {
           wires: this.leftWires
             .concat(this.rightWires)
             .map((wire) => wire.getApiJson()),
+          splitters: this.splitters.map((splitter) => splitter.getApiJson()),
         },
         connections: {
           fibers: this.fiberConnections.map((connection) =>
@@ -222,6 +250,7 @@ export class Grid {
           wires: this.leftWires
             .concat(this.rightWires)
             .map((wire) => wire.getJson()),
+          splitters: this.splitters.map((splitter) => splitter.getJson()),
         },
         connections: {
           fibers: this.fiberConnections.map((connection) =>
@@ -333,6 +362,7 @@ export class Grid {
     if (
       this.fiberConnectionsInitialized.length === this.fiberConnections.length
     ) {
+      this.placeSplitters();
       this.onChangeIfNeeded();
     }
   }
@@ -411,10 +441,18 @@ export class Grid {
   }
 
   getHeight() {
-    return Math.max(
-      this.getCurrentWiresHeight(),
-      this.getVerticalConnectionsHeight()
+    return (
+      Math.max(
+        this.getCurrentWiresHeight(),
+        this.getVerticalConnectionsHeight()
+      ) + this.getSplittersHeight()
     );
+  }
+
+  getSplittersHeight() {
+    return this.splitters.reduce((acc, splitter) => {
+      return acc + splitter.attr.size.height;
+    }, 0);
   }
 
   getCurrentWiresHeight() {
@@ -432,7 +470,7 @@ export class Grid {
   getVerticalConnectionsHeight() {
     const yPoints: number[] = Object.keys(this.verticalUsedIndexes)
       .filter((entry) => {
-        return this.verticalUsedIndexes[entry] === true;
+        return this.verticalUsedIndexes[entry] !== undefined;
       })
       .map((pointKey: string) => {
         return parseInt(pointKey, 10);
