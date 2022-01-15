@@ -7,6 +7,8 @@ import eight from "examples/8.json";
 import nine from "examples/9.json";
 import ten from "examples/10.json";
 import simpleConnections from "examples/simpleConnections.json";
+import basic1Splitter from "examples/basic1Splitter.json";
+import basic2Splitter from "examples/basic2Splitter.json";
 
 export default {
   title: "Components/GridUi",
@@ -29,3 +31,9 @@ Ten.args = { inputJson: JSON.stringify(ten) };
 
 export const SimpleConnections = Template.bind({});
 SimpleConnections.args = { inputJson: JSON.stringify(simpleConnections) };
+
+export const BasicW1Splitter = Template.bind({});
+BasicW1Splitter.args = { inputJson: JSON.stringify(basic1Splitter) };
+
+export const BasicW2Splitter = Template.bind({});
+BasicW2Splitter.args = { inputJson: JSON.stringify(basic2Splitter) };
