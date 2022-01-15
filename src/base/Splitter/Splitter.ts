@@ -8,7 +8,7 @@ export class Splitter {
   fibers_in: FiberApiType[] = [];
   fibers_out: FiberApiType[] = [];
   attr?: PositionSize = { ...InitialPositionSize };
-  orientation?: "LEFT" | "RIGHT";
+  orientation?: "LEFT" | "RIGHT" = "LEFT";
   parentGrid: Grid;
   fibersIn?: SplitterFiberDataType[] = [];
   fibersOut?: SplitterFiberDataType[] = [];
@@ -66,8 +66,16 @@ export class Splitter {
         ) + previousSibilingsHeight,
     };
 
-    this.fibersIn = this.calculateFibersPositions(this.fibers_in, "LEFT");
-    this.fibersOut = this.calculateFibersPositions(this.fibers_out, "RIGHT");
+    this.fibersIn = this.calculateFibersPositions(this.fibers_out, "LEFT");
+    this.fibersOut = this.calculateFibersPositions(this.fibers_in, "RIGHT");
+
+    if (this.orientation === "LEFT") {
+      this.fibersIn = this.calculateFibersPositions(this.fibers_in, "LEFT");
+      this.fibersOut = this.calculateFibersPositions(this.fibers_out, "RIGHT");
+    } else {
+      this.fibersIn = this.calculateFibersPositions(this.fibers_out, "LEFT");
+      this.fibersOut = this.calculateFibersPositions(this.fibers_in, "RIGHT");
+    }
   }
 
   calculateFibersPositions(fibersData: FiberApiType[], side: "LEFT" | "RIGHT") {
