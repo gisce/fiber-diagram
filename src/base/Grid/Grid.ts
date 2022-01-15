@@ -11,7 +11,7 @@ import {
   Size,
   VerticalIndexElement,
 } from "./Grid.types";
-import { isEqual } from "lodash";
+import { isEqual, reduce } from "lodash";
 import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
 import {
@@ -21,6 +21,11 @@ import {
 } from "utils/pathUtils";
 import { Fiber } from "base/Fiber";
 import { Splitter } from "base/Splitter";
+import {
+  SplitterConnection,
+  SplitterConnectionApiType,
+  SplitterConnectionDataType,
+} from "base/SplitterConnection";
 
 export class Grid {
   id: number;
@@ -36,11 +41,13 @@ export class Grid {
   fiberConnections?: FiberConnection[] = [];
   verticalUsedIndexes: Columns = {};
   fiberConnectionsInitialized: FiberConnectionApiType[] = [];
+  splitterConnectionsInitialized: SplitterConnectionApiType[] = [];
   initialData: GridDataType;
   tubeConnections?: TubeConnection[] = [];
   leftUsedSpace: number = 0;
   rightUsedSpace: number = 0;
   splitters: Splitter[] = [];
+  splitterConnections?: SplitterConnection[] = [];
 
   constructor({
     input,
@@ -95,15 +102,20 @@ export class Grid {
     const connectionsData = input.res.connections?.fibers;
     if (connectionsData) {
       // We add our connections
-      connectionsData.forEach((connection) => {
-        this.fiberConnections.push(
-          new FiberConnection({
-            data: connection,
-            parentGrid: this,
-            onInitializeDone: this.onFiberConnectionInitialized.bind(this),
-          })
-        );
-      });
+      connectionsData
+        .filter((connection) => {
+          // We ensure the connection doesn't have any in or out in splitters
+          return this.getSplitterFiberIdForConnection(connection) === undefined;
+        })
+        .forEach((connection) => {
+          this.fiberConnections.push(
+            new FiberConnection({
+              data: connection,
+              parentGrid: this,
+              onInitializeDone: this.onFiberConnectionInitialized.bind(this),
+            })
+          );
+        });
     }
 
     // We add our wires
@@ -209,6 +221,22 @@ export class Grid {
     if (this.splitters.length === 0) {
       return;
     }
+
+    const connectionsData = this.initialData.res.connections?.fibers;
+    connectionsData
+      .filter((connection) => {
+        // We ensure the connection is a in or out for a splitter
+        return this.getSplitterFiberIdForConnection(connection) !== undefined;
+      })
+      .forEach((connection) => {
+        this.splitterConnections.push(
+          new SplitterConnection({
+            data: connection,
+            parentGrid: this,
+            onInitializeDone: this.onSplitterConnectionInitialized.bind(this),
+          })
+        );
+      });
   }
 
   onChangeIfNeeded() {
@@ -427,6 +455,94 @@ export class Grid {
     this.onChangeIfNeeded();
   }
 
+  addSplitterConnection(connection: SplitterConnectionApiType) {
+    const newConnection = new SplitterConnection({
+      data: connection,
+      parentGrid: this,
+      onInitializeDone: (conn: SplitterConnection) => {
+        this.onSplitterConnectionInitialized(conn);
+        this.onChangeIfNeeded();
+      },
+    });
+    this.splitterConnections.push(newConnection);
+    newConnection.calculatePositionSize();
+  }
+
+  onSplitterConnectionInitialized(connection: SplitterConnection) {
+    const exists = this.splitterConnectionsInitialized.find((conn) => {
+      return (
+        conn.fiber_in === connection.fiber_in &&
+        conn.fiber_out === connection.fiber_out
+      );
+    });
+
+    if (!exists) {
+      this.splitterConnectionsInitialized.push({
+        fiber_in: connection.fiber_in,
+        fiber_out: connection.fiber_out,
+      });
+    }
+
+    const height: number = this.getHeight();
+    if (this.size.height < height) {
+      this.size.height = height;
+    }
+
+    if (
+      this.splitterConnectionsInitialized.length ===
+      this.splitterConnections.length
+    ) {
+      this.onChangeIfNeeded();
+    }
+  }
+
+  removeSplitterConnection(connection: SplitterConnectionDataType) {
+    this.verticalUsedIndexes = getClearedVerticalIndexesForElement({
+      element: {
+        type: "fiber",
+        id: connection.fiber_in,
+      },
+      verticalUsedIndexes: this.verticalUsedIndexes,
+    });
+    this.verticalUsedIndexes = getClearedVerticalIndexesForElement({
+      element: {
+        type: "fiber",
+        id: connection.fiber_out,
+      },
+      verticalUsedIndexes: this.verticalUsedIndexes,
+    });
+
+    this.splitterConnections = this.splitterConnections.filter((conn) => {
+      let fiberId: number;
+
+      if (conn.fiber_in === connection.fiber_in) {
+        fiberId = conn.fiber_in;
+      }
+
+      if (conn.fiber_out === connection.fiber_out) {
+        fiberId = conn.fiber_out;
+      }
+
+      // const fiber: Fiber = this.getFiberById(fiberId);
+      // if (fiber) {
+      //   if (fiber.parentTube.parentWire.disposition === "LEFT") {
+      //     this.leftUsedSpace -=
+      //       Config.baseUnits.fiber.height * Config.angleSeparatorFactor;
+      //   } else {
+      //     this.rightUsedSpace -=
+      //       Config.baseUnits.fiber.height * Config.angleSeparatorFactor;
+      //   }
+      // }
+
+      return (
+        conn.fiber_in !== connection.fiber_in &&
+        conn.fiber_out !== connection.fiber_out
+      );
+    });
+
+    this.onChangeIfNeeded();
+  }
+
   setVerticalUsedIndexWithHeight({
     yPoint,
     height,
@@ -560,5 +676,29 @@ export class Grid {
     });
 
     return connectedPairTubes;
+  }
+
+  getSplitterFiberIdForConnection(connection: FiberConnectionApiType) {
+    const allSplitterFibers = [];
+
+    if (!this.initialData.res.elements.splitters) {
+      return undefined;
+    }
+
+    this.initialData.res.elements.splitters.forEach((splitter) => {
+      allSplitterFibers.push(...splitter.fibers_in);
+      allSplitterFibers.push(...splitter.fibers_out);
+    });
+
+    const splitterFiberFound = allSplitterFibers.find(
+      (conn) =>
+        conn.id === connection.fiber_in || conn.id === connection.fiber_out
+    );
+
+    if (splitterFiberFound) {
+      return splitterFiberFound.id;
+    } else {
+      return undefined;
+    }
   }
 }

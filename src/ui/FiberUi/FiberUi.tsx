@@ -27,7 +27,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
     (Config.baseUnits.fiber.height * Config.pixelsPerUnit) / 2;
 
   function getStrokeColor() {
-    if (fiber_in?.id === fiber.id) {
+    if (fiber_in === fiber.id) {
       return "#ff0000";
     }
     return "#000000";
@@ -75,14 +75,14 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
             container.style.cursor = "default";
 
             if (fiber_in === undefined) {
-              setFiberIn(fiber);
+              setFiberIn(fiber.id);
             } else if (
               fiber_out === undefined &&
               fiber_in !== undefined &&
-              fiber_in.id !== fiber.id
+              fiber_in !== fiber.id
             ) {
               fiber.parentTube.parentWire.parentGrid.addFiberConnection({
-                fiber_in: fiber_in.id,
+                fiber_in: fiber_in,
                 fiber_out: fiber.id,
               });
               setFiberIn(undefined);

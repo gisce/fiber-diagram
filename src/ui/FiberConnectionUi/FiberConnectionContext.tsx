@@ -2,10 +2,10 @@ import { Fiber } from "base/Fiber";
 import React from "react";
 
 export type FiberConnectionContextType = {
-  fiber_in: Fiber | undefined;
-  fiber_out: Fiber | undefined;
-  setFiberIn: (fiber: Fiber | undefined) => void;
-  setFiberOut: (fiber: Fiber | undefined) => void;
+  fiber_in: number | undefined;
+  fiber_out: number | undefined;
+  setFiberIn: (fiber: number | undefined) => void;
+  setFiberOut: (fiber: number | undefined) => void;
 };
 
 export const FiberConnectionContext =
@@ -19,8 +19,10 @@ export const FiberConnectionContextProvider = (
   props: FiberConnectionContextProps
 ): any => {
   const { children } = props;
-  const [fiber_in, setFiberIn] = React.useState<Fiber | undefined>(undefined);
-  const [fiber_out, setFiberOut] = React.useState<Fiber | undefined>(undefined);
+  const [fiber_in, setFiberIn] = React.useState<number | undefined>(undefined);
+  const [fiber_out, setFiberOut] = React.useState<number | undefined>(
+    undefined
+  );
 
   return (
     <FiberConnectionContext.Provider
