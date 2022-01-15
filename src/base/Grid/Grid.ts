@@ -264,9 +264,14 @@ export class Grid {
           splitters: this.splitters.map((splitter) => splitter.getApiJson()),
         },
         connections: {
-          fibers: this.fiberConnections.map((connection) =>
-            connection.getApiJson()
-          ),
+          fibers: [
+            ...this.fiberConnections.map((connection) =>
+              connection.getApiJson()
+            ),
+            ...this.splitterConnections.map((connection) =>
+              connection.getApiJson()
+            ),
+          ],
         },
       },
     };
@@ -284,9 +289,12 @@ export class Grid {
           splitters: this.splitters.map((splitter) => splitter.getJson()),
         },
         connections: {
-          fibers: this.fiberConnections.map((connection) =>
-            connection.getJson()
-          ),
+          fibers: [
+            ...this.fiberConnections.map((connection) => connection.getJson()),
+            ...this.splitterConnections.map((connection) =>
+              connection.getJson()
+            ),
+          ],
         },
         leftUsedSpace: this.leftUsedSpace,
         rightUsedSpace: this.rightUsedSpace,
@@ -319,6 +327,15 @@ export class Grid {
     return this.fiberConnections.find((fiberConnection) => {
       return (
         fiberConnection.fiber_in === id || fiberConnection.fiber_out === id
+      );
+    });
+  }
+
+  getSplitterConnectionForFiberId(id: number) {
+    return this.splitterConnections.find((splitterConnection) => {
+      return (
+        splitterConnection.fiber_in === id ||
+        splitterConnection.fiber_out === id
       );
     });
   }

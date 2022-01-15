@@ -16,7 +16,9 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
   ) as FiberConnectionContextType;
 
   const fiberIsConnected = (fiberId: number) => {
-    return splitter.parentGrid.getConnectionForFiberId(fiberId) !== undefined;
+    return (
+      splitter.parentGrid.getSplitterConnectionForFiberId(fiberId) !== undefined
+    );
   };
 
   function getStrokeColorForFiberId(fiberId: number) {
