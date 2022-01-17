@@ -21,10 +21,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
 
   const fiberIsConnected =
     fiber.parentTube.parentWire.parentGrid.getConnectionForFiberId(fiber.id) !==
-      undefined ||
-    fiber.parentTube.parentWire.parentGrid.getSplitterConnectionForFiberId(
-      fiber.id
-    ) !== undefined;
+    undefined;
 
   const connectorRadius =
     (Config.baseUnits.fiber.height * Config.pixelsPerUnit) / 2;

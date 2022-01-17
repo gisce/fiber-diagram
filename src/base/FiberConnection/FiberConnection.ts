@@ -55,28 +55,32 @@ export class FiberConnection {
       // throw `Fiber with id ${this.fiber_out} not found`;
     }
 
-    if (!fiberIn.parentTube.expanded) {
+    if (fiberIn.parentTube && !fiberIn.parentTube.expanded) {
       this.onInitializeDone(this);
       return;
     }
 
-    const getLegsFn =
-      fiberIn.parentTube.parentWire.disposition ===
-      fiberOut.parentTube.parentWire.disposition
-        ? this.getSameSideLegs.bind(this)
-        : this.getLeftToRightLegs.bind(this);
+    if (fiberIn.parentTube === undefined || fiberOut.parentTube === undefined) {
+    } else {
+      const getLegsFn =
+        fiberIn.parentTube &&
+        fiberIn.parentTube.parentWire.disposition ===
+          fiberOut.parentTube.parentWire.disposition
+          ? this.getSameSideLegs.bind(this)
+          : this.getLeftToRightLegs.bind(this);
 
-    const { legs, center } = getLegsFn({
-      fiberIn,
-      fiberOut,
-    });
+      const { legs, center } = getLegsFn({
+        fiberIn,
+        fiberOut,
+      });
 
-    this.legs = [...legs];
+      this.legs = [...legs];
 
-    this.center = {
-      x: this.parentGrid.leftSideWidth,
-      y: center,
-    };
+      this.center = {
+        x: this.parentGrid.leftSideWidth,
+        y: center,
+      };
+    }
 
     this.onInitializeDone(this);
   }

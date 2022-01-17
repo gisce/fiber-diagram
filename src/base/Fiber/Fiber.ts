@@ -8,7 +8,8 @@ export class Fiber {
   name: string;
   color: string;
   attr?: PositionSize;
-  parentTube: Tube;
+  parentTube?: Tube;
+  parentSplitter?: Tube;
   index: number;
   initialized: boolean = false;
   onSizingDone?: (fiber: Fiber) => void;
@@ -17,18 +18,21 @@ export class Fiber {
   constructor({
     data,
     parentTube,
+    parentSplitter,
     index,
     onSizingDone,
     onPositioningDone,
   }: {
     data: FiberDataType;
     parentTube: Tube;
+    parentSplitter?: Tube;
     index: number;
     onSizingDone?: (fiber: Fiber) => void;
     onPositioningDone?: (fiber: Fiber) => void;
   }) {
     this.attr = { ...InitialPositionSize };
     this.parentTube = parentTube;
+    this.parentSplitter = parentSplitter;
     this.index = index;
     this.onSizingDone = onSizingDone;
     this.onPositioningDone = onPositioningDone;
@@ -55,6 +59,14 @@ export class Fiber {
   }
 
   calculatePosition() {
+    if (this.parentTube) {
+      this.calculatePositionForParentTube();
+    } else {
+      this.calculatePositionForParentSplitter();
+    }
+  }
+
+  calculatePositionForParentTube() {
     const parentPosition = this.parentTube.attr.position;
     const disposition = this.parentTube.parentWire.disposition;
 
@@ -88,6 +100,8 @@ export class Fiber {
     this.initialized = true;
     this.onPositioningDone?.(this);
   }
+
+  calculatePositionForParentSplitter() {}
 
   onChangeIfNeeded() {
     if (!this.initialized) {
