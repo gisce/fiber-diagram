@@ -14,22 +14,18 @@ export class FiberConnection {
     y: 0,
   };
   usedYpoints: { [key: number]: boolean } = {};
-  onInitializeDone?: (connection: FiberConnection) => void;
 
   constructor({
     data,
     parentGrid,
-    onInitializeDone,
   }: {
     data: FiberConnectionDataType;
     parentGrid: Grid;
-    onInitializeDone?: (connection: FiberConnection) => void;
   }) {
     const { fiber_in, fiber_out } = data;
     this.fiber_in = fiber_in;
     this.fiber_out = fiber_out;
     this.parentGrid = parentGrid;
-    this.onInitializeDone = onInitializeDone;
   }
 
   calculatePositionSize() {
@@ -42,21 +38,18 @@ export class FiberConnection {
     );
 
     if (!fiberIn) {
-      this.onInitializeDone?.(this);
       return;
       // TODO: throw error when splitters are implemented.
       // throw `Fiber with id ${this.fiber_in} not found`;
     }
 
     if (!fiberOut) {
-      this.onInitializeDone?.(this);
       return;
       // TODO: throw error when splitters are implemented.
       // throw `Fiber with id ${this.fiber_out} not found`;
     }
 
     if (fiberIn.parentTube && !fiberIn.parentTube.expanded) {
-      this.onInitializeDone?.(this);
       return;
     }
 
@@ -82,8 +75,6 @@ export class FiberConnection {
         y: center,
       };
     }
-
-    this.onInitializeDone?.(this);
   }
 
   getLeftToRightLegs({

@@ -92,7 +92,6 @@ export class Grid {
     // First, we add the connections. We must do this before adding the wires, because we need to know which wires will be collapsed
     const connectionsData = input.res.connections?.fibers;
     if (connectionsData) {
-      // We add our connections
       connectionsData.forEach((connection) => {
         this.fiberConnections.push(
           new FiberConnection({
@@ -105,7 +104,6 @@ export class Grid {
 
     // We add our wires
     wiresData.forEach((wire: WireDataType) => this.addWire(wire));
-
     this.leftWires.concat(this.rightWires).forEach(function (wire: Wire) {
       wire.calculateSize();
       wire.calculatePosition();
@@ -114,6 +112,7 @@ export class Grid {
     this.placeSplitters();
     this.drawConnections();
 
+    // We recalculate the height of the grid because wires and fibers may have changed it
     const newHeight: number = this.getHeight();
     if (this.size.height < newHeight) {
       this.size.height = newHeight;
