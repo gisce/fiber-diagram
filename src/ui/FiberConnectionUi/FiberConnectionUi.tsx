@@ -33,11 +33,13 @@ export const FiberConnectionUi = ({
     return null;
   }
 
-  const expandedFiberIn = fiber_in.parentTube && fiber_in.parentTube.expanded;
-  const expandedFiberOut =
-    fiber_out.parentTube && fiber_out.parentTube.expanded;
+  const expandedFiberIn = fiber_in.parentTube?.expanded;
+  const expandedFiberOut = fiber_out.parentTube?.expanded;
 
-  if (!expandedFiberIn || !expandedFiberOut) {
+  if (
+    (fiber_in.parentTube && !expandedFiberIn) ||
+    (fiber_out.parentTube && !expandedFiberOut)
+  ) {
     return null;
   }
 

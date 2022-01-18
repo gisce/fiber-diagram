@@ -237,8 +237,8 @@ export class Grid {
     }
 
     this.splitters.forEach((splitter) => {
-      allFibers.push(...splitter.fibers_in);
-      allFibers.push(...splitter.fibers_out);
+      allFibers.push(...splitter.fibersIn);
+      allFibers.push(...splitter.fibersOut);
     });
 
     return allFibers;
@@ -331,7 +331,7 @@ export class Grid {
       const fiber: Fiber = this.getFiberById(fiberId);
 
       if (fiber) {
-        if (fiber.parentTube.parentWire.disposition === "LEFT") {
+        if (fiber.parentTube?.parentWire.disposition === "LEFT") {
           this.leftUsedSpace -=
             Config.baseUnits.fiber.height * Config.angleSeparatorFactor;
         } else {

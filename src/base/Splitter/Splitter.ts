@@ -83,7 +83,7 @@ export class Splitter {
   getFibers(fibersData: FiberDataType[], side: "LEFT" | "RIGHT") {
     return fibersData.map((fiberEntry, index) => {
       return new Fiber({
-        data: fiberEntry,
+        data: { ...fiberEntry, color: "#555555" },
         parentSplitter: this,
         splitterFiberSide: side,
         splitterSibilings: fibersData,

@@ -28,8 +28,6 @@ export class Fiber {
     parentTube?: Tube;
     parentSplitter?: Splitter;
     index: number;
-    onSizingDone?: (fiber: Fiber) => void;
-    onPositioningDone?: (fiber: Fiber) => void;
     splitterFiberSide?: "LEFT" | "RIGHT";
     splitterSibilings?: FiberApiType[];
   }) {
@@ -125,8 +123,8 @@ export class Fiber {
 
     this.attr = {
       position: {
-        x,
-        y,
+        x: x,
+        y: y + this.parentSplitter.attr.position.y,
       },
       size: {
         width: Config.baseUnits.fiber.width,

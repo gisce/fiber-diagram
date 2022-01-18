@@ -46,7 +46,6 @@ export class Wire {
     this.disposition = disposition;
     this.expanded = expanded;
 
-    // We add our fibers and expect each one to call onSizingDone to start sizing ourselves later.
     tubesData.forEach((tubeData: TubeDataType) => this.addTube(tubeData));
   }
 

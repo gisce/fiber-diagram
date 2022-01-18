@@ -40,7 +40,6 @@ export class Tube {
     this.color = color;
     this.expanded = expanded;
 
-    // We add our fibers and expect each one to call onSizingDone to start sizing ourselves later.
     fibersData.forEach((fiberData) => this.addFiber(fiberData));
   }
 

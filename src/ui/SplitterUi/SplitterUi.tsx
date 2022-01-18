@@ -38,7 +38,7 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
         x={
           opts.position.x + Config.baseUnits.fiber.width * Config.pixelsPerUnit
         }
-        y={strokeWidth + opts.position.y}
+        y={opts.position.y}
         width={Config.splitterWidth * Config.pixelsPerUnit}
         height={opts.size.height}
         fill={"#d0d0d0"}
@@ -52,20 +52,15 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
           <Group key={index}>
             <Rect
               x={sfOpts.position.x}
-              y={strokeWidth + opts.position.y + sfOpts.position.y}
+              y={sfOpts.position.y}
               width={sfOpts.size.width}
               height={sfOpts.size.height}
               fill={"#555555"}
             />
             {!fiberIsConnected(splitterFiber.id) && (
               <Circle
-                x={connectorRadius + sfOpts.position.x}
-                y={
-                  strokeWidth +
-                  opts.position.y +
-                  sfOpts.position.y +
-                  connectorRadius
-                }
+                x={sfOpts.position.x}
+                y={sfOpts.position.y + connectorRadius}
                 radius={connectorRadius}
                 fill={"#FFff1F"}
                 stroke={getStrokeColorForFiberId(splitterFiber.id)}
@@ -108,20 +103,15 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
           <Group key={index}>
             <Rect
               x={sfOpts.position.x}
-              y={strokeWidth + opts.position.y + sfOpts.position.y}
+              y={sfOpts.position.y}
               width={sfOpts.size.width}
               height={sfOpts.size.height}
               fill={"#555555"}
             />
             {!fiberIsConnected(splitterFiber.id) && (
               <Circle
-                x={sfOpts.position.x + sfOpts.size.width - connectorRadius}
-                y={
-                  strokeWidth +
-                  opts.position.y +
-                  sfOpts.position.y +
-                  connectorRadius
-                }
+                x={sfOpts.position.x + sfOpts.size.width}
+                y={sfOpts.position.y + connectorRadius}
                 radius={connectorRadius}
                 fill={"#FFff1F"}
                 stroke={getStrokeColorForFiberId(splitterFiber.id)}

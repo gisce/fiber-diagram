@@ -54,7 +54,17 @@ export class FiberConnection {
     }
 
     if (fiberIn.parentTube === undefined || fiberOut.parentTube === undefined) {
-      // TODO: implement algorithm
+      const { legs, center } = this.getLeftToRightLegsSplitter({
+        fiberIn,
+        fiberOut,
+      });
+
+      this.legs = [...legs];
+
+      this.center = {
+        x: this.parentGrid.leftSideWidth,
+        y: center,
+      };
     } else {
       const getLegsFn =
         fiberIn.parentTube &&
@@ -122,6 +132,36 @@ export class FiberConnection {
             disposition: fiberOut.parentTube.parentWire.disposition,
           }),
           color: fiberOut.color,
+          unitSize: Config.baseUnits.fiber.height,
+        }),
+      ],
+      center: fusionYpoint,
+    };
+  }
+
+  getLeftToRightLegsSplitter({
+    fiberIn,
+    fiberOut,
+  }: {
+    fiberIn: Fiber;
+    fiberOut: Fiber;
+  }) {
+    // First, we determine which fusion point of the middle of the grid (connection place) is free
+
+    const fusionYpoint: number = fiberOut.attr.position.y;
+
+    return {
+      legs: [
+        ...getUnitsForPath({
+          path: getPathForConnection({
+            source: fiberIn.attr.position,
+            disposition: "LEFT",
+            element_id: fiberIn.id,
+            toY: fiberOut.attr.position.y,
+            type: "fiber",
+            grid: this.parentGrid,
+          }),
+          color: fiberIn.color,
           unitSize: Config.baseUnits.fiber.height,
         }),
       ],
