@@ -15,27 +15,19 @@ export class Wire {
   initialized: boolean = false;
   tubesSized: { [key: number]: boolean } = {};
   tubesPositioned: { [key: number]: boolean } = {};
-  onSizingDone: (wire: Wire) => void;
-  onPositioningDone: (wire: Wire) => void;
 
   constructor({
     data,
     parentGrid,
     index,
-    onSizingDone,
-    onPositioningDone,
   }: {
     data?: WireDataType;
     parentGrid: Grid;
     index: number;
-    onSizingDone?: (wire: Wire) => void;
-    onPositioningDone?: (wire: Wire) => void;
   }) {
     this.attr = { ...InitialPositionSize };
     this.index = index;
     this.parentGrid = parentGrid;
-    this.onSizingDone = onSizingDone;
-    this.onPositioningDone = onPositioningDone;
 
     if (!data) {
       this.initialized = true;
@@ -63,14 +55,16 @@ export class Wire {
       data: tubeData,
       parentWire: this,
       index: this.tubes.length,
-      onSizingDone: this.onTubeSizedDone.bind(this),
-      onPositioningDone: this.onTubePositionDone.bind(this),
     });
     this.tubes.push(tube);
     this.onChangeIfNeeded();
   }
 
   calculateSize() {
+    this.tubes.forEach(function (tube) {
+      tube.beginSizing();
+    });
+
     const usedChildrenHeight = this.tubes.reduce(
       (a, b) => a + b.attr.size.height,
       0
@@ -87,8 +81,6 @@ export class Wire {
       width: Config.baseUnits.wire.width,
       height: heightWithSeparation,
     };
-
-    this.onSizingDone?.(this);
   }
 
   calculatePosition() {
@@ -118,45 +110,10 @@ export class Wire {
 
     if (this.tubes.length === 0 || this.expanded === false) {
       this.initialized = true;
-      this.onPositioningDone?.(this);
       return;
     }
 
     this.tubes.forEach((tube) => tube.calculatePosition());
-  }
-
-  onTubeSizedDone(tube: Tube) {
-    if (Object.keys(this.tubesSized).length === this.tubes.length) {
-      return;
-    }
-
-    this.tubesSized[tube.id] = true;
-    if (Object.keys(this.tubesSized).length === this.tubes.length) {
-      this.calculateSize();
-    }
-  }
-
-  onTubePositionDone(tube: Tube) {
-    if (Object.keys(this.tubesPositioned).length === this.tubes.length) {
-      return;
-    }
-
-    this.tubesPositioned[tube.id] = true;
-    if (Object.keys(this.tubesPositioned).length === this.tubes.length) {
-      this.initialized = true;
-      this.onPositioningDone?.(this);
-    }
-  }
-
-  beginSizing() {
-    if (this.tubes.length === 0 || this.expanded === false) {
-      this.calculateSize();
-      return;
-    }
-
-    this.tubes.forEach(function (tube) {
-      tube.beginSizing();
-    });
   }
 
   onChangeIfNeeded() {

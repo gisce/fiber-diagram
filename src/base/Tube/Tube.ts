@@ -14,29 +14,19 @@ export class Tube {
   index: number;
   initialized: boolean = false;
   fibers?: Fiber[] = [];
-  fibersSized: { [key: string]: boolean } = {};
-  fibersPositioned: { [key: string]: boolean } = {};
-  onSizingDone?: (tube: Tube) => void;
-  onPositioningDone?: (tube: Tube) => void;
 
   constructor({
     data,
     parentWire,
     index,
-    onSizingDone,
-    onPositioningDone,
   }: {
     data: TubeDataType;
     parentWire: Wire;
     index: number;
-    onSizingDone?: (tube: Tube) => void;
-    onPositioningDone?: (tube: Tube) => void;
   }) {
     this.attr = { ...InitialPositionSize };
     this.parentWire = parentWire;
     this.index = index;
-    this.onSizingDone = onSizingDone;
-    this.onPositioningDone = onPositioningDone;
 
     if (!data) {
       this.initialized = true;
@@ -60,36 +50,9 @@ export class Tube {
         data: fiberData,
         parentTube: this,
         index: this.fibers.length,
-        onSizingDone: this.onFiberSizedDone.bind(this),
-        onPositioningDone: this.onFiberPositionedDone.bind(this),
       })
     );
     this.onChangeIfNeeded();
-  }
-
-  onFiberSizedDone(fiber: Fiber) {
-    if (Object.keys(this.fibersSized).length === this.fibers.length) {
-      return;
-    }
-
-    this.fibersSized[fiber.id] = true;
-
-    if (Object.keys(this.fibersSized).length === this.fibers.length) {
-      this.calculateSize();
-    }
-  }
-
-  onFiberPositionedDone(fiber: Fiber) {
-    if (Object.keys(this.fibersPositioned).length === this.fibers.length) {
-      return;
-    }
-
-    this.fibersPositioned[fiber.id] = true;
-
-    if (Object.keys(this.fibersPositioned).length === this.fibers.length) {
-      this.initialized = true;
-      this.onPositioningDone?.(this);
-    }
   }
 
   calculateSize() {
@@ -112,8 +75,6 @@ export class Tube {
       width: Config.baseUnits.tube.width,
       height: heightWithSeparation,
     };
-
-    this.onSizingDone?.(this);
   }
 
   calculatePosition() {
@@ -144,13 +105,14 @@ export class Tube {
 
     if (this.fibers.length === 0 || this.expanded === false) {
       this.initialized = true;
-      this.onPositioningDone?.(this);
       return;
     }
 
     this.fibers.forEach(function (fiber) {
       fiber.calculatePosition();
     });
+
+    this.initialized = true;
   }
 
   beginSizing() {
@@ -166,6 +128,8 @@ export class Tube {
     this.fibers.forEach(function (fiber) {
       fiber.calculateSize();
     });
+
+    this.calculateSize();
   }
 
   onChangeIfNeeded() {

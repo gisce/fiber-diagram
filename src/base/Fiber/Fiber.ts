@@ -13,8 +13,6 @@ export class Fiber {
   parentSplitter?: Splitter;
   index: number;
   initialized: boolean = false;
-  onSizingDone?: (fiber: Fiber) => void;
-  onPositioningDone?: (fiber: Fiber) => void;
   splitterFiberSide?: "LEFT" | "RIGHT";
   splitterSibilings?: FiberApiType[] = [];
 
@@ -23,8 +21,6 @@ export class Fiber {
     parentTube,
     parentSplitter,
     index,
-    onSizingDone,
-    onPositioningDone,
     splitterFiberSide,
     splitterSibilings,
   }: {
@@ -42,8 +38,6 @@ export class Fiber {
     this.parentSplitter = parentSplitter;
     this.splitterFiberSide = splitterFiberSide;
     this.index = index;
-    this.onSizingDone = onSizingDone;
-    this.onPositioningDone = onPositioningDone;
     this.splitterSibilings = splitterSibilings;
 
     if (!data) {
@@ -63,8 +57,6 @@ export class Fiber {
       width: Config.baseUnits.fiber.width,
       height: Config.baseUnits.fiber.height,
     };
-
-    this.onSizingDone?.(this);
   }
 
   calculatePosition() {
@@ -107,7 +99,6 @@ export class Fiber {
     };
 
     this.initialized = true;
-    this.onPositioningDone?.(this);
   }
 
   calculatePositionForParentSplitter() {

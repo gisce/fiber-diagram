@@ -76,6 +76,7 @@ export class Splitter {
 
     [...this.fibersIn, ...this.fibersOut].forEach((fiber) => {
       fiber.calculateSize();
+      fiber.calculatePosition();
     });
   }
 
@@ -87,9 +88,6 @@ export class Splitter {
         splitterFiberSide: side,
         splitterSibilings: fibersData,
         index: index,
-        onSizingDone: (fiber: Fiber) => {
-          fiber.calculatePosition();
-        },
       });
     });
   }

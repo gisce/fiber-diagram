@@ -42,21 +42,21 @@ export class FiberConnection {
     );
 
     if (!fiberIn) {
-      this.onInitializeDone(this);
+      this.onInitializeDone?.(this);
       return;
       // TODO: throw error when splitters are implemented.
       // throw `Fiber with id ${this.fiber_in} not found`;
     }
 
     if (!fiberOut) {
-      this.onInitializeDone(this);
+      this.onInitializeDone?.(this);
       return;
       // TODO: throw error when splitters are implemented.
       // throw `Fiber with id ${this.fiber_out} not found`;
     }
 
     if (fiberIn.parentTube && !fiberIn.parentTube.expanded) {
-      this.onInitializeDone(this);
+      this.onInitializeDone?.(this);
       return;
     }
 
@@ -83,7 +83,7 @@ export class FiberConnection {
       };
     }
 
-    this.onInitializeDone(this);
+    this.onInitializeDone?.(this);
   }
 
   getLeftToRightLegs({

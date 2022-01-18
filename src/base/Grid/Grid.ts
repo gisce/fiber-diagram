@@ -11,7 +11,7 @@ import {
   Size,
   VerticalIndexElement,
 } from "./Grid.types";
-import { isEqual, reduce } from "lodash";
+import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
 import {
@@ -31,11 +31,8 @@ export class Grid {
   leftWires: Wire[] = [];
   rightWires: Wire[] = [];
   onChange?: (grid: Grid) => void;
-  wiresSized: { [key: number]: boolean } = {};
-  wiresPositioned: { [key: number]: boolean } = {};
   fiberConnections?: FiberConnection[] = [];
   verticalUsedIndexes: Columns = {};
-  fiberConnectionsInitialized: FiberConnectionApiType[] = [];
   initialData: GridDataType;
   tubeConnections?: TubeConnection[] = [];
   leftUsedSpace: number = 0;
@@ -92,28 +89,37 @@ export class Grid {
       return;
     }
 
+    // First, we add the connections. We must do this before adding the wires, because we need to know which wires will be collapsed
     const connectionsData = input.res.connections?.fibers;
     if (connectionsData) {
       // We add our connections
-      connectionsData
-        .forEach((connection) => {
-          this.fiberConnections.push(
-            new FiberConnection({
-              data: connection,
-              parentGrid: this,
-              onInitializeDone: this.onFiberConnectionInitialized.bind(this),
-            })
-          );
-        });
+      connectionsData.forEach((connection) => {
+        this.fiberConnections.push(
+          new FiberConnection({
+            data: connection,
+            parentGrid: this,
+          })
+        );
+      });
     }
 
     // We add our wires
     wiresData.forEach((wire: WireDataType) => this.addWire(wire));
 
-    // And begin sizing them, expect each one to call onSizingDone to start sizing ourselves later.
     this.leftWires.concat(this.rightWires).forEach(function (wire: Wire) {
-      wire.beginSizing();
+      wire.calculateSize();
+      wire.calculatePosition();
     });
+
+    this.placeSplitters();
+    this.drawConnections();
+
+    const newHeight: number = this.getHeight();
+    if (this.size.height < newHeight) {
+      this.size.height = newHeight;
+    }
+
+    this.onChangeIfNeeded();
   }
 
   addWire(wireData: WireDataType) {
@@ -124,52 +130,8 @@ export class Grid {
         data: wireData,
         parentGrid: this,
         index: wires.length,
-        onSizingDone: this.onWireSizedDone.bind(this),
-        onPositioningDone: this.onWirePositionedDone.bind(this),
       })
     );
-  }
-
-  allWiresAreSized() {
-    this.leftWires.concat(this.rightWires).forEach(function (wire: Wire) {
-      wire.calculatePosition();
-    });
-  }
-
-  onWireSizedDone(wire: Wire) {
-    if (
-      Object.keys(this.wiresSized).length ===
-      this.leftWires.concat(this.rightWires).length
-    ) {
-      return;
-    }
-
-    this.wiresSized[wire.id] = true;
-
-    if (
-      Object.keys(this.wiresSized).length ===
-      this.leftWires.concat(this.rightWires).length
-    ) {
-      this.allWiresAreSized();
-    }
-  }
-
-  onWirePositionedDone(wire: Wire) {
-    if (
-      Object.keys(this.wiresPositioned).length ===
-      this.leftWires.concat(this.rightWires).length
-    ) {
-      return;
-    }
-
-    this.wiresPositioned[wire.id] = true;
-
-    if (
-      Object.keys(this.wiresPositioned).length ===
-      this.leftWires.concat(this.rightWires).length
-    ) {
-      this.placeSplitters();
-    }
   }
 
   drawConnections() {
@@ -182,8 +144,6 @@ export class Grid {
         connection.calculatePositionSize()
       );
     }
-
-    this.onChangeIfNeeded();
   }
 
   placeSplitters() {
@@ -205,8 +165,6 @@ export class Grid {
         splitter.calculateSize();
       });
     }
-
-    this.drawConnections();
   }
 
   onChangeIfNeeded() {
@@ -237,7 +195,7 @@ export class Grid {
           fibers: [
             ...this.fiberConnections.map((connection) =>
               connection.getApiJson()
-            )
+            ),
           ],
         },
       },
@@ -338,40 +296,10 @@ export class Grid {
     const newConnection = new FiberConnection({
       data: connection,
       parentGrid: this,
-      onInitializeDone: (conn: FiberConnection) => {
-        this.onFiberConnectionInitialized(conn);
-        this.onChangeIfNeeded();
-      },
     });
     this.fiberConnections.push(newConnection);
     newConnection.calculatePositionSize();
-  }
-
-  onFiberConnectionInitialized(connection: FiberConnection) {
-    const exists = this.fiberConnectionsInitialized.find((conn) => {
-      return (
-        conn.fiber_in === connection.fiber_in &&
-        conn.fiber_out === connection.fiber_out
-      );
-    });
-
-    if (!exists) {
-      this.fiberConnectionsInitialized.push({
-        fiber_in: connection.fiber_in,
-        fiber_out: connection.fiber_out,
-      });
-    }
-
-    const height: number = this.getHeight();
-    if (this.size.height < height) {
-      this.size.height = height;
-    }
-
-    if (
-      this.fiberConnectionsInitialized.length === this.fiberConnections.length
-    ) {
-      this.onChangeIfNeeded();
-    }
+    this.onChangeIfNeeded();
   }
 
   removeFiberConnection(connection: FiberConnectionDataType) {
@@ -418,15 +346,6 @@ export class Grid {
         conn.fiber_out !== connection.fiber_out
       );
     });
-
-    this.fiberConnectionsInitialized = this.fiberConnectionsInitialized.filter(
-      (conn) => {
-        return (
-          conn.fiber_in !== connection.fiber_in &&
-          conn.fiber_out !== connection.fiber_out
-        );
-      }
-    );
 
     this.onChangeIfNeeded();
   }
@@ -492,14 +411,6 @@ export class Grid {
       Object.keys(fiberConnection.usedYpoints).forEach((yPoint) => {
         this.verticalUsedIndexes[yPoint] = false;
       });
-
-      this.fiberConnectionsInitialized =
-        this.fiberConnectionsInitialized.filter((conn) => {
-          return (
-            conn.fiber_in !== fiberConnection.fiber_in &&
-            conn.fiber_out !== fiberConnection.fiber_out
-          );
-        });
     });
   }
 
