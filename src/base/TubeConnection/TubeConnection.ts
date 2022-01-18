@@ -101,7 +101,10 @@ export class TubeConnection {
             source: tubeIn.attr.position,
             disposition: tubeIn.parentWire.disposition,
             element_id: tubeIn.id,
-            toY: fusionYpoint,
+            target: {
+              x: tubeIn.parentWire.parentGrid.leftSideWidth,
+              y: fusionYpoint,
+            },
             type: "tube",
             grid: this.parentGrid,
           }),
@@ -111,7 +114,10 @@ export class TubeConnection {
         ...getUnitsForPath({
           path: getPathForConnection({
             source: tubeOut.attr.position,
-            toY: fusionYpoint,
+            target: {
+              x: tubeOut.parentWire.parentGrid.leftSideWidth,
+              y: fusionYpoint,
+            },
             grid: this.parentGrid,
             type: "tube",
             element_id: tubeOut.id,
@@ -226,7 +232,10 @@ export class TubeConnection {
       disposition: firstTube.parentWire.disposition,
       type: "tube",
       grid: this.parentGrid,
-      toY: fusionYpoint1,
+      target: {
+        x: firstTube.parentWire.parentGrid.leftSideWidth,
+        y: fusionYpoint1,
+      },
     });
 
     const secondTube = fusionInYpoint1 < fusionOutYpoint1 ? tubeOut : tubeIn;
@@ -237,7 +246,10 @@ export class TubeConnection {
       element_id: secondTube.id,
       grid: this.parentGrid,
       type: "tube",
-      toY: fusionYpoint3,
+      target: {
+        x: secondTube.parentWire.parentGrid.leftSideWidth,
+        y: fusionYpoint3,
+      },
     });
 
     const firstSegment = getUnitsForPath({

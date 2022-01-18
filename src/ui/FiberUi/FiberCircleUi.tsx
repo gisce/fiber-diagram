@@ -56,7 +56,7 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
           fiber_in !== fiber.id
         ) {
           const parentGrid =
-            fiber.parentTube?.parentWire.parentGrid ||
+            fiber.parentTube?.parentWire?.parentGrid ||
             fiber.parentSplitter?.parentGrid;
 
           const fiberOut: Fiber = parentGrid.getFiberById(fiber.id);
@@ -70,7 +70,7 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
             return;
           }
 
-          fiber.parentTube.parentWire.parentGrid.addFiberConnection({
+          parentGrid.addFiberConnection({
             fiber_in: fiber_in,
             fiber_out: fiber.id,
           });

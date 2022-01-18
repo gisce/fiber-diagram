@@ -192,14 +192,14 @@ export const getPathForConnection = ({
   element_id,
   source,
   type,
-  toY,
+  target,
   grid,
 }: {
   disposition: "LEFT" | "RIGHT";
   source: Position;
+  target: Position;
   element_id: number;
   type: "tube" | "fiber";
-  toY: number;
   grid: Grid;
 }) => {
   const unitSize = Config.baseUnits[type].height;
@@ -215,13 +215,13 @@ export const getPathForConnection = ({
   let angleXpoint: number;
   let path = [];
 
-  if (source.y === toY) {
+  if (source.y === target.y) {
     if (isLeftToRightConnection) {
-      for (let iX = source.x; iX < grid.leftSideWidth; iX += 1) {
+      for (let iX = source.x; iX < target.x; iX += 1) {
         path.push([iX, source.y]);
       }
     } else {
-      for (let iX = source.x; iX >= grid.leftSideWidth; iX -= 1) {
+      for (let iX = source.x; iX >= target.x; iX -= 1) {
         path.push([iX, source.y]);
       }
     }
@@ -239,10 +239,10 @@ export const getPathForConnection = ({
   }
 
   if (isLeftToRightConnection) {
-    angleXpoint = grid.leftSideWidth - (separation + unitSize);
+    angleXpoint = target.x - (separation + unitSize);
     grid.leftUsedSpace += spaceForThisPath;
   } else {
-    angleXpoint = grid.leftSideWidth + separation;
+    angleXpoint = target.x + separation;
     grid.rightUsedSpace += spaceForThisPath;
   }
 
@@ -261,26 +261,26 @@ export const getPathForConnection = ({
   }
 
   // from: angleXpoint, source.y
-  // to: angleXpoint, toY
-  if (source.y < toY) {
-    for (let iY = source.y; iY < toY; iY += 1) {
+  // to: angleXpoint, target.y
+  if (source.y < target.y) {
+    for (let iY = source.y; iY < target.y; iY += 1) {
       path.push([angleXpoint, iY]);
     }
   } else {
-    for (let iY = source.y; iY > toY; iY -= 1) {
+    for (let iY = source.y; iY > target.y; iY -= 1) {
       path.push([angleXpoint, iY]);
     }
   }
 
   // from: angleXpoint, toY
-  // to: grid.leftSideWidth, toY
+  // to: target.x, toY
   if (isLeftToRightConnection) {
-    for (let iX = angleXpoint; iX < grid.leftSideWidth; iX += 1) {
-      path.push([iX, toY]);
+    for (let iX = angleXpoint; iX < target.x; iX += 1) {
+      path.push([iX, target.y]);
     }
   } else {
-    for (let iX = angleXpoint; iX >= grid.leftSideWidth; iX -= 1) {
-      path.push([iX, toY]);
+    for (let iX = angleXpoint; iX >= target.x; iX -= 1) {
+      path.push([iX, target.y]);
     }
   }
 
@@ -294,7 +294,7 @@ export const getPathForConnection = ({
   });
 
   grid.setVerticalUsedIndexWithHeight({
-    yPoint: toY,
+    yPoint: target.y,
     height: unitSize,
     element: {
       type: type,

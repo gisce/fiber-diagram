@@ -61,10 +61,7 @@ export class FiberConnection {
 
       this.legs = [...legs];
 
-      this.center = {
-        x: this.parentGrid.leftSideWidth,
-        y: center,
-      };
+      this.center = center;
     } else {
       const getLegsFn =
         fiberIn.parentTube &&
@@ -115,7 +112,10 @@ export class FiberConnection {
             source: fiberIn.attr.position,
             disposition: fiberIn.parentTube.parentWire.disposition,
             element_id: fiberIn.id,
-            toY: fusionYpoint,
+            target: {
+              x: fiberIn.parentTube.parentWire.parentGrid.leftSideWidth,
+              y: fusionYpoint,
+            },
             type: "fiber",
             grid: this.parentGrid,
           }),
@@ -125,7 +125,10 @@ export class FiberConnection {
         ...getUnitsForPath({
           path: getPathForConnection({
             source: fiberOut.attr.position,
-            toY: fusionYpoint,
+            target: {
+              x: fiberOut.parentTube.parentWire.parentGrid.leftSideWidth,
+              y: fusionYpoint,
+            },
             grid: this.parentGrid,
             type: "fiber",
             element_id: fiberOut.id,
@@ -146,26 +149,42 @@ export class FiberConnection {
     fiberIn: Fiber;
     fiberOut: Fiber;
   }) {
-    // First, we determine which fusion point of the middle of the grid (connection place) is free
+    // First, we determine which of the fibers is which one
 
-    const fusionYpoint: number = fiberOut.attr.position.y;
+    const tubeFiber = fiberIn.parentTube !== undefined ? fiberIn : fiberOut;
+    const splitterFibber =
+      fiberIn.parentTube !== undefined ? fiberOut : fiberIn;
+
+    const connectionSide = tubeFiber.parentTube.parentWire.disposition;
+
+    const increase =
+      splitterFibber.splitterFiberSide === connectionSide &&
+      connectionSide === "RIGHT"
+        ? Config.baseUnits.fiber.width
+        : 0;
 
     return {
       legs: [
         ...getUnitsForPath({
           path: getPathForConnection({
-            source: fiberIn.attr.position,
-            disposition: "LEFT",
-            element_id: fiberIn.id,
-            toY: fiberOut.attr.position.y,
+            source: tubeFiber.attr.position,
+            disposition: connectionSide,
+            element_id: tubeFiber.id,
+            target: {
+              x: splitterFibber.attr.position.x + increase,
+              y: splitterFibber.attr.position.y,
+            },
             type: "fiber",
             grid: this.parentGrid,
           }),
-          color: fiberIn.color,
+          color: tubeFiber.color,
           unitSize: Config.baseUnits.fiber.height,
         }),
       ],
-      center: fusionYpoint,
+      center: {
+        x: splitterFibber.attr.position.x + increase,
+        y: splitterFibber.attr.position.y,
+      },
     };
   }
 
@@ -305,7 +324,10 @@ export class FiberConnection {
       disposition: firstFiber.parentTube.parentWire.disposition,
       type: "fiber",
       grid: this.parentGrid,
-      toY: fusionYpoint1,
+      target: {
+        x: firstFiber.parentTube.parentWire.parentGrid.leftSideWidth,
+        y: fusionYpoint1,
+      },
     });
 
     const secondPath = getPathForConnection({
@@ -314,7 +336,10 @@ export class FiberConnection {
       element_id: secondFiber.id,
       grid: this.parentGrid,
       type: "fiber",
-      toY: fusionYpoint3,
+      target: {
+        x: secondFiber.parentTube.parentWire.parentGrid.leftSideWidth,
+        y: fusionYpoint3,
+      },
     });
 
     const firstSegment = getUnitsForPath({
