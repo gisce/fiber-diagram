@@ -66,6 +66,20 @@ export class Splitter {
         ) + previousSibilingsHeight,
     };
 
+    const inputFiberConnection = this.parentGrid.getConnectionForFiberId(
+      this.fibers_in[0].id
+    );
+
+    if (inputFiberConnection) {
+      const inputFiberId =
+        this.fibers_in[0].id === inputFiberConnection.fiber_in
+          ? inputFiberConnection.fiber_out
+          : inputFiberConnection.fiber_in;
+
+      const inputFiber: Fiber = this.parentGrid.getFiberById(inputFiberId);
+      this.orientation = inputFiber.parentTube.parentWire.disposition;
+    }
+
     if (this.orientation === "LEFT") {
       this.fibersIn = this.getFibers(this.fibers_in, "LEFT");
       this.fibersOut = this.getFibers(this.fibers_out, "RIGHT");
