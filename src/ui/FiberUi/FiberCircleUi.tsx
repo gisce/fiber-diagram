@@ -62,9 +62,12 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
           const fiberOut: Fiber = parentGrid.getFiberById(fiber.id);
           const fiberIn: Fiber = parentGrid.getFiberById(fiber_in);
 
+          // Check if both fibers are outputs of an splitter
           if (
             fiberIn.parentSplitter !== undefined &&
-            fiberOut.parentSplitter !== undefined
+            fiberOut.parentSplitter !== undefined &&
+            fiberIn.isSplitterOutput !== undefined &&
+            fiberIn.isSplitterOutput === fiberOut.isSplitterOutput
           ) {
             setFiberIn(undefined);
             return;

@@ -43,6 +43,29 @@ export class Splitter {
   }
 
   calculatePosition() {
+    const inputFiberConnection = this.parentGrid.getConnectionForFiberId(
+      this.fibers_in[0].id
+    );
+    let inputFiber: Fiber;
+    let splitterOrigin;
+
+    if (inputFiberConnection) {
+      const inputFiberId =
+        this.fibers_in[0].id === inputFiberConnection.fiber_in
+          ? inputFiberConnection.fiber_out
+          : inputFiberConnection.fiber_in;
+
+      inputFiber = this.parentGrid.getFiberById(inputFiberId);
+
+      splitterOrigin = inputFiber.parentSplitter !== undefined;
+
+      if (splitterOrigin) {
+        this.orientation = inputFiber.parentSplitter.orientation;
+      } else {
+        this.orientation = inputFiber.parentTube.parentWire.disposition;
+      }
+    }
+
     const myIndex = this.parentGrid.splitters.indexOf(this);
 
     const previousSibilings = this.parentGrid.splitters.filter((splitter) => {
@@ -57,8 +80,13 @@ export class Splitter {
       0
     );
 
+    const x = splitterOrigin
+      ? inputFiber.parentSplitter.attr.position.x +
+        inputFiber.parentSplitter.attr.size.width
+      : this.parentGrid.leftSideWidth;
+
     this.attr.position = {
-      x: this.parentGrid.leftSideWidth,
+      x,
       y:
         Math.max(
           this.parentGrid.getCurrentWiresHeight(),
@@ -66,26 +94,12 @@ export class Splitter {
         ) + previousSibilingsHeight,
     };
 
-    const inputFiberConnection = this.parentGrid.getConnectionForFiberId(
-      this.fibers_in[0].id
-    );
-
-    if (inputFiberConnection) {
-      const inputFiberId =
-        this.fibers_in[0].id === inputFiberConnection.fiber_in
-          ? inputFiberConnection.fiber_out
-          : inputFiberConnection.fiber_in;
-
-      const inputFiber: Fiber = this.parentGrid.getFiberById(inputFiberId);
-      this.orientation = inputFiber.parentTube.parentWire.disposition;
-    }
-
     if (this.orientation === "LEFT") {
-      this.fibersIn = this.getFibers(this.fibers_in, "LEFT");
-      this.fibersOut = this.getFibers(this.fibers_out, "RIGHT");
+      this.fibersIn = this.getFibers(this.fibers_in, "LEFT", false);
+      this.fibersOut = this.getFibers(this.fibers_out, "RIGHT", true);
     } else {
-      this.fibersIn = this.getFibers(this.fibers_out, "LEFT");
-      this.fibersOut = this.getFibers(this.fibers_in, "RIGHT");
+      this.fibersIn = this.getFibers(this.fibers_out, "LEFT", true);
+      this.fibersOut = this.getFibers(this.fibers_in, "RIGHT", false);
     }
 
     [...this.fibersIn, ...this.fibersOut].forEach((fiber) => {
@@ -94,7 +108,11 @@ export class Splitter {
     });
   }
 
-  getFibers(fibersData: FiberDataType[], side: "LEFT" | "RIGHT") {
+  getFibers(
+    fibersData: FiberDataType[],
+    side: "LEFT" | "RIGHT",
+    areOuput: boolean = false
+  ) {
     return fibersData.map((fiberEntry, index) => {
       return new Fiber({
         data: { ...fiberEntry, color: "#555555" },
@@ -102,6 +120,7 @@ export class Splitter {
         splitterFiberSide: side,
         splitterSibilings: fibersData,
         index: index,
+        isSplitterOutput: areOuput,
       });
     });
   }

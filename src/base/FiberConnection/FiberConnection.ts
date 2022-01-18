@@ -54,7 +54,14 @@ export class FiberConnection {
     }
 
     if (fiberIn.parentTube === undefined || fiberOut.parentTube === undefined) {
-      const { legs, center } = this.getLeftToRightLegsSplitter({
+      const s2s =
+        fiberIn.parentTube === undefined && fiberOut.parentTube === undefined; // splitter to splitter connection
+
+      const getLegsFn = s2s
+        ? this.getSplitterToSplitterLegs.bind(this)
+        : this.getLeftToRightLegsSplitter.bind(this);
+
+      const { legs, center } = getLegsFn({
         fiberIn,
         fiberOut,
       });
@@ -150,7 +157,6 @@ export class FiberConnection {
     fiberOut: Fiber;
   }) {
     // First, we determine which of the fibers is which one
-
     const tubeFiber = fiberIn.parentTube !== undefined ? fiberIn : fiberOut;
     const splitterFibber =
       fiberIn.parentTube !== undefined ? fiberOut : fiberIn;
@@ -184,6 +190,46 @@ export class FiberConnection {
       center: {
         x: splitterFibber.attr.position.x + increase,
         y: splitterFibber.attr.position.y,
+      },
+    };
+  }
+
+  getSplitterToSplitterLegs({
+    fiberIn,
+    fiberOut,
+  }: {
+    fiberIn: Fiber;
+    fiberOut: Fiber;
+  }) {
+    const fiberInIsInput =
+      fiberIn.parentSplitter.fibersIn.find((fiber) => {
+        fiber.id === fiberIn.id;
+      }) !== undefined;
+
+    const fiberInput = fiberInIsInput ? fiberIn : fiberOut;
+    const fiberOutput = fiberInIsInput ? fiberOut : fiberIn;
+
+    return {
+      legs: [
+        // ...getUnitsForPath({
+        //   path: getPathForConnection({
+        //     source: fiberOutput.attr.position,
+        //     disposition: "RIGHT",
+        //     element_id: fiberOutput.id,
+        //     target: {
+        //       x: fiberInput.attr.position.x + Config.baseUnits.fiber.width,
+        //       y: fiberInput.attr.position.y,
+        //     },
+        //     type: "fiber",
+        //     grid: this.parentGrid,
+        //   }),
+        //   color: fiberInput.color,
+        //   unitSize: Config.baseUnits.fiber.height,
+        // }),
+      ],
+      center: {
+        x: fiberOutput.attr.position.x + Config.baseUnits.fiber.width,
+        y: fiberOutput.attr.position.y,
       },
     };
   }

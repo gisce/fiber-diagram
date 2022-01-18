@@ -15,6 +15,7 @@ export class Fiber {
   initialized: boolean = false;
   splitterFiberSide?: "LEFT" | "RIGHT";
   splitterSibilings?: FiberApiType[] = [];
+  isSplitterOutput?: boolean;
 
   constructor({
     data,
@@ -23,6 +24,7 @@ export class Fiber {
     index,
     splitterFiberSide,
     splitterSibilings,
+    isSplitterOutput,
   }: {
     data: FiberDataType;
     parentTube?: Tube;
@@ -30,6 +32,7 @@ export class Fiber {
     index: number;
     splitterFiberSide?: "LEFT" | "RIGHT";
     splitterSibilings?: FiberApiType[];
+    isSplitterOutput?: boolean;
   }) {
     this.attr = { ...InitialPositionSize };
     this.parentTube = parentTube;
@@ -37,6 +40,7 @@ export class Fiber {
     this.splitterFiberSide = splitterFiberSide;
     this.index = index;
     this.splitterSibilings = splitterSibilings;
+    this.isSplitterOutput = isSplitterOutput;
 
     if (!data) {
       this.initialized = true;
