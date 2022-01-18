@@ -61,6 +61,7 @@ export class FiberConnection {
     }
 
     if (fiberIn.parentTube === undefined || fiberOut.parentTube === undefined) {
+      // TODO: implement algorithm
     } else {
       const getLegsFn =
         fiberIn.parentTube &&

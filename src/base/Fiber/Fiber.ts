@@ -1,5 +1,6 @@
 import { Config } from "base/Config";
 import { InitialPositionSize, PositionSize } from "base/Grid";
+import { Splitter } from "base/Splitter";
 import { Tube } from "base/Tube";
 import { FiberApiType, FiberDataType } from "./Fiber.types";
 
@@ -9,11 +10,13 @@ export class Fiber {
   color: string;
   attr?: PositionSize;
   parentTube?: Tube;
-  parentSplitter?: Tube;
+  parentSplitter?: Splitter;
   index: number;
   initialized: boolean = false;
   onSizingDone?: (fiber: Fiber) => void;
   onPositioningDone?: (fiber: Fiber) => void;
+  splitterFiberSide?: "LEFT" | "RIGHT";
+  splitterSibilings?: FiberApiType[] = [];
 
   constructor({
     data,
@@ -22,20 +25,26 @@ export class Fiber {
     index,
     onSizingDone,
     onPositioningDone,
+    splitterFiberSide,
+    splitterSibilings,
   }: {
     data: FiberDataType;
-    parentTube: Tube;
-    parentSplitter?: Tube;
+    parentTube?: Tube;
+    parentSplitter?: Splitter;
     index: number;
     onSizingDone?: (fiber: Fiber) => void;
     onPositioningDone?: (fiber: Fiber) => void;
+    splitterFiberSide?: "LEFT" | "RIGHT";
+    splitterSibilings?: FiberApiType[];
   }) {
     this.attr = { ...InitialPositionSize };
     this.parentTube = parentTube;
     this.parentSplitter = parentSplitter;
+    this.splitterFiberSide = splitterFiberSide;
     this.index = index;
     this.onSizingDone = onSizingDone;
     this.onPositioningDone = onPositioningDone;
+    this.splitterSibilings = splitterSibilings;
 
     if (!data) {
       this.initialized = true;
@@ -101,7 +110,39 @@ export class Fiber {
     this.onPositioningDone?.(this);
   }
 
-  calculatePositionForParentSplitter() {}
+  calculatePositionForParentSplitter() {
+    const vUnitSpace =
+      this.parentSplitter?.attr.size.height /
+      (this.splitterSibilings.length + this.splitterSibilings.length + 1);
+
+    let y: number, x: number;
+    if (this.splitterSibilings.length === 1) {
+      y =
+        this.parentSplitter?.attr.size.height / 2 -
+        Config.baseUnits.fiber.height / 2;
+    } else {
+      y = vUnitSpace + vUnitSpace * this.index * 2;
+    }
+
+    if (this.splitterFiberSide === "LEFT") {
+      x = this.parentSplitter?.attr.position.x;
+    } else {
+      x =
+        this.parentSplitter?.attr.position.x +
+        (this.parentSplitter?.attr.size.width - Config.baseUnits.fiber.width);
+    }
+
+    this.attr = {
+      position: {
+        x,
+        y,
+      },
+      size: {
+        width: Config.baseUnits.fiber.width,
+        height: Config.baseUnits.fiber.height,
+      },
+    };
+  }
 
   onChangeIfNeeded() {
     if (!this.initialized) {

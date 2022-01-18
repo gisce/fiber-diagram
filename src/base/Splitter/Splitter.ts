@@ -1,5 +1,5 @@
 import { Config } from "base/Config";
-import { FiberApiType } from "base/Fiber";
+import { Fiber, FiberApiType, FiberDataType } from "base/Fiber";
 import { Grid, InitialPositionSize, PositionSize } from "base/Grid";
 import { SplitterFiberDataType } from "./Splitter.types";
 
@@ -10,8 +10,8 @@ export class Splitter {
   attr?: PositionSize = { ...InitialPositionSize };
   orientation?: "LEFT" | "RIGHT" = "LEFT";
   parentGrid: Grid;
-  fibersIn?: SplitterFiberDataType[] = [];
-  fibersOut?: SplitterFiberDataType[] = [];
+  fibersIn?: Fiber[] = [];
+  fibersOut?: Fiber[] = [];
   index: number;
 
   constructor({
@@ -66,51 +66,31 @@ export class Splitter {
         ) + previousSibilingsHeight,
     };
 
-    this.fibersIn = this.calculateFibersPositions(this.fibers_out, "LEFT");
-    this.fibersOut = this.calculateFibersPositions(this.fibers_in, "RIGHT");
-
     if (this.orientation === "LEFT") {
-      this.fibersIn = this.calculateFibersPositions(this.fibers_in, "LEFT");
-      this.fibersOut = this.calculateFibersPositions(this.fibers_out, "RIGHT");
+      this.fibersIn = this.getFibers(this.fibers_in, "LEFT");
+      this.fibersOut = this.getFibers(this.fibers_out, "RIGHT");
     } else {
-      this.fibersIn = this.calculateFibersPositions(this.fibers_out, "LEFT");
-      this.fibersOut = this.calculateFibersPositions(this.fibers_in, "RIGHT");
+      this.fibersIn = this.getFibers(this.fibers_out, "LEFT");
+      this.fibersOut = this.getFibers(this.fibers_in, "RIGHT");
     }
+
+    [...this.fibersIn, ...this.fibersOut].forEach((fiber) => {
+      fiber.calculateSize();
+    });
   }
 
-  calculateFibersPositions(fibersData: FiberApiType[], side: "LEFT" | "RIGHT") {
-    const vUnitSpace =
-      this.attr.size.height / (fibersData.length + fibersData.length + 1);
-
+  getFibers(fibersData: FiberDataType[], side: "LEFT" | "RIGHT") {
     return fibersData.map((fiberEntry, index) => {
-      let y: number, x: number;
-      if (fibersData.length === 1) {
-        y = this.attr.size.height / 2 - Config.baseUnits.fiber.height / 2;
-      } else {
-        y = vUnitSpace + vUnitSpace * index * 2;
-      }
-
-      if (side === "LEFT") {
-        x = this.attr.position.x;
-      } else {
-        x =
-          this.attr.position.x +
-          (this.attr.size.width - Config.baseUnits.fiber.width);
-      }
-
-      return {
-        ...fiberEntry,
-        attr: {
-          position: {
-            x,
-            y,
-          },
-          size: {
-            width: Config.baseUnits.fiber.width,
-            height: Config.baseUnits.fiber.height,
-          },
+      return new Fiber({
+        data: fiberEntry,
+        parentSplitter: this,
+        splitterFiberSide: side,
+        splitterSibilings: fibersData,
+        index: index,
+        onSizingDone: (fiber: Fiber) => {
+          fiber.calculatePosition();
         },
-      };
+      });
     });
   }
 
