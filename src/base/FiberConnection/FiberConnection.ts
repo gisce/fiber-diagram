@@ -1,7 +1,11 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { Grid, LegType, Position } from "base/Grid";
-import { getPathForConnection, getUnitsForPath } from "utils/pathUtils";
+import {
+  getPathForConnection,
+  getSplitterToSplitterPath,
+  getUnitsForPath,
+} from "utils/pathUtils";
 import { FiberConnectionApiType, FiberConnectionDataType } from ".";
 
 export class FiberConnection {
@@ -201,31 +205,30 @@ export class FiberConnection {
     fiberIn: Fiber;
     fiberOut: Fiber;
   }) {
-    const fiberInIsInput =
-      fiberIn.parentSplitter.fibersIn.find((fiber) => {
-        fiber.id === fiberIn.id;
-      }) !== undefined;
+    const fiberInIsOutput = fiberIn.isSplitterOutput;
 
-    const fiberInput = fiberInIsInput ? fiberIn : fiberOut;
-    const fiberOutput = fiberInIsInput ? fiberOut : fiberIn;
+    const fiberInput = fiberInIsOutput ? fiberOut : fiberIn;
+    const fiberOutput = fiberInput.id === fiberIn.id ? fiberOut : fiberIn;
 
     return {
       legs: [
-        // ...getUnitsForPath({
-        //   path: getPathForConnection({
-        //     source: fiberOutput.attr.position,
-        //     disposition: "RIGHT",
-        //     element_id: fiberOutput.id,
-        //     target: {
-        //       x: fiberInput.attr.position.x + Config.baseUnits.fiber.width,
-        //       y: fiberInput.attr.position.y,
-        //     },
-        //     type: "fiber",
-        //     grid: this.parentGrid,
-        //   }),
-        //   color: fiberInput.color,
-        //   unitSize: Config.baseUnits.fiber.height,
-        // }),
+        ...getUnitsForPath({
+          path: getSplitterToSplitterPath({
+            source: {
+              x: fiberOutput.attr.position.x + Config.baseUnits.fiber.width,
+              y: fiberOutput.attr.position.y,
+            },
+            element_id: fiberOutput.id,
+            target: {
+              x: fiberInput.parentSplitter.attr.position.x,
+              y: fiberInput.attr.position.y,
+            },
+            type: "fiber",
+            grid: this.parentGrid,
+          }),
+          color: fiberInput.color,
+          unitSize: Config.baseUnits.fiber.height,
+        }),
       ],
       center: {
         x: fiberOutput.attr.position.x + Config.baseUnits.fiber.width,

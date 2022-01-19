@@ -6,7 +6,7 @@ import {
   FiberConnectionContext,
   FiberConnectionContextType,
 } from "ui/FiberConnectionUi/FiberConnectionContext";
-import { Position, PositionSize } from "base/Grid";
+import { Position } from "base/Grid";
 
 export type FiberCircleUiProps = Position & {
   fiber: Fiber;

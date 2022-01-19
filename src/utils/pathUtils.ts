@@ -305,6 +305,69 @@ export const getPathForConnection = ({
   return path;
 };
 
+export const getSplitterToSplitterPath = ({
+  element_id,
+  source,
+  type,
+  target,
+  grid,
+}: {
+  source: Position;
+  target: Position;
+  element_id: number;
+  type: "tube" | "fiber";
+  grid: Grid;
+}) => {
+  const unitSize = Config.baseUnits[type].height;
+
+  const spaceForThisPath = unitSize * Config.angleSeparatorFactor;
+  const separation = spaceForThisPath;
+
+  let angleXpoint: number;
+  let path = [];
+
+  angleXpoint = target.x;
+  grid.leftUsedSpace += spaceForThisPath;
+
+  // from: source.x, source.y
+  // to: angleXpoint, source.y
+  for (let iX = source.x; iX <= angleXpoint; iX += 1) {
+    path.push([iX, source.y]);
+  }
+
+  // from: angleXpoint, source.y;
+  // to: angleXpoint, target.y;
+  for (let iY = source.y; iY <= target.y; iY += 1) {
+    path.push([angleXpoint, iY]);
+  }
+
+  // from: angleXpoint, toY
+  // to: target.x, toY
+  // for (let iX = angleXpoint; iX < target.x; iX += 1) {
+  //   path.push([iX, target.y]);
+  // }
+
+  grid.setVerticalUsedIndexWithHeight({
+    yPoint: source.y,
+    height: unitSize,
+    element: {
+      type: type,
+      id: element_id,
+    },
+  });
+
+  grid.setVerticalUsedIndexWithHeight({
+    yPoint: target.y,
+    height: unitSize,
+    element: {
+      type: type,
+      id: element_id,
+    },
+  });
+
+  return path;
+};
+
 export const getClearedVerticalIndexesForElement = ({
   element,
   verticalUsedIndexes,
