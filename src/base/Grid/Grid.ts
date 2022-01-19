@@ -118,6 +118,8 @@ export class Grid {
       this.size.height = newHeight;
     }
 
+    this.rightUsedSpace += this.getSplittersIncreasedWidth();
+
     this.onChangeIfNeeded();
   }
 
@@ -383,6 +385,21 @@ export class Grid {
     return this.splitters.reduce((acc, splitter) => {
       return acc + splitter.attr.size.height;
     }, 0);
+  }
+
+  getSplittersIncreasedWidth() {
+    if (this.splitters.length < 2) {
+      return 0;
+    }
+
+    const sortedSplitters = this.splitters.sort((a, b) => {
+      return b.attr.position.x - a.attr.position.x;
+    });
+
+    const increasedWidth =
+      sortedSplitters[0].attr.position.x - this.leftSideWidth;
+
+    return increasedWidth;
   }
 
   getCurrentWiresHeight() {
