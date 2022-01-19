@@ -54,6 +54,7 @@ export class Splitter {
     const inputFiberConnection = this.parentGrid.getConnectionForFiberId(
       this.fibers_in[0].id
     );
+
     let inputFiber: Fiber;
     let splitterOrigin: boolean;
 
@@ -89,8 +90,8 @@ export class Splitter {
     );
 
     const x = splitterOrigin
-      ? inputFiber.parentSplitter.attr.position.x +
-        inputFiber.parentSplitter.attr.size.width +
+      ? this.parentGrid.leftSideWidth +
+        this.attr.size.width +
         Config.baseUnits.fiber.width
       : this.parentGrid.leftSideWidth;
 
@@ -140,5 +141,26 @@ export class Splitter {
       fibers_in: this.fibers_in,
       fibers_out: this.fibers_out,
     };
+  }
+
+  getSplitterConnectedInInput() {
+    const fiberConnection = this.parentGrid.getConnectionForFiberId(
+      this.fibers_in[0].id
+    );
+    if (!fiberConnection) {
+      return undefined;
+    }
+
+    const fiberIdConnectedTo =
+      this.fibers_in[0].id === fiberConnection.fiber_in
+        ? fiberConnection.fiber_out
+        : fiberConnection.fiber_in;
+    const fiberConnectedTo = this.parentGrid.getFiberById(fiberIdConnectedTo);
+
+    if (!fiberConnectedTo) {
+      return undefined;
+    }
+
+    return fiberConnectedTo.parentSplitter;
   }
 }

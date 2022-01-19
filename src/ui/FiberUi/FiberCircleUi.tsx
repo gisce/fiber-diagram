@@ -73,6 +73,34 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
             return;
           }
 
+          const fiberInSplitterInput =
+            fiberIn.parentSplitter?.getSplitterConnectedInInput();
+          const fiberOutSplitterInput =
+            fiberOut.parentSplitter?.getSplitterConnectedInInput();
+
+          // Check if both fibers are ouput and input from different splitters, but they have a loop
+          if (
+            fiberIn.parentSplitter !== undefined &&
+            fiberOut.parentSplitter !== undefined &&
+            fiberInSplitterInput !== undefined &&
+            fiberOutSplitterInput === undefined &&
+            fiberInSplitterInput.id === fiberOut.parentSplitter.id
+          ) {
+            setFiberIn(undefined);
+            return;
+          }
+
+          if (
+            fiberIn.parentSplitter !== undefined &&
+            fiberOut.parentSplitter !== undefined &&
+            fiberInSplitterInput === undefined &&
+            fiberOutSplitterInput !== undefined &&
+            fiberOutSplitterInput.id === fiberIn.parentSplitter.id
+          ) {
+            setFiberIn(undefined);
+            return;
+          }
+
           parentGrid.addFiberConnection({
             fiber_in: fiber_in,
             fiber_out: fiber.id,

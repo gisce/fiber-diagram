@@ -321,7 +321,6 @@ export const getSplitterToSplitterPath = ({
   const unitSize = Config.baseUnits[type].height;
 
   const spaceForThisPath = unitSize * Config.angleSeparatorFactor;
-  const separation = spaceForThisPath;
 
   let angleXpoint: number;
   let path = [];
@@ -337,8 +336,14 @@ export const getSplitterToSplitterPath = ({
 
   // from: angleXpoint, source.y;
   // to: angleXpoint, target.y;
-  for (let iY = source.y; iY <= target.y; iY += 1) {
-    path.push([angleXpoint, iY]);
+  if (target.y < source.y) {
+    for (let iY = source.y; iY >= target.y; iY -= 1) {
+      path.push([angleXpoint, iY]);
+    }
+  } else {
+    for (let iY = source.y; iY <= target.y; iY += 1) {
+      path.push([angleXpoint, iY]);
+    }
   }
 
   // from: angleXpoint, toY
