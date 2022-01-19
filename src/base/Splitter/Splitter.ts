@@ -38,8 +38,16 @@ export class Splitter {
         (this.fibers_out.length + this.fibers_out.length + 1) *
         Config.baseUnits.fiber.height,
     };
+  }
 
-    this.calculatePosition();
+  parseFibers() {
+    if (this.orientation === "LEFT") {
+      this.fibersIn = this.getFibers(this.fibers_in, "LEFT", false);
+      this.fibersOut = this.getFibers(this.fibers_out, "RIGHT", true);
+    } else {
+      this.fibersIn = this.getFibers(this.fibers_out, "LEFT", true);
+      this.fibersOut = this.getFibers(this.fibers_in, "RIGHT", false);
+    }
   }
 
   calculatePosition() {
@@ -47,7 +55,7 @@ export class Splitter {
       this.fibers_in[0].id
     );
     let inputFiber: Fiber;
-    let splitterOrigin;
+    let splitterOrigin: boolean;
 
     if (inputFiberConnection) {
       const inputFiberId =
@@ -94,14 +102,6 @@ export class Splitter {
           this.parentGrid.getVerticalConnectionsHeight()
         ) + previousSibilingsHeight,
     };
-
-    if (this.orientation === "LEFT") {
-      this.fibersIn = this.getFibers(this.fibers_in, "LEFT", false);
-      this.fibersOut = this.getFibers(this.fibers_out, "RIGHT", true);
-    } else {
-      this.fibersIn = this.getFibers(this.fibers_out, "LEFT", true);
-      this.fibersOut = this.getFibers(this.fibers_in, "RIGHT", false);
-    }
 
     [...this.fibersIn, ...this.fibersOut].forEach((fiber) => {
       fiber.calculateSize();

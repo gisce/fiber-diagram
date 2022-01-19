@@ -162,6 +162,11 @@ export class Grid {
 
       this.splitters.forEach((splitter) => {
         splitter.calculateSize();
+        splitter.parseFibers();
+      });
+
+      this.splitters.forEach((splitter) => {
+        splitter.calculatePosition();
       });
     }
   }
