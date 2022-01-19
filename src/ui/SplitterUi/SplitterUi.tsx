@@ -1,6 +1,6 @@
 import { Config } from "base/Config";
 import React from "react";
-import { Group, Rect } from "react-konva";
+import { Group, Rect, Text } from "react-konva";
 import { Splitter } from "base/Splitter";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 import { FiberCircleUi } from "ui/FiberUi/FiberCircleUi";
@@ -40,6 +40,18 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
               height={sfOpts.size.height}
               fill={"#555555"}
             />
+            <Text
+              text={`#${splitterFiber.id}`}
+              x={sfOpts.position.x}
+              y={sfOpts.position.y}
+              width={sfOpts.size.width * 1.2}
+              height={sfOpts.size.height}
+              fontSize={10}
+              padding={sfOpts.size.height}
+              fill="red"
+              strokeWidth={0.5}
+              stroke={"#000000"}
+            />
             {!fiberIsConnected(splitterFiber.id) && (
               <FiberCircleUi
                 x={sfOpts.position.x}
@@ -61,6 +73,18 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
               width={sfOpts.size.width}
               height={sfOpts.size.height}
               fill={"#555555"}
+            />
+            <Text
+              text={`#${splitterFiber.id}`}
+              x={sfOpts.position.x}
+              y={sfOpts.position.y}
+              width={sfOpts.size.width * 1.2}
+              height={sfOpts.size.height}
+              fontSize={10}
+              padding={sfOpts.size.height}
+              fill="red"
+              strokeWidth={0.5}
+              stroke={"#000000"}
             />
             {!fiberIsConnected(splitterFiber.id) && (
               <FiberCircleUi
