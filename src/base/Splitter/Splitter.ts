@@ -82,7 +82,8 @@ export class Splitter {
 
     const x = splitterOrigin
       ? inputFiber.parentSplitter.attr.position.x +
-        inputFiber.parentSplitter.attr.size.width
+        inputFiber.parentSplitter.attr.size.width +
+        Config.baseUnits.fiber.width
       : this.parentGrid.leftSideWidth;
 
     this.attr.position = {
