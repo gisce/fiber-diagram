@@ -416,7 +416,7 @@ export const getPathForSplitterOutputToRightFiber = ({
       const rightestSplitterX =
         rightestSplitter.attr.position.x + rightestSplitter.attr.size.width;
 
-      angleXpoint = rightestSplitterX + Config.baseUnits.fiber.width;
+      angleXpoint = rightestSplitterX + separation;
     } else {
       angleXpoint =
         splitterFiber.attr.position.x +
@@ -428,11 +428,7 @@ export const getPathForSplitterOutputToRightFiber = ({
       splitterFiber.attr.position.x + Config.baseUnits.fiber.width + separation;
   }
 
-  if (angleXpoint > tubeFiber.attr.position.x) {
-    grid.rightUsedSpace += spaceForThisPath;
-  } else {
-    grid.rightUsedSpace += spaceForThisPath;
-  }
+  grid.rightUsedSpace += spaceForThisPath;
 
   path = [[angleXpoint, splitterFiber.attr.position.y]];
 
