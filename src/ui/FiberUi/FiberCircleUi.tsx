@@ -103,8 +103,10 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
 
           // Check if one fiber is an input of a splitter, and the other one is from the right
           if (
-            fiberIn.parentSplitter !== undefined ||
-            fiberOut.parentSplitter !== undefined
+            (fiberIn.parentSplitter !== undefined &&
+              fiberOut.parentSplitter === undefined) ||
+            (fiberIn.parentSplitter === undefined &&
+              fiberOut.parentSplitter !== undefined)
           ) {
             const splitterFiber =
               fiberIn.parentSplitter !== undefined ? fiberIn : fiberOut;
