@@ -113,7 +113,10 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
             const wireFiber =
               splitterFiber.id === fiberIn.id ? fiberOut : fiberIn;
 
-            if (wireFiber.parentTube.parentWire.disposition === "RIGHT") {
+            if (
+              splitterFiber.isSplitterOutput === false &&
+              wireFiber.parentTube.parentWire.disposition === "RIGHT"
+            ) {
               setFiberIn(undefined);
               return;
             }

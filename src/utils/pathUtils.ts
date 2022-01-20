@@ -346,12 +346,6 @@ export const getSplitterToSplitterPath = ({
     }
   }
 
-  // from: angleXpoint, toY
-  // to: target.x, toY
-  // for (let iX = angleXpoint; iX < target.x; iX += 1) {
-  //   path.push([iX, target.y]);
-  // }
-
   grid.setVerticalUsedIndexWithHeight({
     yPoint: source.y,
     height: unitSize,
