@@ -1,4 +1,5 @@
 import { Config } from "base/Config";
+import { Fiber } from "base/Fiber";
 import { Grid, LegType, Position, VerticalIndexElement } from "base/Grid";
 
 export type Columns = { [key: number]: VerticalIndexElement };
@@ -384,4 +385,110 @@ export const getClearedVerticalIndexesForElement = ({
     }
   });
   return output;
+};
+
+export const getPathForSplitterOutputToRightFiber = ({
+  tubeFiber,
+  splitterFiber,
+  grid,
+}: {
+  tubeFiber: Fiber;
+  splitterFiber: Fiber;
+  grid: Grid;
+}) => {
+  const unitSize = Config.baseUnits.fiber.height;
+  const spaceForThisPath = unitSize * Config.angleSeparatorFactor;
+  const separation = spaceForThisPath + grid.rightUsedSpace;
+
+  let angleXpoint: number = 0;
+  let path = [];
+
+  // Check if our splitterFiber is below an another fiber, and if so, we consider the other splitter X
+  const sibilingSplitters = splitterFiber.parentSplitter.getSplitterSibilings();
+
+  if (sibilingSplitters && sibilingSplitters.length >= 1) {
+    const sortedSplitters = sibilingSplitters.sort((a, b) => {
+      return b.attr.position.x - a.attr.position.x;
+    });
+    const rightestSplitter = sortedSplitters[0];
+
+    if (rightestSplitter.attr.position.x > splitterFiber.attr.position.x) {
+      const rightestSplitterX =
+        rightestSplitter.attr.position.x + rightestSplitter.attr.size.width;
+
+      angleXpoint = rightestSplitterX + Config.baseUnits.fiber.width;
+    } else {
+      angleXpoint =
+        splitterFiber.attr.position.x +
+        Config.baseUnits.fiber.width +
+        separation;
+    }
+  } else {
+    angleXpoint =
+      splitterFiber.attr.position.x + Config.baseUnits.fiber.width + separation;
+  }
+
+  if (angleXpoint > tubeFiber.attr.position.x) {
+    grid.rightUsedSpace += spaceForThisPath;
+  } else {
+    grid.rightUsedSpace += spaceForThisPath;
+  }
+
+  path = [[angleXpoint, splitterFiber.attr.position.y]];
+
+  // from: source.x, source.y
+  // to: angleXpoint, source.y
+  for (
+    let iX = splitterFiber.attr.position.x + Config.baseUnits.fiber.width;
+    iX <= angleXpoint;
+    iX += 1
+  ) {
+    path.push([iX, splitterFiber.attr.position.y]);
+  }
+
+  // from: angleXpoint, source.y
+  // to: angleXpoint, target.y
+  if (tubeFiber.attr.position.y < splitterFiber.attr.position.y) {
+    for (
+      let iY = splitterFiber.attr.position.y;
+      iY >= tubeFiber.attr.position.y;
+      iY -= 1
+    ) {
+      path.push([angleXpoint, iY]);
+    }
+  } else {
+    for (
+      let iY = splitterFiber.attr.position.y;
+      iY <= tubeFiber.attr.position.y;
+      iY += 1
+    ) {
+      path.push([angleXpoint, iY]);
+    }
+  }
+
+  // from: angleXpoint, toY
+  // to: target.x, toY
+  for (let iX = angleXpoint; iX <= tubeFiber.attr.position.x; iX += 1) {
+    path.push([iX, tubeFiber.attr.position.y]);
+  }
+
+  grid.setVerticalUsedIndexWithHeight({
+    yPoint: splitterFiber.attr.position.y,
+    height: unitSize,
+    element: {
+      type: "fiber",
+      id: splitterFiber.id,
+    },
+  });
+
+  grid.setVerticalUsedIndexWithHeight({
+    yPoint: tubeFiber.attr.position.y,
+    height: unitSize,
+    element: {
+      type: "fiber",
+      id: splitterFiber.id,
+    },
+  });
+
+  return path;
 };

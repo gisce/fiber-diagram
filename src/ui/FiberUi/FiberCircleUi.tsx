@@ -78,6 +78,16 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
           const fiberOutSplitterInput =
             fiberOut.parentSplitter?.getSplitterConnectedInInput();
 
+          // Check if both fibers are from the same splitter
+          if (
+            fiberIn.parentSplitter !== undefined &&
+            fiberOut.parentSplitter !== undefined &&
+            fiberIn.parentSplitter.id === fiberOut.parentSplitter.id
+          ) {
+            setFiberIn(undefined);
+            return;
+          }
+
           // Check if both fibers are ouput and input from different splitters, but they have a loop
           if (
             fiberIn.parentSplitter !== undefined &&

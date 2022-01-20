@@ -164,4 +164,11 @@ export class Splitter {
 
     return fiberConnectedTo.parentSplitter;
   }
+
+  getSplitterSibilings() {
+    return this.parentGrid.splitters.filter((splitter) => {
+      const splitterIndex = splitter.index;
+      return splitterIndex < this.index;
+    });
+  }
 }

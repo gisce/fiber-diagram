@@ -3,6 +3,7 @@ import { Fiber } from "base/Fiber";
 import { Grid, LegType, Position } from "base/Grid";
 import {
   getPathForConnection,
+  getPathForSplitterOutputToRightFiber,
   getSplitterToSplitterPath,
   getUnitsForPath,
 } from "utils/pathUtils";
@@ -63,7 +64,7 @@ export class FiberConnection {
 
       const getLegsFn = s2s
         ? this.getSplitterToSplitterLegs.bind(this)
-        : this.getLeftToRightLegsSplitter.bind(this);
+        : this.getSplitterToFiberLegs.bind(this);
 
       const { legs, center } = getLegsFn({
         fiberIn,
@@ -153,7 +154,7 @@ export class FiberConnection {
     };
   }
 
-  getLeftToRightLegsSplitter({
+  getSplitterToFiberLegs({
     fiberIn,
     fiberOut,
   }: {
@@ -162,16 +163,36 @@ export class FiberConnection {
   }) {
     // First, we determine which of the fibers is which one
     const tubeFiber = fiberIn.parentTube !== undefined ? fiberIn : fiberOut;
-    const splitterFibber =
-      fiberIn.parentTube !== undefined ? fiberOut : fiberIn;
+    const splitterFiber = fiberIn.parentTube !== undefined ? fiberOut : fiberIn;
 
+    if (splitterFiber.isSplitterOutput === true) {
+      if (tubeFiber.parentTube.parentWire.disposition === "LEFT") {
+        return this.getSplitterOutputToLeftFiberLegs({
+          tubeFiber,
+          splitterFiber,
+        });
+      } else {
+        return this.getSplitterOutputToRightFiberLegs({
+          tubeFiber,
+          splitterFiber,
+        });
+      }
+    } else {
+      return this.getSplitterInputToFiberLegs({
+        tubeFiber,
+        splitterFiber,
+      });
+    }
+  }
+
+  getSplitterInputToFiberLegs({
+    tubeFiber,
+    splitterFiber,
+  }: {
+    tubeFiber: Fiber;
+    splitterFiber: Fiber;
+  }) {
     const connectionSide = tubeFiber.parentTube.parentWire.disposition;
-
-    const increase =
-      splitterFibber.splitterFiberSide === connectionSide &&
-      connectionSide === "RIGHT"
-        ? Config.baseUnits.fiber.width
-        : 0;
 
     return {
       legs: [
@@ -181,8 +202,8 @@ export class FiberConnection {
             disposition: connectionSide,
             element_id: tubeFiber.id,
             target: {
-              x: splitterFibber.attr.position.x + increase,
-              y: splitterFibber.attr.position.y,
+              x: splitterFiber.attr.position.x,
+              y: splitterFiber.attr.position.y,
             },
             type: "fiber",
             grid: this.parentGrid,
@@ -192,8 +213,52 @@ export class FiberConnection {
         }),
       ],
       center: {
-        x: splitterFibber.attr.position.x + increase,
-        y: splitterFibber.attr.position.y,
+        x: splitterFiber.attr.position.x,
+        y: splitterFiber.attr.position.y,
+      },
+    };
+  }
+
+  getSplitterOutputToRightFiberLegs({
+    tubeFiber,
+    splitterFiber,
+  }: {
+    tubeFiber: Fiber;
+    splitterFiber: Fiber;
+  }) {
+    return {
+      legs: [
+        ...getUnitsForPath({
+          path: getPathForSplitterOutputToRightFiber({
+            tubeFiber,
+            splitterFiber,
+            grid: this.parentGrid,
+          }),
+          color: tubeFiber.color,
+          unitSize: Config.baseUnits.fiber.height,
+        }),
+      ],
+      center: {
+        x: splitterFiber.attr.position.x + Config.baseUnits.fiber.width,
+        y: splitterFiber.attr.position.y,
+      },
+    };
+  }
+
+  getSplitterOutputToLeftFiberLegs({
+    tubeFiber,
+    splitterFiber,
+  }: {
+    tubeFiber: Fiber;
+    splitterFiber: Fiber;
+  }) {
+    // TODO: implement
+
+    return {
+      legs: [],
+      center: {
+        x: splitterFiber.attr.position.x + Config.baseUnits.fiber.width,
+        y: splitterFiber.attr.position.y,
       },
     };
   }
