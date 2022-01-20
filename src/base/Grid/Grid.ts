@@ -150,14 +150,16 @@ export class Grid {
   placeSplitters() {
     if (this.initialData.res?.elements?.splitters) {
       this.splitters = this.initialData.res?.elements?.splitters.map(
-        (splitter) => {
-          const { id, fibers_in, fibers_out } = splitter;
+        (splitter, idx) => {
+          const { id, fibers_in, fibers_out, index } = splitter as any;
+          const splitterIndex = index !== undefined ? index : idx;
 
           return new Splitter({
             id,
             fibers_in,
             fibers_out,
             parentGrid: this,
+            index: splitterIndex,
           });
         }
       );

@@ -19,16 +19,19 @@ export class Splitter {
     fibers_in,
     fibers_out,
     parentGrid,
+    index,
   }: {
     id: number;
     fibers_in: FiberApiType[];
     fibers_out: FiberApiType[];
     parentGrid: Grid;
+    index: number;
   }) {
     this.id = id;
     this.fibers_in = fibers_in;
     this.fibers_out = fibers_out;
     this.parentGrid = parentGrid;
+    this.index = index;
   }
 
   calculateSize() {
@@ -75,11 +78,9 @@ export class Splitter {
       }
     }
 
-    const myIndex = this.parentGrid.splitters.indexOf(this);
-
     const previousSibilings = this.parentGrid.splitters.filter((splitter) => {
-      const splitterIndex = this.parentGrid.splitters.indexOf(splitter);
-      return splitterIndex < myIndex;
+      const splitterIndex = splitter.index;
+      return splitterIndex < this.index;
     });
 
     const previousSibilingsHeight = previousSibilings.reduce(
@@ -140,6 +141,7 @@ export class Splitter {
       id: this.id,
       fibers_in: this.fibers_in,
       fibers_out: this.fibers_out,
+      index: this.index,
     };
   }
 
