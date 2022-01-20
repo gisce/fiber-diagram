@@ -1,7 +1,6 @@
 import { Config } from "base/Config";
 import { Fiber, FiberApiType, FiberDataType } from "base/Fiber";
 import { Grid, InitialPositionSize, PositionSize } from "base/Grid";
-import { SplitterFiberDataType } from "./Splitter.types";
 
 export class Splitter {
   id: number;

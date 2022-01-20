@@ -101,6 +101,22 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
             return;
           }
 
+          // Check if one fiber is an input of a splitter, and the other one is from the right
+          if (
+            fiberIn.parentSplitter !== undefined ||
+            fiberOut.parentSplitter !== undefined
+          ) {
+            const splitterFiber =
+              fiberIn.parentSplitter !== undefined ? fiberIn : fiberOut;
+            const wireFiber =
+              splitterFiber.id === fiberIn.id ? fiberOut : fiberIn;
+
+            if (wireFiber.parentTube.parentWire.disposition === "RIGHT") {
+              setFiberIn(undefined);
+              return;
+            }
+          }
+
           parentGrid.addFiberConnection({
             fiber_in: fiber_in,
             fiber_out: fiber.id,
