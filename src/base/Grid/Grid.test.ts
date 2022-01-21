@@ -47,6 +47,21 @@ describe("A Grid", () => {
       expect(grid.getFiberById(10).parentType).toBe("SPLITTER");
 
       expect(grid.tubeConnections).toHaveLength(1);
+
+      const tube23 = grid.getTubeById(23);
+      const tube26 = grid.getTubeById(26);
+
+      expect(tube23.expanded).toBe(false);
+      expect(tube26.expanded).toBe(false);
+
+      grid.getTubeById(23).expand();
+
+      expect(tube23.expanded).toBe(true);
+      expect(tube26.expanded).toBe(true);
+
+      grid.getTubeById(26).collapse();
+      expect(tube23.expanded).toBe(false);
+      expect(tube26.expanded).toBe(false);
     });
   });
 });

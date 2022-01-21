@@ -86,6 +86,52 @@ export class Tube {
     }
   }
 
+  canWeCollapse() {
+    if (this.getTubeConnectedTo() !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  evaluateExpanded() {
+    if (this.expanded === undefined) {
+      this.expanded = !this.canWeCollapse();
+    }
+  }
+
+  expand() {
+    if (this.expanded) {
+      return;
+    }
+
+    this.expanded = true;
+
+    const tubeConnectedTo = this.getTubeConnectedTo();
+    if (tubeConnectedTo) {
+      tubeConnectedTo.expand();
+    }
+  }
+
+  collapse(mustCollapseLinkedTubesFlag?: boolean) {
+    if (!this.expanded || !this.canWeCollapse()) {
+      return;
+    }
+
+    this.expanded = false;
+    const tubeConnectedTo = this.getTubeConnectedTo();
+
+    let mustCollapseLinkedTubes = true;
+
+    if (mustCollapseLinkedTubesFlag !== undefined) {
+      mustCollapseLinkedTubes = mustCollapseLinkedTubesFlag;
+    }
+
+    if (tubeConnectedTo && mustCollapseLinkedTubes) {
+      tubeConnectedTo.collapse(false);
+    }
+  }
+
   parentGrid() {
     return this.parentWire.parentGrid;
   }

@@ -108,6 +108,11 @@ export class Grid {
       this.addFiberConnection({ fiberConnectionData: connectionData })
     );
 
+    // Once we have parsed all the fiber connections, we must evaluate every tube in order to determine if it's expanded or not by default
+    this.getAllTubes().forEach((tube: Tube) => {
+      tube.evaluateExpanded();
+    });
+
     // We check for those tubes who are connected 1 to 1 to another tube and we add them to this.tubeConnections
     this.getConnectedO2OTubes().forEach(
       (connectedPairTube: TubeConnectionApiType) => {
@@ -125,9 +130,10 @@ export class Grid {
     const connectedPairTubes: TubeConnectionApiType[] = [];
 
     this.getAllTubes().forEach((tube: Tube) => {
-      // if (tube.expanded) {
-      //   return;
-      // }
+      // If the tube it's already expanded, this is not a connected pair tube
+      if (tube.expanded) {
+        return;
+      }
 
       // To avoid duplicates, we check if the tube is already in the array
       if (
@@ -222,6 +228,16 @@ export class Grid {
     }
 
     return foundFiber;
+  }
+
+  getTubeById(id: number) {
+    const foundTube = this.getAllTubes().find((tube) => tube.id === id);
+
+    if (!foundTube) {
+      throw new Error(`Tube not found: ${id}`);
+    }
+
+    return foundTube;
   }
 
   getFiberConnectionWithId(id: number) {
