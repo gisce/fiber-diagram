@@ -1,17 +1,14 @@
-import { FiberApiType } from "base/Fiber";
+import { FiberApiType, FiberDataType } from "base/Fiber";
 import { PositionSize } from "base/Grid";
 
-export class SplitterApiType {
+export type SplitterType<T> = {
   id: number;
-  fibers_in: FiberApiType[];
-  fibers_out: FiberApiType[];
-}
+  fibers_in: T[];
+  fibers_out: T[];
+};
 
-export class SplitterDataType {
-  attr?: PositionSize;
-  orientation?: "LEFT" | "RIGHT";
-}
+export type SplitterApiType = SplitterType<FiberApiType>;
 
-export type SplitterFiberDataType = FiberApiType & {
+export type SplitterDataType = SplitterType<FiberDataType> & {
   attr?: PositionSize;
 };

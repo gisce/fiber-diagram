@@ -57,3 +57,5 @@ export type VerticalIndexElement = {
   type: "fiber" | "tube";
   id: number;
 };
+
+export type Column = { [key: number]: VerticalIndexElement };

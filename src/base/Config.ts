@@ -11,4 +11,5 @@ export const Config = {
   growHorizontalFactor: 0.5,
   angleSeparatorFactor: 2.5,
   splitterWidth: 2,
+  colorForSplitters: "#555555",
 };
