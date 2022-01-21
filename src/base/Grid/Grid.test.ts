@@ -45,6 +45,8 @@ describe("A Grid", () => {
       expect(grid.getFiberById(10).parent).toBeDefined();
       expect(grid.getFiberById(10).parent instanceof Splitter).toBeTruthy();
       expect(grid.getFiberById(10).parentType).toBe("SPLITTER");
+
+      expect(grid.tubeConnections).toHaveLength(1);
     });
   });
 });

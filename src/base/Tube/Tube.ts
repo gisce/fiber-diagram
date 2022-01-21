@@ -80,7 +80,7 @@ export class Tube {
       sameOrder && Object.values(tubesConnectedTo).length === 1;
 
     if (connectedToSameTube) {
-      return tubesConnectedTo[0];
+      return Object.values(tubesConnectedTo)[0];
     } else {
       return undefined;
     }
