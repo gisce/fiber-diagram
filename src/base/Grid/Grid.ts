@@ -98,18 +98,15 @@ export class Grid {
   }
 
   calculate() {
-    // Size independent elements like splitters
-    this.splitters.forEach((splitter: Splitter) => {
-      splitter.calculateSize();
-    });
-
     // *******
     // First, sizing starting from deeper to outer (FIBER < TUBE < WIRE)
     // *******
 
-    // 1- FIBERS SIZING
+    // 1- FIBERS WHOSE PARENTS ARE TUBES - SIZING
     this.getAllFibers().forEach((fiber: Fiber) => {
-      fiber.calculateSize();
+      if (fiber.parentType === "TUBE") {
+        fiber.calculateSize();
+      }
     });
 
     // 2- TUBES SIZING
@@ -136,13 +133,19 @@ export class Grid {
       tube.calculatePosition();
     });
 
-    // 6- FIBERS POSITIONING
+    // 6- FIBERS WHOSE PARENTS ARE TUBES - POSITIONING
     this.getAllFibers().forEach((fiber: Fiber) => {
-      fiber.calculatePosition();
+      if (fiber.parentType === "TUBE") {
+        fiber.calculatePosition();
+      }
     });
 
+    // this.splitters.forEach((splitter: Splitter) => {
+    //   splitter.calculateSize();
+    // });
+
     // Finally we calculate our width and height
-    this.size.height = this.getCurrentWiresHeight();
+    this.size.height = this.getWiresHeight();
   }
 
   parseWires(wiresData: WireDataType[]) {
@@ -375,7 +378,7 @@ export class Grid {
     );
   }
 
-  getCurrentWiresHeight() {
+  getWiresHeight() {
     const leftHeight = this.leftWires.reduce(
       (a, b) => a + b.attr.size.height + Config.wireSeparation,
       0
