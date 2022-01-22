@@ -10,7 +10,7 @@ module.exports = {
   },
   moduleDirectories: ["node_modules", "src"],
   // setupFilesAfterEnv: ["./jest.setup.ts"],
-  collectCoverage: false,
+  collectCoverage: true,
   collectCoverageFrom: [
     "src/base/**/*.{ts,tsx}",
     "!<rootDir>/node_modules/",

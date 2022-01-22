@@ -59,7 +59,7 @@ export class Tube {
         return false;
       }
 
-      const otherFiberId = fiberConnection.getOtherFiber(fiber.id);
+      const otherFiberId = fiberConnection.getOtherFiberId(fiber.id);
       const otherFiber: Fiber = this.parentGrid().getFiberById(otherFiberId);
 
       // If the other fiber belongs to a splitter, tube is not connected to another tube
@@ -105,31 +105,15 @@ export class Tube {
       return;
     }
 
-    this.expanded = true;
-
-    const tubeConnectedTo = this.getTubeConnectedTo();
-    if (tubeConnectedTo) {
-      tubeConnectedTo.expand();
-    }
+    this.parentGrid().onTubeExpand(this);
   }
 
-  collapse(mustCollapseLinkedTubesFlag?: boolean) {
+  collapse() {
     if (!this.expanded || !this.canWeCollapse()) {
       return;
     }
 
-    this.expanded = false;
-    const tubeConnectedTo = this.getTubeConnectedTo();
-
-    let mustCollapseLinkedTubes = true;
-
-    if (mustCollapseLinkedTubesFlag !== undefined) {
-      mustCollapseLinkedTubes = mustCollapseLinkedTubesFlag;
-    }
-
-    if (tubeConnectedTo && mustCollapseLinkedTubes) {
-      tubeConnectedTo.collapse(false);
-    }
+    this.parentGrid().onTubeCollapse(this);
   }
 
   parentGrid() {

@@ -13,7 +13,11 @@ import {
 } from "./Grid.types";
 import { isEqual } from "lodash";
 import { Tube } from "base/Tube";
-import { TubeConnection, TubeConnectionApiType } from "base/TubeConnection";
+import {
+  TubeConnection,
+  TubeConnectionApiType,
+  TubeConnectionDataType,
+} from "base/TubeConnection";
 import { Fiber } from "base/Fiber";
 import { Splitter } from "base/Splitter";
 import { SplitterDataType } from "base/Splitter/Splitter.types";
@@ -22,7 +26,7 @@ export class Grid {
   initialData: GridDataType;
   id: number;
   name: string;
-  onChange?: (grid: Grid) => void;
+  onChange?: () => void;
 
   size: Size;
   leftSideWidth: number;
@@ -48,7 +52,7 @@ export class Grid {
     onChange,
   }: {
     input?: GridDataType;
-    onChange?: (grid: Grid) => void;
+    onChange?: () => void;
   }) {
     // We store the initial data for later comparing if our process detects any changes
     this.initialData = { ...input };
@@ -98,14 +102,25 @@ export class Grid {
 
   parseSplitters(splittersData: SplitterDataType[]) {
     splittersData.forEach((splitterData: SplitterDataType) =>
-      this.addSplitter({ splitterData })
+      this.splitters.push(
+        new Splitter({
+          data: splitterData,
+          parentGrid: this,
+          index: this.splitters.length,
+        })
+      )
     );
   }
 
   parseConnections(connectionsData: FiberConnectionApiType[]) {
     // We add all our fiber to fiber connections
     connectionsData.forEach((connectionData: FiberConnectionApiType) =>
-      this.addFiberConnection({ fiberConnectionData: connectionData })
+      this.fiberConnections.push(
+        new FiberConnection({
+          data: connectionData,
+          parentGrid: this,
+        })
+      )
     );
 
     // Once we have parsed all the fiber connections, we must evaluate every tube in order to determine if it's expanded or not by default
@@ -177,19 +192,78 @@ export class Grid {
         index: this.splitters.length,
       })
     );
+
+    this.dataHasChanged();
   }
 
-  addFiberConnection({
-    fiberConnectionData,
-  }: {
-    fiberConnectionData: FiberConnectionDataType;
-  }) {
+  addFiberConnection(fiberConnectionData: FiberConnectionDataType) {
     this.fiberConnections.push(
       new FiberConnection({
         data: fiberConnectionData,
         parentGrid: this,
       })
     );
+
+    this.dataHasChanged();
+  }
+
+  removeFiberConnection(fiberConnectionData: FiberConnectionDataType) {
+    this.fiberConnections = this.fiberConnections.filter(
+      (fiberConnection) =>
+        fiberConnection.fiber_in !== fiberConnectionData.fiber_in &&
+        fiberConnection.fiber_out !== fiberConnectionData.fiber_out
+    );
+
+    this.dataHasChanged();
+  }
+
+  addTubeConnection(tubeConnectionData: TubeConnectionDataType) {
+    this.tubeConnections.push(
+      new TubeConnection({
+        data: tubeConnectionData,
+        parentGrid: this,
+      })
+    );
+
+    this.dataHasChanged();
+  }
+
+  removeTubeConnection(tubeConnectionData: TubeConnectionDataType) {
+    this.tubeConnections = this.tubeConnections.filter(
+      (tubeConnection) =>
+        tubeConnection.tube_in !== tubeConnectionData.tube_in &&
+        tubeConnection.tube_out !== tubeConnectionData.tube_out
+    );
+
+    this.dataHasChanged();
+  }
+
+  onTubeExpand(tube: Tube) {
+    this.setTubeExpanded({ tube, expanded: true });
+  }
+
+  onTubeCollapse(tube: Tube) {
+    this.setTubeExpanded({ tube, expanded: false });
+  }
+
+  setTubeExpanded({ tube, expanded }: { tube: Tube; expanded: boolean }) {
+    const tubeConnection = this.getTubeConnectionWithId(tube.id);
+
+    tube.expanded = expanded;
+
+    if (tubeConnection && expanded) {
+      // If we're going to expand the tube, we must remove the tube connection
+      const otherTubeId = tubeConnection.getOtherTubeId(tube.id);
+      const otherTube = this.getTubeById(otherTubeId);
+      otherTube.expanded = expanded;
+
+      tubeConnection.remove();
+    } else {
+      // If we're going to collapse the tube, we must add the tube connection
+      const otherTube = tube.getTubeConnectedTo();
+      otherTube.expanded = expanded;
+      this.addTubeConnection({ tube_in: tube.id, tube_out: otherTube.id });
+    }
   }
 
   getAllWires() {
@@ -246,6 +320,12 @@ export class Grid {
     );
   }
 
+  getTubeConnectionWithId(id: number) {
+    return this.tubeConnections.find((tubeConnection) =>
+      tubeConnection.tubeIdBelongsToConnection(id)
+    );
+  }
+
   getApiJson(): GridApiType {
     return {
       res: {
@@ -290,5 +370,9 @@ export class Grid {
     };
 
     return output;
+  }
+
+  dataHasChanged() {
+    this.onChange();
   }
 }

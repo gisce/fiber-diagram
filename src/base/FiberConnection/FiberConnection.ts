@@ -26,7 +26,7 @@ export class FiberConnection {
     return fiber_id === fiber_in || fiber_id === fiber_out;
   }
 
-  getOtherFiber(id: number) {
+  getOtherFiberId(id: number) {
     const { fiber_in, fiber_out } = this;
     return id === fiber_in ? fiber_out : fiber_in;
   }
@@ -45,5 +45,12 @@ export class FiberConnection {
       fiber_in,
       fiber_out,
     };
+  }
+
+  remove() {
+    this.parentGrid.removeFiberConnection({
+      fiber_in: this.fiber_in,
+      fiber_out: this.fiber_out,
+    });
   }
 }

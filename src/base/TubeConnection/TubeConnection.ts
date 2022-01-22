@@ -21,6 +21,16 @@ export class TubeConnection {
     this.parentGrid = parentGrid;
   }
 
+  tubeIdBelongsToConnection(tube_id: number) {
+    const { tube_in, tube_out } = this;
+    return tube_id === tube_in || tube_id === tube_out;
+  }
+
+  getOtherTubeId(id: number) {
+    const { tube_in, tube_out } = this;
+    return id === tube_in ? tube_out : tube_in;
+  }
+
   getApiJson(): TubeConnectionApiType {
     const { tube_in, tube_out } = this;
     return {
@@ -35,5 +45,12 @@ export class TubeConnection {
       tube_in,
       tube_out,
     };
+  }
+
+  remove() {
+    this.parentGrid.removeTubeConnection({
+      tube_in: this.tube_in,
+      tube_out: this.tube_out,
+    });
   }
 }
