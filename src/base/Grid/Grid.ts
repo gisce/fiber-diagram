@@ -26,7 +26,7 @@ export class Grid {
   initialData: GridDataType;
   id: number;
   name: string;
-  onChange?: () => void;
+  onChange?: (grid: Grid) => void;
 
   size: Size;
   leftSideWidth: number;
@@ -52,7 +52,7 @@ export class Grid {
     onChange,
   }: {
     input?: GridDataType;
-    onChange?: () => void;
+    onChange?: (grid: Grid) => void;
   }) {
     // We store the initial data for later comparing if our process detects any changes
     this.initialData = { ...input };
@@ -70,7 +70,8 @@ export class Grid {
     // We parse the data in order to create our logical objects without position or size
     this.parse({ input });
 
-    // First, we must calculate the size of the fibers inside tubes
+    // And then we calculate positions and sizes of our elements
+    this.calculate();
   }
 
   parse({ input }: { input?: GridDataType }) {
@@ -94,6 +95,54 @@ export class Grid {
     if (input.res?.connections?.fibers) {
       this.parseConnections(input.res?.connections?.fibers);
     }
+  }
+
+  calculate() {
+    // Size independent elements like splitters
+    this.splitters.forEach((splitter: Splitter) => {
+      splitter.calculateSize();
+    });
+
+    // *******
+    // First, sizing starting from deeper to outer (FIBER < TUBE < WIRE)
+    // *******
+
+    // 1- FIBERS SIZING
+    this.getAllFibers().forEach((fiber: Fiber) => {
+      fiber.calculateSize();
+    });
+
+    // 2- TUBES SIZING
+    this.getAllTubes().forEach((tube: Tube) => {
+      tube.calculateSize();
+    });
+
+    // 3- WIRES SIZING
+    this.getAllWires().forEach((wire: Wire) => {
+      wire.calculateSize();
+    });
+
+    // *******
+    // Then, positioning from outer to deeper (WIRE > TUBE > FIBER)
+    // *******
+
+    // 4- WIRES POSITIONING
+    this.getAllWires().forEach((wire: Wire) => {
+      wire.calculatePosition();
+    });
+
+    // 5- TUBES POSITIONING
+    this.getAllTubes().forEach((tube: Tube) => {
+      tube.calculatePosition();
+    });
+
+    // 6- FIBERS POSITIONING
+    this.getAllFibers().forEach((fiber: Fiber) => {
+      fiber.calculatePosition();
+    });
+
+    // Finally we calculate our width and height
+    this.size.height = this.getCurrentWiresHeight();
   }
 
   parseWires(wiresData: WireDataType[]) {
@@ -326,6 +375,18 @@ export class Grid {
     );
   }
 
+  getCurrentWiresHeight() {
+    const leftHeight = this.leftWires.reduce(
+      (a, b) => a + b.attr.size.height + Config.wireSeparation,
+      0
+    );
+    const rightHeight = this.rightWires.reduce(
+      (a, b) => a + b.attr.size.height + Config.wireSeparation,
+      0
+    );
+    return Math.max(leftHeight, rightHeight);
+  }
+
   getApiJson(): GridApiType {
     return {
       res: {
@@ -373,6 +434,7 @@ export class Grid {
   }
 
   dataHasChanged() {
-    this.onChange();
+    this.calculate();
+    this.onChange(this);
   }
 }

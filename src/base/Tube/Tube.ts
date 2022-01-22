@@ -1,3 +1,4 @@
+import { Config } from "base/Config";
 import { Fiber, FiberDataType } from "base/Fiber";
 import { InitialPositionSize, PositionSize } from "base/Grid";
 import { Wire } from "base/Wire";
@@ -114,6 +115,55 @@ export class Tube {
     }
 
     this.parentGrid().onTubeCollapse(this);
+  }
+
+  calculateSize() {
+    const usedChildrenHeight = this.fibers.reduce(
+      (a, b) => a + b.attr.size.height,
+      0
+    );
+
+    const heightWithSeparation =
+      this.expanded === false || this.fibers.length === 0
+        ? Config.baseUnits.tube.height
+        : Math.max(
+            usedChildrenHeight +
+              this.fibers.length * Config.separation +
+              Config.separation,
+            Config.baseUnits.tube.height
+          );
+
+    this.attr.size = {
+      width: Config.baseUnits.tube.width,
+      height: heightWithSeparation,
+    };
+  }
+
+  calculatePosition() {
+    const parentPosition = this.parentWire.attr.position;
+
+    const sibilingsHigherThanMe = this.parentWire.tubes.filter((wire) => {
+      return wire.index < this.index;
+    });
+
+    const usedHeight = sibilingsHigherThanMe
+      .map((wire) => wire.attr.size.height)
+      .reduce((a, b) => a + b, 0);
+
+    const usedHeightPlusSeparation =
+      Config.separation +
+      usedHeight +
+      sibilingsHigherThanMe.length * Config.separation;
+
+    const x =
+      this.parentWire.disposition === "LEFT"
+        ? parentPosition.x + Config.baseUnits.wire.width
+        : parentPosition.x - Config.baseUnits.tube.width;
+
+    this.attr.position = {
+      x,
+      y: parentPosition.y + usedHeightPlusSeparation,
+    };
   }
 
   parentGrid() {

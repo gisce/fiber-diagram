@@ -1,3 +1,4 @@
+import { Config } from "base/Config";
 import { Grid, InitialPositionSize, PositionSize } from "base/Grid";
 import { Tube, TubeDataType } from "base/Tube";
 import { WireApiType, WireDataType, WireDisposition } from "./Wire.types";
@@ -49,6 +50,51 @@ export class Wire {
       index: this.tubes.length,
     });
     this.tubes.push(tube);
+  }
+
+  calculateSize() {
+    const usedChildrenHeight = this.tubes.reduce(
+      (a, b) => a + b.attr.size.height,
+      0
+    );
+
+    const heightWithSeparation =
+      this.expanded === false || this.tubes.length === 0
+        ? Config.baseUnits.wire.height
+        : usedChildrenHeight +
+          this.tubes.length * Config.separation +
+          Config.separation;
+
+    this.attr.size = {
+      width: Config.baseUnits.wire.width,
+      height: heightWithSeparation,
+    };
+  }
+
+  calculatePosition() {
+    const wireSibilings =
+      this.disposition === "LEFT"
+        ? this.parentGrid.leftWires
+        : this.parentGrid.rightWires;
+
+    const sibilingsHigherThanMe = wireSibilings.filter((wire) => {
+      return wire.index < this.index;
+    });
+
+    const usedHeight = sibilingsHigherThanMe
+      .map((wire) => wire.attr.size.height)
+      .reduce((a, b) => a + b, 0);
+
+    const usedHeightPlusSeparation =
+      usedHeight + sibilingsHigherThanMe.length * Config.wireSeparation;
+
+    this.attr.position = {
+      x:
+        this.disposition === "LEFT"
+          ? 0
+          : this.parentGrid.size.width - Config.baseUnits.wire.width,
+      y: usedHeightPlusSeparation,
+    };
   }
 
   getApiJson(): WireApiType {

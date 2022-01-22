@@ -29,7 +29,14 @@ export class Splitter {
     this.index = index;
   }
 
-  parseFibers() {}
+  calculateSize() {
+    this.attr.size = {
+      width: Config.splitterWidth + Config.baseUnits.fiber.width * 2,
+      height:
+        (this.fibers_out.length + this.fibers_out.length + 1) *
+        Config.baseUnits.fiber.height,
+    };
+  }
 
   getParsedFibers(fibersData: FiberDataType[]) {
     return fibersData.map((fiberEntry, index) => {
@@ -39,6 +46,15 @@ export class Splitter {
         index: index,
       });
     });
+  }
+
+  isFiberInput(fiber: Fiber) {
+    return this.fibers_in.find((f) => f.id === fiber.id) !== undefined;
+  }
+
+  getSibilingsForFiber(fiber: Fiber) {
+    const fibers = this.isFiberInput(fiber) ? this.fibers_in : this.fibers_out;
+    return fibers.filter((f) => f.id !== fiber.id);
   }
 
   getApiJson() {
