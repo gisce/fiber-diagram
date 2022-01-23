@@ -7,7 +7,9 @@ import { TubeConnection, TubeConnectionData } from "base/TubeConnection";
 import { Fiber } from "base/Fiber";
 import { Splitter } from "base/Splitter";
 import { SplitterData } from "base/Splitter/Splitter.types";
-import { AngleRow, GridData } from ".";
+import { GridData } from ".";
+import { PathController } from "base/PathController";
+import { Path } from "konva/lib/shapes/Path";
 
 export class Grid {
   initialData: GridData;
@@ -30,13 +32,8 @@ export class Grid {
   // Splitters
   splitters: Splitter[] = [];
 
-  // Middle column which is the point where mostly all fibers are connected to each other
-  // We will store here the index of the *Y* positions as the keys and *FiberConnection* or *TubeConnection* as the value
-  middleFusionColumn: MiddleFusionColumn = {};
-
-  // Horizontal index where we will save where the angles of the connections are placed
-  // We will store here the index of the *X* positions as the keys and *Fiber* or *Tube* as the value
-  angleRow: AngleRow = {};
+  // Path Controller
+  pathController: PathController;
 
   constructor({
     input,
@@ -57,6 +54,9 @@ export class Grid {
 
     // We parse the data in order to create our logical objects without position or size
     this.parse({ input });
+
+    // Initialization of path controller
+    this.pathController = new PathController();
 
     // And then we calculate positions and sizes of our elements
     this.calculate();
