@@ -126,15 +126,6 @@ export class Fiber {
     };
   }
 
-  getApiJson(): FiberApiType {
-    const { id, name, color } = this;
-    return {
-      id,
-      name,
-      color,
-    };
-  }
-
   getJson(): FiberDataType {
     const { id, name, color, attr, index } = this;
     return {

@@ -1,14 +1,7 @@
-import { FiberApiType, FiberDataType } from "base/Fiber";
-import { PositionSize } from "base/Grid";
+import { FiberData } from "base/Fiber";
 
-export type SplitterType<T> = {
+export type SplitterData = {
   id: number;
-  fibers_in: T[];
-  fibers_out: T[];
-};
-
-export type SplitterApiType = SplitterType<FiberApiType>;
-
-export type SplitterDataType = SplitterType<FiberDataType> & {
-  attr?: PositionSize;
+  fibers_in: FiberData[];
+  fibers_out: FiberData[];
 };

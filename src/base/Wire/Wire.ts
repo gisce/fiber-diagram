@@ -97,16 +97,6 @@ export class Wire {
     };
   }
 
-  getApiJson(): WireApiType {
-    const { id, name, disposition, tubes } = this;
-    return {
-      id,
-      name,
-      disposition,
-      tubes: tubes.map((tube) => tube.getApiJson()),
-    };
-  }
-
   getJson(): WireDataType {
     const { id, name, expanded, tubes, attr, disposition } = this;
 

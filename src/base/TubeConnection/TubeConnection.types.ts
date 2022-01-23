@@ -1,11 +1,4 @@
-import { PositionSize } from "base/Grid";
-
-export type TubeConnectionApiType = {
+export type TubeConnectionData = {
   tube_in: number;
   tube_out: number;
-};
-
-export type TubeConnectionDataType = TubeConnectionApiType & {
-  legs?: PositionSize[];
-  usedYpoints?: { [key: number]: boolean };
 };

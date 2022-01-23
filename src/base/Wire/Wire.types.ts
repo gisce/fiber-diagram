@@ -1,18 +1,13 @@
 import { PositionSize } from "base/Grid";
-import { TubeApiType, TubeDataType } from "base/Tube";
+import { TubeData } from "base/Tube";
 
 export type WireDisposition = "LEFT" | "RIGHT";
 
-export type WireType<T> = {
+export type WireData = {
   id: number;
   name: string;
   disposition: WireDisposition;
-  tubes?: T;
-};
-
-export type WireApiType = WireType<TubeApiType[]>;
-
-export type WireDataType = WireType<TubeDataType[]> & {
+  tubes?: TubeData[];
   attr?: PositionSize;
   expanded?: boolean;
 };

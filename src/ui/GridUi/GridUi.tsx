@@ -23,7 +23,7 @@ export const GridUi = ({
     (newGrid: Grid) => {
       if (JSON.stringify(newGrid.getJson()) !== JSON.stringify(gridData)) {
         setGridData(newGrid.getJson());
-        onChange(JSON.stringify(newGrid.getApiJson()));
+        onChange(JSON.stringify(sanitize(newGrid.getJson())));
       }
     },
     [grid, gridData]
@@ -61,7 +61,7 @@ export const GridUi = ({
       <FiberConnectionContextProvider>
         <Layer>
           <Rect
-            x={grid.leftSideWidth * Config.pixelsPerUnit}
+            x={(grid.size.width * Config.pixelsPerUnit) / 2}
             y={0}
             width={1}
             height={grid.size.height * Config.pixelsPerUnit}

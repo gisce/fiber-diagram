@@ -1,6 +1,6 @@
 import { Config } from "base/Config";
 import { Tube } from "base/Tube";
-import { Grid, LegType, Position, VerticalIndexElement } from "base/Grid";
+import { Grid } from "base/Grid";
 import { TubeConnectionApiType, TubeConnectionDataType } from ".";
 
 export class TubeConnection {
@@ -29,14 +29,6 @@ export class TubeConnection {
   getOtherTubeId(id: number) {
     const { tube_in, tube_out } = this;
     return id === tube_in ? tube_out : tube_in;
-  }
-
-  getApiJson(): TubeConnectionApiType {
-    const { tube_in, tube_out } = this;
-    return {
-      tube_in,
-      tube_out,
-    };
   }
 
   getJson(): TubeConnectionDataType {

@@ -57,14 +57,6 @@ export class Splitter {
     return fibers.filter((f) => f.id !== fiber.id);
   }
 
-  getApiJson() {
-    return {
-      id: this.id,
-      fibers_in: this.fibers_in.map((fiber) => fiber.getApiJson()),
-      fibers_out: this.fibers_out.map((fiber) => fiber.getApiJson()),
-    };
-  }
-
   getJson() {
     return {
       id: this.id,

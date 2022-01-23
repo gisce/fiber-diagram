@@ -1,38 +1,21 @@
 import { Config } from "base/Config";
-import {
-  FiberConnection,
-  FiberConnectionApiType,
-  FiberConnectionDataType,
-} from "base/FiberConnection";
-import { Wire, WireDataType } from "base/Wire";
-import {
-  GridApiType,
-  GridDataType,
-  Size,
-  VerticalIndexElement,
-} from "./Grid.types";
-import { isEqual } from "lodash";
+import { FiberConnection, FiberConnectionData } from "base/FiberConnection";
+import { Wire, WireData } from "base/Wire";
+import { MiddleFusionColumn, Size } from "./Grid.types";
 import { Tube } from "base/Tube";
-import {
-  TubeConnection,
-  TubeConnectionApiType,
-  TubeConnectionDataType,
-} from "base/TubeConnection";
+import { TubeConnection, TubeConnectionData } from "base/TubeConnection";
 import { Fiber } from "base/Fiber";
 import { Splitter } from "base/Splitter";
-import { SplitterDataType } from "base/Splitter/Splitter.types";
+import { SplitterData } from "base/Splitter/Splitter.types";
+import { AngleRow, GridData } from ".";
 
 export class Grid {
-  initialData: GridDataType;
+  initialData: GridData;
   id: number;
   name: string;
   onChange?: (grid: Grid) => void;
 
   size: Size;
-  leftSideWidth: number;
-  rightSideWidth: number;
-  leftUsedSpace: number = 0;
-  rightUsedSpace: number = 0;
 
   // Wires > Tubes > Fibers
   leftWires: Wire[] = [];
@@ -47,11 +30,19 @@ export class Grid {
   // Splitters
   splitters: Splitter[] = [];
 
+  // Middle column which is the point where mostly all fibers are connected to each other
+  // We will store here the index of the *Y* positions as the keys and *FiberConnection* or *TubeConnection* as the value
+  middleFusionColumn: MiddleFusionColumn = {};
+
+  // Horizontal index where we will save where the angles of the connections are placed
+  // We will store here the index of the *X* positions as the keys and *Fiber* or *Tube* as the value
+  angleRow: AngleRow = {};
+
   constructor({
     input,
     onChange,
   }: {
-    input?: GridDataType;
+    input?: GridData;
     onChange?: (grid: Grid) => void;
   }) {
     // We store the initial data for later comparing if our process detects any changes
@@ -62,10 +53,7 @@ export class Grid {
     this.onChange = onChange;
 
     // Initial sizing
-    const { width, height } = { ...Config.gridSize };
-    this.leftSideWidth = width / 2;
-    this.rightSideWidth = width / 2;
-    this.size = { width: this.leftSideWidth + this.rightSideWidth, height };
+    this.size = { ...Config.gridSize };
 
     // We parse the data in order to create our logical objects without position or size
     this.parse({ input });
@@ -74,7 +62,7 @@ export class Grid {
     this.calculate();
   }
 
-  parse({ input }: { input?: GridDataType }) {
+  parse({ input }: { input?: GridData }) {
     // If we don't have data in the input, we just return
     if (!input?.res?.elements) {
       return;
@@ -148,12 +136,12 @@ export class Grid {
     this.size.height = this.getWiresHeight();
   }
 
-  parseWires(wiresData: WireDataType[]) {
-    wiresData.forEach((wireData: WireDataType) => this.addWire({ wireData }));
+  parseWires(wiresData: WireData[]) {
+    wiresData.forEach((wireData: WireData) => this.addWire({ wireData }));
   }
 
-  parseSplitters(splittersData: SplitterDataType[]) {
-    splittersData.forEach((splitterData: SplitterDataType) =>
+  parseSplitters(splittersData: SplitterData[]) {
+    splittersData.forEach((splitterData: SplitterData) =>
       this.splitters.push(
         new Splitter({
           data: splitterData,
@@ -164,9 +152,9 @@ export class Grid {
     );
   }
 
-  parseConnections(connectionsData: FiberConnectionApiType[]) {
+  parseConnections(connectionsData: FiberConnectionData[]) {
     // We add all our fiber to fiber connections
-    connectionsData.forEach((connectionData: FiberConnectionApiType) =>
+    connectionsData.forEach((connectionData: FiberConnectionData) =>
       this.fiberConnections.push(
         new FiberConnection({
           data: connectionData,
@@ -182,7 +170,7 @@ export class Grid {
 
     // We check for those tubes who are connected 1 to 1 to another tube and we add them to this.tubeConnections
     this.getConnectedO2OTubes().forEach(
-      (connectedPairTube: TubeConnectionApiType) => {
+      (connectedPairTube: TubeConnectionData) => {
         this.tubeConnections.push(
           new TubeConnection({
             data: connectedPairTube,
@@ -194,7 +182,7 @@ export class Grid {
   }
 
   getConnectedO2OTubes() {
-    const connectedPairTubes: TubeConnectionApiType[] = [];
+    const connectedPairTubes: TubeConnectionData[] = [];
 
     this.getAllTubes().forEach((tube: Tube) => {
       // If the tube it's already expanded, this is not a connected pair tube
@@ -224,7 +212,7 @@ export class Grid {
     return connectedPairTubes;
   }
 
-  addWire({ wireData }: { wireData: WireDataType }) {
+  addWire({ wireData }: { wireData: WireData }) {
     const { disposition } = wireData;
     const wires = disposition === "LEFT" ? this.leftWires : this.rightWires;
     wires.push(
@@ -236,7 +224,7 @@ export class Grid {
     );
   }
 
-  addSplitter({ splitterData }: { splitterData: SplitterDataType }) {
+  addSplitter({ splitterData }: { splitterData: SplitterData }) {
     this.splitters.push(
       new Splitter({
         data: splitterData,
@@ -248,7 +236,7 @@ export class Grid {
     this.dataHasChanged();
   }
 
-  addFiberConnection(fiberConnectionData: FiberConnectionDataType) {
+  addFiberConnection(fiberConnectionData: FiberConnectionData) {
     this.fiberConnections.push(
       new FiberConnection({
         data: fiberConnectionData,
@@ -259,7 +247,7 @@ export class Grid {
     this.dataHasChanged();
   }
 
-  removeFiberConnection(fiberConnectionData: FiberConnectionDataType) {
+  removeFiberConnection(fiberConnectionData: FiberConnectionData) {
     this.fiberConnections = this.fiberConnections.filter(
       (fiberConnection) =>
         fiberConnection.fiber_in !== fiberConnectionData.fiber_in &&
@@ -269,7 +257,7 @@ export class Grid {
     this.dataHasChanged();
   }
 
-  addTubeConnection(tubeConnectionData: TubeConnectionDataType) {
+  addTubeConnection(tubeConnectionData: TubeConnectionData) {
     this.tubeConnections.push(
       new TubeConnection({
         data: tubeConnectionData,
@@ -280,7 +268,7 @@ export class Grid {
     this.dataHasChanged();
   }
 
-  removeTubeConnection(tubeConnectionData: TubeConnectionDataType) {
+  removeTubeConnection(tubeConnectionData: TubeConnectionData) {
     this.tubeConnections = this.tubeConnections.filter(
       (tubeConnection) =>
         tubeConnection.tube_in !== tubeConnectionData.tube_in &&
@@ -390,30 +378,8 @@ export class Grid {
     return Math.max(leftHeight, rightHeight);
   }
 
-  getApiJson(): GridApiType {
-    return {
-      res: {
-        id: this.id,
-        name: this.name,
-        elements: {
-          wires: this.leftWires
-            .concat(this.rightWires)
-            .map((wire) => wire.getApiJson()),
-          splitters: this.splitters.map((splitter) => splitter.getApiJson()),
-        },
-        connections: {
-          fibers: [
-            ...this.fiberConnections.map((connection) =>
-              connection.getApiJson()
-            ),
-          ],
-        },
-      },
-    };
-  }
-
-  getJson(): GridDataType {
-    const output: GridDataType = {
+  getJson(): GridData {
+    const output: GridData = {
       res: {
         id: this.id,
         name: this.name,
@@ -428,8 +394,6 @@ export class Grid {
             ...this.fiberConnections.map((connection) => connection.getJson()),
           ],
         },
-        leftUsedSpace: this.leftUsedSpace,
-        rightUsedSpace: this.rightUsedSpace,
       },
     };
 

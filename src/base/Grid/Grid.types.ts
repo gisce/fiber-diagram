@@ -1,23 +1,23 @@
-import { FiberConnectionApiType } from "base/FiberConnection";
-import { SplitterApiType } from "base/Splitter/Splitter.types";
-import { WireApiType, WireDataType } from "base/Wire";
+import { Fiber } from "base/Fiber";
+import { FiberConnection, FiberConnectionData } from "base/FiberConnection";
+import { SplitterData } from "base/Splitter/Splitter.types";
+import { Tube } from "base/Tube";
+import { TubeConnection } from "base/TubeConnection";
+import { WireData } from "base/Wire";
 
-export type GridType<T> = {
+export type GridData = {
   res?: {
     id?: number;
     name?: string;
     elements?: {
-      wires?: T;
-      splitters?: SplitterApiType[];
+      wires?: WireData[];
+      splitters?: SplitterData[];
     };
-    connections?: ConnectionsApiType;
-    leftUsedSpace?: number;
-    rightUsedSpace?: number;
+    connections?: {
+      fibers: FiberConnectionData[];
+    };
   };
 };
-
-export type GridApiType = GridType<WireApiType[]>;
-export type GridDataType = GridType<WireDataType[]>;
 
 export type Size = {
   width: number;
@@ -39,23 +39,12 @@ export const InitialPositionSize = {
   position: { x: 0, y: 0 },
 };
 
-export type ConnectionsApiType = {
-  fibers?: FiberConnectionApiType[];
-};
-
-export type ConnectionSegment = {
-  type: "fiber" | "tube";
-  element_id: number;
-  toY: number;
-};
-
-export type LegType = PositionSize & {
+export type PathUnit = PositionSize & {
   color: string;
 };
 
-export type VerticalIndexElement = {
-  type: "fiber" | "tube";
-  id: number;
+export type MiddleFusionColumn = {
+  [key: number]: FiberConnection | TubeConnection;
 };
 
-export type Column = { [key: number]: VerticalIndexElement };
+export type AngleRow = { [key: number]: Fiber | Tube };

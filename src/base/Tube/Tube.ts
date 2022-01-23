@@ -170,16 +170,6 @@ export class Tube {
     return this.parentWire.parentGrid;
   }
 
-  getApiJson(): TubeApiType {
-    const { id, name, color, fibers } = this;
-    return {
-      id,
-      name,
-      color,
-      fibers: fibers.map((fiber) => fiber.getApiJson()),
-    };
-  }
-
   getJson(): TubeDataType {
     const { id, name, color, attr, expanded, index, fibers } = this;
     return {
