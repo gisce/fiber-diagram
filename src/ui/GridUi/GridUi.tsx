@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 import { WireUi } from "ui/WireUi";
-import { Grid, GridDataType } from "base/Grid";
+import { Grid, GridData } from "base/Grid";
 import { Config } from "base/Config";
 import { FiberConnectionUi } from "ui/FiberConnectionUi/FiberConnectionUi";
 import { FiberConnectionContextProvider } from "ui/FiberConnectionUi/FiberConnectionContext";
@@ -17,7 +17,7 @@ export const GridUi = ({
   onChange: (outputJson: string) => void;
 }) => {
   const [grid, setGrid] = useState<Grid>();
-  const [gridData, setGridData] = useState<GridDataType>();
+  const [gridData, setGridData] = useState<GridData>();
 
   const onChangeGrid = useCallback(
     (newGrid: Grid) => {
@@ -81,17 +81,43 @@ export const GridUi = ({
           {rightWires}
           {
             // For debugging purposes
-            // Object.keys(grid.verticalUsedIndexes).map((key, i) => {
-            //   return (
-            //     <Rect
-            //       x={grid.leftSideWidth * Config.pixelsPerUnit}
-            //       y={parseInt(key) * Config.pixelsPerUnit}
-            //       width={1}
-            //       height={1 * Config.pixelsPerUnit}
-            //       fill={"#ff0000"}
-            //     />
-            //   );
-            // })
+            Object.keys(
+              grid.pathController.tubeFusionColumnController.indexController
+                .indexes
+            ).map((key, i) => {
+              return (
+                <Rect
+                  x={(grid.size.width / 2) * Config.pixelsPerUnit}
+                  y={parseInt(key) * Config.pixelsPerUnit}
+                  width={1}
+                  height={1 * Config.pixelsPerUnit}
+                  fill={"#ff0000"}
+                />
+              );
+            })
+          }
+          {
+            // For debugging purposes
+            [
+              ...Object.keys(
+                grid.pathController.rightAngleRowController.indexController
+                  .indexes
+              ),
+              ...Object.keys(
+                grid.pathController.leftAngleRowController.indexController
+                  .indexes
+              ),
+            ].map((key, i) => {
+              return (
+                <Rect
+                  x={parseInt(key) * Config.pixelsPerUnit}
+                  y={1}
+                  width={1 * Config.pixelsPerUnit}
+                  height={1}
+                  fill={"#ff0000"}
+                />
+              );
+            })
           }
         </Layer>
       </FiberConnectionContextProvider>

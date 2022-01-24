@@ -412,7 +412,6 @@ export class Grid {
   }
 
   dataHasChanged() {
-    this.calculate();
     this.onChange(this);
   }
 }

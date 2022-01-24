@@ -26,7 +26,7 @@ export class IndexController<T> {
     return indexes.length > 0 ? Math.max(...indexes) : 0;
   }
 
-  getFreeAboveIndexes({
+  getFreeBelowIndexes({
     n,
     unitSize,
     point,
@@ -37,8 +37,18 @@ export class IndexController<T> {
   }) {
     let freeBelowIndexes: number[];
 
-    for (let j = point; j >= 0 + n; j--) {
-      const indexes = getNPointsAbovePoint({
+    if (this.getHighestUsedIndex() === 0) {
+      return getNPointsBelowPoint({
+        point,
+        unitSize,
+        n,
+      });
+    }
+
+    let j = point;
+
+    while (!freeBelowIndexes && j > 0) {
+      const indexes = getNPointsBelowPoint({
         point: j,
         unitSize,
         n,
@@ -64,13 +74,15 @@ export class IndexController<T> {
       });
       if (indexesAreFree) {
         freeBelowIndexes = indexes;
-        break;
       }
+
+      j -= 1;
     }
+
     return freeBelowIndexes;
   }
 
-  getFreeBelowIndexes({
+  getFreeAboveIndexes({
     n,
     unitSize,
     point,
@@ -81,8 +93,20 @@ export class IndexController<T> {
   }) {
     let freeAboveIndexes: number[];
 
-    for (let i = point; i < this.getHighestUsedIndex(); i++) {
-      const indexes = getNPointsBelowPoint({
+    const highestUsedIndex = this.getHighestUsedIndex();
+
+    if (highestUsedIndex === 0) {
+      return getNPointsAbovePoint({
+        point,
+        unitSize,
+        n,
+      });
+    }
+
+    let i = point;
+
+    while (!freeAboveIndexes) {
+      const indexes = getNPointsAbovePoint({
         point: i,
         unitSize,
         n,
@@ -105,9 +129,11 @@ export class IndexController<T> {
 
       if (indexesAreFree) {
         freeAboveIndexes = indexes;
-        break;
       }
+
+      i += 1;
     }
+
     return freeAboveIndexes;
   }
 
@@ -148,5 +174,21 @@ export class IndexController<T> {
     }
 
     return freeAboveIndexes || freeBelowIndexes;
+  }
+
+  setUsedIndexWithSize({
+    element,
+    point,
+    size,
+  }: {
+    element: any;
+    point: number;
+    size: number;
+  }) {
+    this.indexes[point] = element;
+
+    for (let i = point; i < point + size; i++) {
+      this.indexes[i] = element;
+    }
   }
 }

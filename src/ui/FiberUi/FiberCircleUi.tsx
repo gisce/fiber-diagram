@@ -63,24 +63,23 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
             ? (fiber.parent as Splitter).parentGrid
             : (fiber.parent as Tube).parentWire.parentGrid;
 
-        try {
-          if (
-            validateFiberConnection({
-              fiberIn: selectedFiber,
-              fiberOut: fiber,
-            })
-          ) {
-            // We add our fiber connection
-            parentGrid.addFiberConnection({
-              fiber_in: selectedFiber.id,
-              fiber_out: fiber.id,
-            });
+        // try {
+        if (
+          validateFiberConnection({
+            fiberIn: selectedFiber,
+            fiberOut: fiber,
+          })
+        ) {
+          // We add our fiber connection
+          parentGrid.addFiberConnection({
+            fiber_in: selectedFiber.id,
+            fiber_out: fiber.id,
+          });
 
-            // And we reset our selected fiber
-            setSelectedFiber(undefined);
-          }
-        } catch (err) {
-          alert(err.message);
+          // And we reset our selected fiber
+          setSelectedFiber(undefined);
+        } else {
+          // alert(err.message);
           setSelectedFiber(undefined);
         }
       }}

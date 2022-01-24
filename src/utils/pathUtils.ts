@@ -91,10 +91,10 @@ export const validateFiberConnection = ({
   fiberOut: Fiber;
 }) => {
   // Check if both fibers are outputs of an splitter
-  const parentGrid =
-    fiberIn.parentType === "SPLITTER"
-      ? (fiberIn.parent as Splitter).parentGrid
-      : (fiberIn.parent as Tube).parentWire.parentGrid;
+  // const parentGrid =
+  //   fiberIn.parentType === "SPLITTER"
+  //     ? (fiberIn.parent as Splitter).parentGrid
+  //     : (fiberIn.parent as Tube).parentWire.parentGrid;
 
   // Check if both fibers are outputs from the same splitter
   // if (

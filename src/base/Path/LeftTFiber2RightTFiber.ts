@@ -29,6 +29,13 @@ export default ({
       n: 1,
     })[0];
 
+  // We set now the used indexes in the column
+  columnController.indexController.setUsedIndexWithSize({
+    point: fusionYPoint,
+    size: Config.baseUnits.fiber.height,
+    element: fiberIn,
+  });
+
   // Check if we can directly connect the fibers if they're flat and there's space in the middle fusion column
   if (source.y === target.y && target.y === fusionYPoint) {
     const leftPath = getLeftToMiddleFlatPath({ source, columnController });
@@ -54,7 +61,11 @@ export default ({
     };
   }
 
-  const leftPath = getLeftToMiddlePath({
+  const {
+    path: leftPath,
+    usedXPoint: leftUsedXPoint,
+    usedYPoint: leftUsedYPoint,
+  } = getLeftToMiddlePath({
     source,
     columnController,
     angleRowController: leftAngleRowController,
@@ -66,7 +77,28 @@ export default ({
     unitSize: Config.baseUnits.fiber.height,
   });
 
-  const rightPath = getRightToMiddlePath({
+  if (leftUsedXPoint) {
+    // We set now the used indexes in the angleRow
+    leftAngleRowController.indexController.setUsedIndexWithSize({
+      point: leftUsedXPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberIn,
+    });
+  }
+
+  if (leftUsedYPoint) {
+    columnController.indexController.setUsedIndexWithSize({
+      point: leftUsedYPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberIn,
+    });
+  }
+
+  const {
+    path: rightPath,
+    usedXPoint: rightUsedXPoint,
+    usedYPoint: rightUsedYPoint,
+  } = getRightToMiddlePath({
     source: target,
     columnController,
     angleRowController: rightAngleRowController,
@@ -77,6 +109,23 @@ export default ({
     color: fiberOut.color,
     unitSize: Config.baseUnits.fiber.height,
   });
+
+  if (rightUsedXPoint) {
+    // We set now the used indexes in the angleRow
+    rightAngleRowController.indexController.setUsedIndexWithSize({
+      point: rightUsedXPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberOut,
+    });
+  }
+
+  if (rightUsedYPoint) {
+    columnController.indexController.setUsedIndexWithSize({
+      point: rightUsedYPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberOut,
+    });
+  }
 
   return {
     fusionPoint: {
@@ -98,15 +147,21 @@ const getLeftToMiddlePath = ({
   angleRowController: RowController; // In order to check where we can horizontally place our connection
   fusionYPoint: number; // The fusion point
 }) => {
+  // If it's a flat path, we return it directly
+  if (source.y === fusionYPoint) {
+    return {
+      path: getLeftToMiddleFlatPath({ source, columnController }),
+    };
+  }
+
   let path = [];
 
   // We determine the angle point searching horizontal available space inside angleRow
-  const freeXPoint =
-    angleRowController.indexController.getNFreeIndexesFromPoint({
-      point: columnController.middlePoint - Config.separation,
-      unitSize: Config.baseUnits.fiber.height,
-      n: 1,
-    })[0];
+  const freeXPoint = angleRowController.indexController.getFreeBelowIndexes({
+    point: columnController.middlePoint - Config.separation * 2,
+    unitSize: Config.baseUnits.fiber.height,
+    n: 1,
+  })[0];
 
   // from: source.x, source.y
   // to: freeXPoint, source.y
@@ -132,7 +187,11 @@ const getLeftToMiddlePath = ({
     path.push([iX, fusionYPoint]);
   }
 
-  return path;
+  return {
+    path,
+    usedXPoint: freeXPoint,
+    usedYPoint: source.y,
+  };
 };
 
 const getRightToMiddlePath = ({
@@ -146,15 +205,21 @@ const getRightToMiddlePath = ({
   angleRowController: RowController; // In order to check where we can horizontally place our connection
   fusionYPoint: number; // The fusion point
 }) => {
+  // If it's a flat path, we return it directly
+  if (source.y === fusionYPoint) {
+    return {
+      path: getRightToMiddleFlatPath({ target: source, columnController }),
+    };
+  }
+
   let path = [];
 
   // We determine the angle point searching horizontal available space inside angleRow
-  const freeXPoint =
-    angleRowController.indexController.getNFreeIndexesFromPoint({
-      point: columnController.middlePoint + Config.separation,
-      unitSize: Config.baseUnits.fiber.height,
-      n: 1,
-    })[0];
+  const freeXPoint = angleRowController.indexController.getFreeAboveIndexes({
+    point: columnController.middlePoint + Config.separation,
+    unitSize: Config.baseUnits.fiber.height,
+    n: 1,
+  })[0];
 
   // from: source.x, source.y
   // to: freeXPoint, source.y
@@ -180,7 +245,11 @@ const getRightToMiddlePath = ({
     path.push([iX, fusionYPoint]);
   }
 
-  return path;
+  return {
+    path,
+    usedXPoint: freeXPoint,
+    usedYPoint: source.y,
+  };
 };
 
 const getLeftToMiddleFlatPath = ({
