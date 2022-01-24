@@ -44,7 +44,7 @@ export type PathUnit = PositionSize & {
 };
 
 export type MiddleFusionColumn = {
-  [key: number]: FiberConnection | TubeConnection;
+  [key: number]: Fiber | Tube;
 };
 
 export type AngleRow = { [key: number]: Fiber | Tube };

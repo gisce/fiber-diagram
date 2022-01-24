@@ -29,7 +29,7 @@ export default ({
       n: 1,
     })[0];
 
-  // We set now the used indexes in the column
+  // And we set now this point as used index in the fusion column
   columnController.indexController.setUsedIndexWithSize({
     point: fusionYPoint,
     size: Config.baseUnits.fiber.height,
@@ -38,94 +38,28 @@ export default ({
 
   // Check if we can directly connect the fibers if they're flat and there's space in the middle fusion column
   if (source.y === target.y && target.y === fusionYPoint) {
-    const leftPath = getLeftToMiddleFlatPath({ source, columnController });
-    const leftLeg = getUnitsForPath({
-      pathCoords: leftPath,
-      color: fiberIn.color,
-      unitSize: Config.baseUnits.fiber.height,
+    return getFiberToFiberFlatPath({
+      fiberIn,
+      fiberOut,
+      fusionYPoint,
+      columnController,
     });
-
-    const rightPath = getRightToMiddleFlatPath({ target, columnController });
-    const rightLeg = getUnitsForPath({
-      pathCoords: rightPath,
-      color: fiberOut.color,
-      unitSize: Config.baseUnits.fiber.height,
-    });
-
-    return {
-      fusionPoint: {
-        x: columnController.middlePoint,
-        y: fusionYPoint,
-      },
-      path: [...leftLeg, ...rightLeg],
-    };
   }
 
-  const {
-    path: leftPath,
-    usedXPoint: leftUsedXPoint,
-    usedYPoint: leftUsedYPoint,
-  } = getLeftToMiddlePath({
-    source,
+  // If the fibers are not flat, we get our left and right paths separately
+  const leftLeg = getLeftLeg({
+    fiberIn,
     columnController,
     angleRowController: leftAngleRowController,
     fusionYPoint,
   });
-  const leftLeg = getUnitsForPath({
-    pathCoords: leftPath,
-    color: fiberIn.color,
-    unitSize: Config.baseUnits.fiber.height,
-  });
 
-  if (leftUsedXPoint) {
-    // We set now the used indexes in the angleRow
-    leftAngleRowController.indexController.setUsedIndexWithSize({
-      point: leftUsedXPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiberIn,
-    });
-  }
-
-  if (leftUsedYPoint) {
-    columnController.indexController.setUsedIndexWithSize({
-      point: leftUsedYPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiberIn,
-    });
-  }
-
-  const {
-    path: rightPath,
-    usedXPoint: rightUsedXPoint,
-    usedYPoint: rightUsedYPoint,
-  } = getRightToMiddlePath({
-    source: target,
+  const rightLeg = getRightLeg({
+    fiberOut,
     columnController,
     angleRowController: rightAngleRowController,
     fusionYPoint,
   });
-  const rightLeg = getUnitsForPath({
-    pathCoords: rightPath,
-    color: fiberOut.color,
-    unitSize: Config.baseUnits.fiber.height,
-  });
-
-  if (rightUsedXPoint) {
-    // We set now the used indexes in the angleRow
-    rightAngleRowController.indexController.setUsedIndexWithSize({
-      point: rightUsedXPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiberOut,
-    });
-  }
-
-  if (rightUsedYPoint) {
-    columnController.indexController.setUsedIndexWithSize({
-      point: rightUsedYPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiberOut,
-    });
-  }
 
   return {
     fusionPoint: {
@@ -282,4 +216,136 @@ const getRightToMiddleFlatPath = ({
   }
 
   return path;
+};
+
+const getFiberToFiberFlatPath = ({
+  fiberIn,
+  fiberOut,
+  columnController,
+  fusionYPoint,
+}: {
+  fiberIn: Fiber; // The fiber on the left side
+  fiberOut: Fiber; // The fiber on the right side
+  columnController: ColumnController; // In order to check where we can vertically place our connection
+  fusionYPoint: number;
+}) => {
+  const leftPath = getLeftToMiddleFlatPath({
+    source: fiberIn.attr.position,
+    columnController,
+  });
+  const leftLeg = getUnitsForPath({
+    pathCoords: leftPath,
+    color: fiberIn.color,
+    unitSize: Config.baseUnits.fiber.height,
+  });
+
+  const rightPath = getRightToMiddleFlatPath({
+    target: fiberOut.attr.position,
+    columnController,
+  });
+  const rightLeg = getUnitsForPath({
+    pathCoords: rightPath,
+    color: fiberOut.color,
+    unitSize: Config.baseUnits.fiber.height,
+  });
+
+  return {
+    fusionPoint: {
+      x: columnController.middlePoint,
+      y: fusionYPoint,
+    },
+    path: [...leftLeg, ...rightLeg],
+  };
+};
+
+const getLeftLeg = ({
+  fiberIn,
+  columnController,
+  fusionYPoint,
+  angleRowController,
+}: {
+  fiberIn: Fiber; // The fiber on the left side
+  columnController: ColumnController; // In order to check where we can vertically place our connection
+  angleRowController: RowController; // In order to check where we can horizontally place our connection
+  fusionYPoint: number;
+}) => {
+  const {
+    path: leftPath,
+    usedXPoint: leftUsedXPoint,
+    usedYPoint: leftUsedYPoint,
+  } = getLeftToMiddlePath({
+    source: fiberIn.attr.position,
+    columnController,
+    angleRowController,
+    fusionYPoint,
+  });
+
+  if (leftUsedXPoint) {
+    // We set now the used indexes in the angleRow
+    angleRowController.indexController.setUsedIndexWithSize({
+      point: leftUsedXPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberIn,
+    });
+  }
+
+  if (leftUsedYPoint) {
+    columnController.indexController.setUsedIndexWithSize({
+      point: leftUsedYPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberIn,
+    });
+  }
+
+  return getUnitsForPath({
+    pathCoords: leftPath,
+    color: fiberIn.color,
+    unitSize: Config.baseUnits.fiber.height,
+  });
+};
+
+const getRightLeg = ({
+  fiberOut,
+  columnController,
+  fusionYPoint,
+  angleRowController,
+}: {
+  fiberOut: Fiber; // The fiber on the right side
+  columnController: ColumnController; // In order to check where we can vertically place our connection
+  angleRowController: RowController; // In order to check where we can horizontally place our connection
+  fusionYPoint: number;
+}) => {
+  const {
+    path: rightPath,
+    usedXPoint: rightUsedXPoint,
+    usedYPoint: rightUsedYPoint,
+  } = getRightToMiddlePath({
+    source: fiberOut.attr.position,
+    columnController,
+    angleRowController,
+    fusionYPoint,
+  });
+
+  if (rightUsedXPoint) {
+    // We set now the used indexes in the angleRow
+    angleRowController.indexController.setUsedIndexWithSize({
+      point: rightUsedXPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberOut,
+    });
+  }
+
+  if (rightUsedYPoint) {
+    columnController.indexController.setUsedIndexWithSize({
+      point: rightUsedYPoint,
+      size: Config.baseUnits.fiber.height,
+      element: fiberOut,
+    });
+  }
+
+  return getUnitsForPath({
+    pathCoords: rightPath,
+    color: fiberOut.color,
+    unitSize: Config.baseUnits.fiber.height,
+  });
 };
