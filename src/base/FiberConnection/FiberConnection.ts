@@ -97,8 +97,8 @@ export class FiberConnection {
       parentTubeFiberOut.parentWire.disposition
     ) {
       const { path, fusionPoint } = LeftTFiber2RightTFiber({
-        fiberIn: leftFiber,
-        fiberOut: rightFiber,
+        elementIn: leftFiber,
+        elementOut: rightFiber,
         columnController:
           this.parentGrid.pathController.tubeFusionColumnController,
         leftAngleRowController:
@@ -111,8 +111,8 @@ export class FiberConnection {
     } else {
       // Same side tube fiber to same side tube fiber
       const { path, fusionPoint } = SameSideTubeFiber({
-        fiberIn: leftFiber,
-        fiberOut: rightFiber,
+        elementIn: leftFiber,
+        elementOut: rightFiber,
         columnController:
           this.parentGrid.pathController.tubeFusionColumnController,
         leftAngleRowController:
@@ -123,6 +123,15 @@ export class FiberConnection {
       this.path = path;
       this.fusionPoint = fusionPoint;
     }
+  }
+
+  isVisible() {
+    const oneFiberId = this.getOtherFiberId(this.fiber_in);
+    const oneFiber = this.parentGrid.getFiberById(oneFiberId);
+    if (oneFiber.parentType === "SPLITTER") {
+      return true;
+    }
+    return oneFiber.parentType === "TUBE" && (oneFiber.parent as Tube).expanded;
   }
 
   calculateSplitterToTubeFiberConnection(fiberIn: Fiber, fiberOut: Fiber) {}

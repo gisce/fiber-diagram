@@ -10,11 +10,11 @@ export const TubeConnectionUi = ({
 }: {
   connection: TubeConnection;
 }) => {
-  // const { legs } = connection;
+  const { path } = connection;
 
-  // if (!legs) {
-  //   return null;
-  // }
+  if (!path) {
+    return null;
+  }
 
   const tube_in: Tube = connection.parentGrid.getTubeById(connection.tube_in);
   const tube_out: Tube = connection.parentGrid.getTubeById(connection.tube_out);
@@ -36,35 +36,35 @@ export const TubeConnectionUi = ({
     return null;
   }
 
-  // const legsWithConvertedUnits = legs.map((leg) => {
-  //   const { position, size } = leg;
-  //   const convertedUnits = convertAttrUnitsToPixels({ position, size });
-  //   return { ...leg, ...convertedUnits };
-  // });
+  const pathWithConvertedUnits = path.map((leg) => {
+    const { position, size } = leg;
+    const convertedUnits = convertAttrUnitsToPixels({ position, size });
+    return { ...leg, ...convertedUnits };
+  });
 
-  // const legsRects = legsWithConvertedUnits.map((leg, i) => {
-  //   return (
-  //     <Rect
-  //       key={i}
-  //       x={leg.position.x}
-  //       y={leg.position.y}
-  //       width={leg.size.width}
-  //       height={leg.size.height}
-  //       fill={leg.color}
-  //     />
-  //   );
-  // });
+  const pathRects = pathWithConvertedUnits.map((leg, i) => {
+    return (
+      <Rect
+        key={i}
+        x={leg.position.x}
+        y={leg.position.y}
+        width={leg.size.width}
+        height={leg.size.height}
+        fill={leg.color}
+      />
+    );
+  });
 
-  const fusionPointRaidus =
+  const fusionPointRadius =
     (Config.baseUnits.tube.height * Config.pixelsPerUnit) / 2;
 
   return (
     <Group>
-      {/* {legsRects} */}
-      {/* <Circle
-        x={connection.center.x * Config.pixelsPerUnit}
-        y={connection.center.y * Config.pixelsPerUnit + fusionPointRaidus}
-        radius={fusionPointRaidus}
+      {pathRects}
+      <Circle
+        x={connection.fusionPoint.x * Config.pixelsPerUnit}
+        y={connection.fusionPoint.y * Config.pixelsPerUnit + fusionPointRadius}
+        radius={fusionPointRadius}
         fill={"#FFFFFF"}
         stroke={"#000000"}
         strokeWidth={2}
@@ -72,7 +72,6 @@ export const TubeConnectionUi = ({
           const container = e.target.getStage().container();
           container.style.cursor = "default";
           tube_in.expand();
-          // connection.remove();
         }}
         style={{ cursor: "pointer" }}
         onMouseEnter={(e) => {
@@ -83,7 +82,7 @@ export const TubeConnectionUi = ({
           const container = e.target.getStage().container();
           container.style.cursor = "default";
         }}
-      /> */}
+      />
     </Group>
   );
 };

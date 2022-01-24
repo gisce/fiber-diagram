@@ -138,9 +138,16 @@ export class Grid {
     //   splitter.calculateSize();
     // });
 
-    // We calculate the fiber connections for tubes
+    // We calculate the tube connections
+    this.tubeConnections.forEach((tubeConnection: TubeConnection) => {
+      tubeConnection.calculate();
+    });
+
+    // We calculate the fiber connections for tubes that are expanded
     this.fiberConnections.forEach((fiberConnection: FiberConnection) => {
-      fiberConnection.calculate();
+      if (fiberConnection.isVisible()) {
+        fiberConnection.calculate();
+      }
     });
 
     // Finally we calculate our width and height

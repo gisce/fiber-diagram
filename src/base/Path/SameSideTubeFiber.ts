@@ -12,22 +12,24 @@ import {
 } from "utils/pathUtils";
 
 export default ({
-  fiberIn,
-  fiberOut,
+  elementIn,
+  elementOut,
   columnController,
   leftAngleRowController,
   rightAngleRowController,
 }: {
-  fiberIn: Fiber; // The fiber on the left side
-  fiberOut: Fiber; // The fiber on the right side
+  elementIn: Fiber | Tube; // The fiber on the left side
+  elementOut: Fiber | Tube; // The fiber on the right side
   columnController: ColumnController; // In order to check where we can vertically place our connection
   leftAngleRowController: RowController; // In order to check where we can horizontally place our connection
   rightAngleRowController: RowController; // In order to check where we can horizontally place our connection
 }) => {
+  const type = elementIn instanceof Tube ? "tube" : "fiber";
+
   // First we determine the fusion point searching for the vertical available space inside fusionColumn
   const fusionPoints = getFusionPoints({
-    fiberIn,
-    fiberOut,
+    elementIn,
+    elementOut,
     columnController,
   });
 
@@ -35,15 +37,15 @@ export default ({
   fusionPoints.forEach((point) => {
     columnController.indexController.setUsedIndexWithSize({
       point,
-      size: Config.baseUnits.fiber.height,
-      element: fiberIn,
+      size: Config.baseUnits[type].height,
+      element: elementIn,
     });
   });
 
   // We determine which one will be the upper and lower fibers
   const { firstFiber, secondFiber } = getOrderedFibers({
-    fiberIn,
-    fiberOut,
+    elementIn,
+    elementOut,
   });
 
   // There'll be three points in the middle column:
@@ -52,33 +54,33 @@ export default ({
   // third for fiberOut
 
   const centerUpperMiddleDot = getUnitsForPath({
-    unitSize: Config.baseUnits.fiber.height,
+    unitSize: Config.baseUnits[type].height,
     color: firstFiber.color,
     pathCoords: [
       [
-        columnController.middlePoint - Config.baseUnits.fiber.height / 2,
+        columnController.middlePoint - Config.baseUnits[type].height / 2,
         fusionPoints[0],
       ],
       [
-        columnController.middlePoint - Config.baseUnits.fiber.height / 2,
+        columnController.middlePoint - Config.baseUnits[type].height / 2,
         fusionPoints[1],
       ],
     ],
   });
 
   const lowerDot = getUnitsForPath({
-    unitSize: Config.baseUnits.fiber.height,
+    unitSize: Config.baseUnits[type].height,
     color: secondFiber.color,
     pathCoords: [
       [
-        columnController.middlePoint - Config.baseUnits.fiber.height / 2,
+        columnController.middlePoint - Config.baseUnits[type].height / 2,
         fusionPoints[2],
       ],
     ],
   });
 
   const firstFiberPath = getLeg({
-    fiber: firstFiber,
+    element: firstFiber,
     fusionYPoint: fusionPoints[0],
     columnController,
     leftAngleRowController,
@@ -86,7 +88,7 @@ export default ({
   });
 
   const secondFiberPath = getLeg({
-    fiber: secondFiber,
+    element: secondFiber,
     fusionYPoint: fusionPoints[2],
     columnController,
     leftAngleRowController,
@@ -108,18 +110,20 @@ export default ({
 };
 
 const getFusionPoints = ({
-  fiberIn,
-  fiberOut,
+  elementIn,
+  elementOut,
   columnController,
 }: {
-  fiberIn: Fiber;
-  fiberOut: Fiber;
+  elementIn: Fiber | Tube;
+  elementOut: Fiber | Tube;
   columnController: ColumnController; // In order to check where we can vertically place our connection
 }) => {
+  const type = elementIn instanceof Tube ? "tube" : "fiber";
+
   const fusionInYPoints =
     columnController.indexController.getNFreeIndexesFromPoint({
-      point: fiberIn.attr.position.y,
-      unitSize: Config.baseUnits.fiber.height,
+      point: elementIn.attr.position.y,
+      unitSize: Config.baseUnits[type].height,
       n: 3,
     });
 
@@ -127,8 +131,8 @@ const getFusionPoints = ({
 
   const fusionOutYPoints =
     columnController.indexController.getNFreeIndexesFromPoint({
-      point: fiberOut.attr.position.y,
-      unitSize: Config.baseUnits.fiber.height,
+      point: elementOut.attr.position.y,
+      unitSize: Config.baseUnits[type].height,
       n: 3,
     });
 
@@ -151,13 +155,13 @@ const getFusionPoints = ({
 };
 
 const getOrderedFibers = ({
-  fiberIn,
-  fiberOut,
+  elementIn,
+  elementOut,
 }: {
-  fiberIn: Fiber;
-  fiberOut: Fiber;
+  elementIn: Fiber | Tube;
+  elementOut: Fiber | Tube;
 }) => {
-  const allFibers = [fiberIn, fiberOut];
+  const allFibers = [elementIn, elementOut];
 
   const sortedFibers = allFibers.sort((a: Fiber, b: Fiber) => {
     return a.attr.position.y - b.attr.position.y;
@@ -170,33 +174,38 @@ const getOrderedFibers = ({
 };
 
 const getLeg = ({
-  fiber,
+  element,
   fusionYPoint,
   columnController,
   leftAngleRowController,
   rightAngleRowController,
 }: {
-  fiber: Fiber; // The fiber
+  element: Fiber | Tube; // The fiber
   fusionYPoint: number; // Vertical index where the connection goes
   columnController: ColumnController; // In order to check where we can vertically place our connection
   leftAngleRowController: RowController; // In order to check where we can horizontally place our connection
   rightAngleRowController: RowController; // In order to check where we can horizontally place our connection
 }) => {
-  if (fiber.attr.position.y === fusionYPoint) {
-    return getFlatLeg({ fiber, columnController });
+  if (element.attr.position.y === fusionYPoint) {
+    return getFlatLeg({ element, columnController });
   }
 
+  const disposition =
+    element instanceof Tube
+      ? (element as Tube).parentWire.disposition
+      : ((element as Fiber).parent as Tube).parentWire.disposition;
+
   // If not, we have to calculate the path
-  if ((fiber.parent as Tube).parentWire.disposition === "LEFT") {
+  if (disposition === "LEFT") {
     return getLeftLeg({
-      fiber,
+      element,
       fusionYPoint,
       columnController,
       angleRowController: leftAngleRowController,
     });
   } else {
     return getRightLeg({
-      fiber,
+      element,
       fusionYPoint,
       columnController,
       angleRowController: rightAngleRowController,
@@ -205,126 +214,137 @@ const getLeg = ({
 };
 
 const getLeftLeg = ({
-  fiber,
+  element,
   fusionYPoint,
   columnController,
   angleRowController,
 }: {
-  fiber: Fiber; // The fiber
+  element: Fiber | Tube; // The fiber
   fusionYPoint: number; // Vertical index where the connection goes
   columnController: ColumnController; // In order to check where we can vertically place our connection
   angleRowController: RowController; // In order to check where we can horizontally place our connection
 }) => {
+  const type = element instanceof Tube ? "tube" : "fiber";
+
   const {
     path: leftPath,
     usedXPoint: leftUsedXPoint,
     usedYPoint: leftUsedYPoint,
   } = getLeftToPointPath({
-    source: fiber.attr.position,
+    source: element.attr.position,
     point: columnController.middlePoint,
     angleRowController,
     fusionYPoint,
-    unitSize: Config.baseUnits.fiber.height,
+    unitSize: Config.baseUnits[type].height,
   });
 
   if (leftUsedXPoint) {
     // We set now the used indexes in the angleRow
     angleRowController.indexController.setUsedIndexWithSize({
       point: leftUsedXPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiber,
+      size: Config.baseUnits[type].height,
+      element: element,
     });
   }
 
   if (leftUsedYPoint) {
     columnController.indexController.setUsedIndexWithSize({
       point: leftUsedYPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiber,
+      size: Config.baseUnits[type].height,
+      element: element,
     });
   }
 
   return getUnitsForPath({
     pathCoords: leftPath,
-    color: fiber.color,
-    unitSize: Config.baseUnits.fiber.height,
+    color: element.color,
+    unitSize: Config.baseUnits[type].height,
   });
 };
 
 const getRightLeg = ({
-  fiber,
+  element,
   fusionYPoint,
   columnController,
   angleRowController,
 }: {
-  fiber: Fiber; // The fiber
+  element: Fiber | Tube; // The fiber
   fusionYPoint: number; // Vertical index where the connection goes
   columnController: ColumnController; // In order to check where we can vertically place our connection
   angleRowController: RowController; // In order to check where we can horizontally place our connection
 }) => {
+  const type = element instanceof Tube ? "tube" : "fiber";
+
   const {
     path: rightPath,
     usedXPoint: rightUsedXPoint,
     usedYPoint: rightUsedYPoint,
   } = getRightToPointPath({
-    source: fiber.attr.position,
+    source: element.attr.position,
     point: columnController.middlePoint,
     angleRowController,
     fusionYPoint,
-    unitSize: Config.baseUnits.fiber.height,
+    unitSize: Config.baseUnits[type].height,
   });
 
   if (rightUsedXPoint) {
     // We set now the used indexes in the angleRow
     angleRowController.indexController.setUsedIndexWithSize({
       point: rightUsedXPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiber,
+      size: Config.baseUnits[type].height,
+      element: element,
     });
   }
 
   if (rightUsedYPoint) {
     columnController.indexController.setUsedIndexWithSize({
       point: rightUsedYPoint,
-      size: Config.baseUnits.fiber.height,
-      element: fiber,
+      size: Config.baseUnits[type].height,
+      element: element,
     });
   }
 
   return getUnitsForPath({
     pathCoords: rightPath,
-    color: fiber.color,
-    unitSize: Config.baseUnits.fiber.height,
+    color: element.color,
+    unitSize: Config.baseUnits[type].height,
   });
 };
 
 const getFlatLeg = ({
-  fiber,
+  element,
   columnController,
 }: {
-  fiber: Fiber; // The fiber
+  element: Fiber | Tube; // The fiber
   columnController: ColumnController; // In order to check where we can vertically place our connection
 }) => {
-  if ((fiber.parent as Tube).parentWire.disposition === "LEFT") {
+  const type = element instanceof Tube ? "tube" : "fiber";
+
+  const disposition =
+    element instanceof Tube
+      ? (element as Tube).parentWire.disposition
+      : ((element as Fiber).parent as Tube).parentWire.disposition;
+
+  if (disposition === "LEFT") {
     const leftPath = getLeftToPointFlatPath({
-      source: fiber.attr.position,
+      source: element.attr.position,
       point: columnController.middlePoint,
     });
     return getUnitsForPath({
       pathCoords: leftPath,
-      color: fiber.color,
-      unitSize: Config.baseUnits.fiber.height,
+      color: element.color,
+      unitSize: Config.baseUnits[type].height,
     });
   } else {
     const rightPath = getRightToPointFlatPath({
-      target: fiber.attr.position,
+      target: element.attr.position,
       point: columnController.middlePoint,
     });
 
     return getUnitsForPath({
       pathCoords: rightPath,
-      color: fiber.color,
-      unitSize: Config.baseUnits.fiber.height,
+      color: element.color,
+      unitSize: Config.baseUnits[type].height,
     });
   }
 };
