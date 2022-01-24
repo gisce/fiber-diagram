@@ -1,7 +1,7 @@
 import { Config } from "base/Config";
 import { FiberConnection, FiberConnectionData } from "base/FiberConnection";
 import { Wire, WireData } from "base/Wire";
-import { MiddleFusionColumn, Size } from "./Grid.types";
+import { Size } from "./Grid.types";
 import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionData } from "base/TubeConnection";
 import { Fiber } from "base/Fiber";
@@ -9,7 +9,6 @@ import { Splitter } from "base/Splitter";
 import { SplitterData } from "base/Splitter/Splitter.types";
 import { GridData } from ".";
 import { PathController } from "base/PathController";
-import { Path } from "konva/lib/shapes/Path";
 
 export class Grid {
   initialData: GridData;
@@ -56,7 +55,9 @@ export class Grid {
     this.parse({ input });
 
     // Initialization of path controller
-    this.pathController = new PathController();
+    this.pathController = new PathController({
+      middlePoint: this.size.width / 2,
+    });
 
     // And then we calculate positions and sizes of our elements
     this.calculate();
@@ -82,6 +83,11 @@ export class Grid {
     // Check for connections
     if (input.res?.connections?.fibers) {
       this.parseConnections(input.res?.connections?.fibers);
+    } else {
+      // If we don't have fiber connections, then we must evaluate our tubes expanded states
+      this.getAllTubes().forEach((tube: Tube) => {
+        tube.evaluateExpanded();
+      });
     }
   }
 
@@ -131,6 +137,11 @@ export class Grid {
     // this.splitters.forEach((splitter: Splitter) => {
     //   splitter.calculateSize();
     // });
+
+    // We calculate the fiber connections for tubes
+    this.fiberConnections.forEach((fiberConnection: FiberConnection) => {
+      fiberConnection.calculate();
+    });
 
     // Finally we calculate our width and height
     this.size.height = this.getWiresHeight();
@@ -298,7 +309,7 @@ export class Grid {
       otherTube.expanded = expanded;
 
       tubeConnection.remove();
-    } else {
+    } else if (!expanded) {
       // If we're going to collapse the tube, we must add the tube connection
       const otherTube = tube.getTubeConnectedTo();
       otherTube.expanded = expanded;

@@ -3,8 +3,10 @@ import { IndexController } from "../IndexController/IndexController";
 
 export class ColumnController {
   indexController: IndexController<MiddleFusionColumn>;
+  middlePoint: number;
 
-  constructor() {
+  constructor({ middlePoint }: { middlePoint: number }) {
     this.indexController = new IndexController();
+    this.middlePoint = middlePoint;
   }
 }

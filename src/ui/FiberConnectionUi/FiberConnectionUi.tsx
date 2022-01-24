@@ -4,74 +4,78 @@ import { Fiber } from "base/Fiber";
 import React from "react";
 import { Rect, Circle, Group } from "react-konva";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
+import { Tube } from "base/Tube";
 
 export const FiberConnectionUi = ({
   connection,
 }: {
   connection: FiberConnection;
 }) => {
-  // const { legs } = connection;
+  const { path } = connection;
 
-  // if (!legs) {
-  //   return null;
-  // }
+  if (!path) {
+    return null;
+  }
 
-  const fiber_in: Fiber = connection.parentGrid.getFiberById(
+  const fiberIn: Fiber = connection.parentGrid.getFiberById(
     connection.fiber_in
   );
-  const fiber_out: Fiber = connection.parentGrid.getFiberById(
+  const fiberOut: Fiber = connection.parentGrid.getFiberById(
     connection.fiber_out
   );
 
-  if (fiber_in === undefined) {
+  if (fiberIn === undefined) {
     console.error(`Fiber ${connection.fiber_in} not found`);
     return null;
   }
 
-  if (fiber_out === undefined) {
+  if (fiberOut === undefined) {
     console.error(`Fiber ${connection.fiber_out} not found`);
     return null;
   }
 
-  // const expandedFiberIn = fiber_in.parentTube?.expanded;
-  // const expandedFiberOut = fiber_out.parentTube?.expanded;
+  const expandedFiberIn =
+    fiberIn.parentType === "TUBE" && (fiberIn.parent as Tube).expanded;
 
-  // if (
-  //   (fiber_in.parentTube && !expandedFiberIn) ||
-  //   (fiber_out.parentTube && !expandedFiberOut)
-  // ) {
-  //   return null;
-  // }
+  const expandedFiberOut =
+    fiberOut.parentType === "TUBE" && (fiberOut.parent as Tube).expanded;
 
-  // const legsWithConvertedUnits = legs.map((leg) => {
-  //   const { position, size } = leg;
-  //   const convertedUnits = convertAttrUnitsToPixels({ position, size });
-  //   return { ...leg, ...convertedUnits };
-  // });
+  if (
+    (fiberIn.parentType === "TUBE" && !expandedFiberIn) ||
+    (fiberOut.parentType === "TUBE" && !expandedFiberOut)
+  ) {
+    return null;
+  }
 
-  // const legsRects = legsWithConvertedUnits.map((leg, i) => {
-  //   return (
-  //     <Rect
-  //       key={i}
-  //       x={leg.position.x}
-  //       y={leg.position.y}
-  //       width={leg.size.width}
-  //       height={leg.size.height}
-  //       fill={leg.color}
-  //     />
-  //   );
-  // });
+  const pathWithConvertedUnits = path.map((leg) => {
+    const { position, size } = leg;
+    const convertedUnits = convertAttrUnitsToPixels({ position, size });
+    return { ...leg, ...convertedUnits };
+  });
 
-  const fusionPointRaidus =
+  const pathRects = pathWithConvertedUnits.map((leg, i) => {
+    return (
+      <Rect
+        key={i}
+        x={leg.position.x}
+        y={leg.position.y}
+        width={leg.size.width}
+        height={leg.size.height}
+        fill={leg.color}
+      />
+    );
+  });
+
+  const fusionPointRadius =
     (Config.baseUnits.fiber.height * Config.pixelsPerUnit) / 2;
 
   return (
     <Group>
-      {/* {legsRects}
+      {pathRects}
       <Circle
-        x={connection.center.x * Config.pixelsPerUnit}
-        y={connection.center.y * Config.pixelsPerUnit + fusionPointRaidus}
-        radius={fusionPointRaidus}
+        x={connection.fusionPoint.x * Config.pixelsPerUnit}
+        y={connection.fusionPoint.y * Config.pixelsPerUnit + fusionPointRadius}
+        radius={fusionPointRadius}
         fill={"#FFFFFF"}
         stroke={"#000000"}
         strokeWidth={2}
@@ -89,7 +93,7 @@ export const FiberConnectionUi = ({
           const container = e.target.getStage().container();
           container.style.cursor = "default";
         }}
-      /> */}
+      />
     </Group>
   );
 };

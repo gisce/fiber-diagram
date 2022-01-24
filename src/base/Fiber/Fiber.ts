@@ -2,7 +2,7 @@ import { Config } from "base/Config";
 import { InitialPositionSize, PositionSize } from "base/Grid";
 import { Splitter } from "base/Splitter";
 import { Tube } from "base/Tube";
-import { FiberApiType, FiberDataType } from "./Fiber.types";
+import { FiberData } from ".";
 
 export class Fiber {
   id: number;
@@ -18,7 +18,7 @@ export class Fiber {
     parent,
     index,
   }: {
-    data: FiberDataType;
+    data: FiberData;
     parent?: Tube | Splitter;
     index: number;
   }) {
@@ -126,7 +126,7 @@ export class Fiber {
     };
   }
 
-  getJson(): FiberDataType {
+  getJson(): FiberData {
     const { id, name, color, attr, index } = this;
     return {
       id,

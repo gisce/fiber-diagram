@@ -3,6 +3,7 @@ import { Fiber } from "base/Fiber";
 import { Grid, PathUnit, Position } from "base/Grid";
 import { Tube } from "base/Tube";
 import { FiberConnectionData } from ".";
+import LeftTFiber2RightTFiber from "base/Path/LeftTFiber2RightTFiber";
 
 export class FiberConnection {
   fiber_in: number;
@@ -86,13 +87,27 @@ export class FiberConnection {
   calculateTubeFiberConnection(fiberIn: Fiber, fiberOut: Fiber) {
     const parentTubeFiberIn = fiberIn.parent as Tube;
     const parentTubeFiberOut = fiberOut.parent as Tube;
+    const leftFiber =
+      fiberIn.attr.position.x < fiberOut.attr.position.x ? fiberIn : fiberOut;
+    const rightFiber = leftFiber === fiberIn ? fiberOut : fiberIn;
 
     // Left tube fiber to right tube fiber
     if (
       parentTubeFiberIn.parentWire.disposition !==
       parentTubeFiberOut.parentWire.disposition
     ) {
-
+      const { path, fusionPoint } = LeftTFiber2RightTFiber({
+        fiberIn: leftFiber,
+        fiberOut: rightFiber,
+        columnController:
+          this.parentGrid.pathController.tubeFusionColumnController,
+        leftAngleRowController:
+          this.parentGrid.pathController.leftAngleRowController,
+        rightAngleRowController:
+          this.parentGrid.pathController.rightAngleRowController,
+      });
+      this.path = path;
+      this.fusionPoint = fusionPoint;
     } else {
       // Same side tube fiber to same side tube fiber
     }

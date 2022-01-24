@@ -13,9 +13,9 @@ export class PathController {
   leftAngleRowController: RowController;
   rightAngleRowController: RowController;
 
-  constructor() {
-    this.tubeFusionColumnController = new ColumnController();
-    this.splitterFusionColumnController = new ColumnController();
+  constructor({ middlePoint }: { middlePoint: number }) {
+    this.tubeFusionColumnController = new ColumnController({ middlePoint });
+    this.splitterFusionColumnController = new ColumnController({ middlePoint });
     this.leftAngleRowController = new RowController();
     this.rightAngleRowController = new RowController();
   }

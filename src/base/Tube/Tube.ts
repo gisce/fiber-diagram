@@ -1,8 +1,8 @@
 import { Config } from "base/Config";
-import { Fiber, FiberDataType } from "base/Fiber";
+import { Fiber, FiberData } from "base/Fiber";
 import { InitialPositionSize, PositionSize } from "base/Grid";
 import { Wire } from "base/Wire";
-import { TubeApiType, TubeDataType } from "./Tube.types";
+import { TubeData } from ".";
 
 export class Tube {
   id: number;
@@ -19,7 +19,7 @@ export class Tube {
     parentWire,
     index,
   }: {
-    data: TubeDataType;
+    data: TubeData;
     parentWire: Wire;
     index: number;
   }) {
@@ -37,7 +37,7 @@ export class Tube {
     fibersData.forEach((fiberData) => this.addFiber(fiberData));
   }
 
-  addFiber(fiberData: FiberDataType) {
+  addFiber(fiberData: FiberData) {
     this.fibers.push(
       new Fiber({
         data: fiberData,
@@ -170,7 +170,7 @@ export class Tube {
     return this.parentWire.parentGrid;
   }
 
-  getJson(): TubeDataType {
+  getJson(): TubeData {
     const { id, name, color, attr, expanded, index, fibers } = this;
     return {
       id,
