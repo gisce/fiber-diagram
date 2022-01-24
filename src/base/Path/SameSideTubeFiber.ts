@@ -1,6 +1,5 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
-import { Position } from "base/Grid";
 import { ColumnController } from "base/PathController/ColumnController/ColumnController";
 import { RowController } from "base/PathController/RowController/RowController";
 import { Tube } from "base/Tube";
