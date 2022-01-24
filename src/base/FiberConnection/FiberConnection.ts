@@ -4,6 +4,7 @@ import { Grid, PathUnit, Position } from "base/Grid";
 import { Tube } from "base/Tube";
 import { FiberConnectionData } from ".";
 import LeftTFiber2RightTFiber from "base/Path/LeftTFiber2RightTFiber";
+import SameSideTubeFiber from "base/Path/SameSideTubeFiber";
 
 export class FiberConnection {
   fiber_in: number;
@@ -110,6 +111,18 @@ export class FiberConnection {
       this.fusionPoint = fusionPoint;
     } else {
       // Same side tube fiber to same side tube fiber
+      const { path, fusionPoint } = SameSideTubeFiber({
+        fiberIn: leftFiber,
+        fiberOut: rightFiber,
+        columnController:
+          this.parentGrid.pathController.tubeFusionColumnController,
+        leftAngleRowController:
+          this.parentGrid.pathController.leftAngleRowController,
+        rightAngleRowController:
+          this.parentGrid.pathController.rightAngleRowController,
+      });
+      this.path = path;
+      this.fusionPoint = fusionPoint;
     }
   }
 

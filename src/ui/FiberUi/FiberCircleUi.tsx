@@ -9,7 +9,7 @@ import {
 import { Position } from "base/Grid";
 import { Splitter } from "base/Splitter";
 import { Tube } from "base/Tube";
-import { validateFiberConnection } from "utils/pathUtils";
+import { validateFiberConnection } from "utils/connectionUtils";
 
 export type FiberCircleUiProps = Position & {
   fiber: Fiber;

@@ -1,7 +1,6 @@
-import { Fiber } from "base/Fiber";
-import { PathUnit } from "base/Grid/Grid.types";
-import { Splitter } from "base/Splitter";
-import { Tube } from "base/Tube";
+import { Config } from "base/Config";
+import { PathUnit, Position } from "base/Grid/Grid.types";
+import { RowController } from "base/PathController/RowController/RowController";
 
 export const getUnitsForPath = ({
   pathCoords,
@@ -83,31 +82,154 @@ export const getNPoints = ({
   });
 };
 
-export const validateFiberConnection = ({
-  fiberIn,
-  fiberOut,
+export const getLeftToPointPath = ({
+  source,
+  point,
+  angleRowController,
+  fusionYPoint,
+  unitSize,
 }: {
-  fiberIn: Fiber;
-  fiberOut: Fiber;
+  source: Position; // The fiber on the left side
+  point: number; // The X, as in, middle of the grid
+  angleRowController: RowController; // In order to check where we can horizontally place our connection
+  fusionYPoint: number; // The fusion point
+  unitSize: number;
 }) => {
-  // Check if both fibers are outputs of an splitter
-  // const parentGrid =
-  //   fiberIn.parentType === "SPLITTER"
-  //     ? (fiberIn.parent as Splitter).parentGrid
-  //     : (fiberIn.parent as Tube).parentWire.parentGrid;
+  // If it's a flat path, we return it directly
+  if (source.y === fusionYPoint) {
+    return {
+      path: getLeftToPointFlatPath({ source, point }),
+    };
+  }
 
-  // Check if both fibers are outputs from the same splitter
-  // if (
-  //   fiberIn.parentType === "SPLITTER" &&
-  //   fiberOut.parentType === "SPLITTER" &&
-  //   fiberIn.isSplitterOutput !== undefined &&
-  //   fiberIn.isSplitterOutput === fiberOut.isSplitterOutput
-  // ) {
-  // throw error
-  // }
+  let path = [];
 
-  // Check if both fibers are ouput and input from different splitters, but they have a loop
-  // Only allow splitters fibers in to left - check if one fiber is an input of a splitter, and the other one is from the right
+  // We determine the angle point searching horizontal available space inside angleRow
+  const freeXPoint = angleRowController.indexController.getFreeBelowIndexes({
+    point: point - Config.separation * 2,
+    unitSize,
+    n: 1,
+  })[0];
 
-  return true;
+  // from: source.x, source.y
+  // to: freeXPoint, source.y
+  for (let iX = source.x; iX < freeXPoint; iX += 1) {
+    path.push([iX, source.y]);
+  }
+
+  // from: freeXPoint, source.y
+  // to: freeXPoint, target.y
+  if (source.y < fusionYPoint) {
+    for (let iY = source.y; iY < fusionYPoint; iY += 1) {
+      path.push([freeXPoint, iY]);
+    }
+  } else {
+    for (let iY = source.y; iY > fusionYPoint; iY -= 1) {
+      path.push([freeXPoint, iY]);
+    }
+  }
+
+  // from: freeXPoint, toY
+  // to: target.x, toY
+  for (let iX = freeXPoint; iX < point; iX += 1) {
+    path.push([iX, fusionYPoint]);
+  }
+
+  return {
+    path,
+    usedXPoint: freeXPoint,
+    usedYPoint: source.y,
+  };
+};
+
+export const getRightToPointPath = ({
+  source,
+  point,
+  angleRowController,
+  fusionYPoint,
+  unitSize,
+}: {
+  source: Position; // The fiber on the left side
+  point: number; // The X, as in, middle of the grid
+  angleRowController: RowController; // In order to check where we can horizontally place our connection
+  fusionYPoint: number; // The fusion point
+  unitSize: number;
+}) => {
+  // If it's a flat path, we return it directly
+  if (source.y === fusionYPoint) {
+    return {
+      path: getRightToPointFlatPath({ target: source, point }),
+    };
+  }
+
+  let path = [];
+
+  // We determine the angle point searching horizontal available space inside angleRow
+  const freeXPoint = angleRowController.indexController.getFreeAboveIndexes({
+    point: point + Config.separation,
+    unitSize,
+    n: 1,
+  })[0];
+
+  // from: source.x, source.y
+  // to: freeXPoint, source.y
+  for (let iX = source.x; iX >= freeXPoint; iX -= 1) {
+    path.push([iX, source.y]);
+  }
+
+  // from: freeXPoint, source.y
+  // to: freeXPoint, target.y
+  if (source.y < fusionYPoint) {
+    for (let iY = source.y; iY < fusionYPoint; iY += 1) {
+      path.push([freeXPoint, iY]);
+    }
+  } else {
+    for (let iY = source.y; iY > fusionYPoint; iY -= 1) {
+      path.push([freeXPoint, iY]);
+    }
+  }
+
+  // from: freeXPoint, toY
+  // to: target.x, toY
+  for (let iX = freeXPoint; iX >= point; iX -= 1) {
+    path.push([iX, fusionYPoint]);
+  }
+
+  return {
+    path,
+    usedXPoint: freeXPoint,
+    usedYPoint: source.y,
+  };
+};
+
+export const getLeftToPointFlatPath = ({
+  source,
+  point,
+}: {
+  source: Position; // The fiber on the left side
+  point: number; // The X, as in, middle of the grid
+}) => {
+  let path = [];
+
+  for (let iX = source.x; iX < point; iX += 1) {
+    path.push([iX, source.y]);
+  }
+
+  return path;
+};
+
+export const getRightToPointFlatPath = ({
+  target,
+  point,
+}: {
+  target: Position; // The fiber on the left side
+  point: number; // The X, as in, middle of the grid
+}) => {
+  let path = [];
+
+  for (let iX = point; iX < target.x; iX += 1) {
+    path.push([iX, target.y]);
+  }
+
+  return path;
 };

@@ -1,9 +1,14 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
-import { Position } from "base/Grid";
 import { ColumnController } from "base/PathController/ColumnController/ColumnController";
 import { RowController } from "base/PathController/RowController/RowController";
-import { getUnitsForPath } from "utils/pathUtils";
+import {
+  getLeftToPointFlatPath,
+  getLeftToPointPath,
+  getRightToPointFlatPath,
+  getRightToPointPath,
+  getUnitsForPath,
+} from "utils/pathUtils";
 
 export default ({
   fiberIn,
@@ -70,154 +75,6 @@ export default ({
   };
 };
 
-const getLeftToMiddlePath = ({
-  source,
-  columnController,
-  angleRowController,
-  fusionYPoint,
-}: {
-  source: Position; // The fiber on the left side
-  columnController: ColumnController; // In order to check where we can vertically place our connection
-  angleRowController: RowController; // In order to check where we can horizontally place our connection
-  fusionYPoint: number; // The fusion point
-}) => {
-  // If it's a flat path, we return it directly
-  if (source.y === fusionYPoint) {
-    return {
-      path: getLeftToMiddleFlatPath({ source, columnController }),
-    };
-  }
-
-  let path = [];
-
-  // We determine the angle point searching horizontal available space inside angleRow
-  const freeXPoint = angleRowController.indexController.getFreeBelowIndexes({
-    point: columnController.middlePoint - Config.separation * 2,
-    unitSize: Config.baseUnits.fiber.height,
-    n: 1,
-  })[0];
-
-  // from: source.x, source.y
-  // to: freeXPoint, source.y
-  for (let iX = source.x; iX < freeXPoint; iX += 1) {
-    path.push([iX, source.y]);
-  }
-
-  // from: freeXPoint, source.y
-  // to: freeXPoint, target.y
-  if (source.y < fusionYPoint) {
-    for (let iY = source.y; iY < fusionYPoint; iY += 1) {
-      path.push([freeXPoint, iY]);
-    }
-  } else {
-    for (let iY = source.y; iY > fusionYPoint; iY -= 1) {
-      path.push([freeXPoint, iY]);
-    }
-  }
-
-  // from: freeXPoint, toY
-  // to: target.x, toY
-  for (let iX = freeXPoint; iX < columnController.middlePoint; iX += 1) {
-    path.push([iX, fusionYPoint]);
-  }
-
-  return {
-    path,
-    usedXPoint: freeXPoint,
-    usedYPoint: source.y,
-  };
-};
-
-const getRightToMiddlePath = ({
-  source,
-  columnController,
-  angleRowController,
-  fusionYPoint,
-}: {
-  source: Position; // The fiber on the left side
-  columnController: ColumnController; // In order to check where we can vertically place our connection
-  angleRowController: RowController; // In order to check where we can horizontally place our connection
-  fusionYPoint: number; // The fusion point
-}) => {
-  // If it's a flat path, we return it directly
-  if (source.y === fusionYPoint) {
-    return {
-      path: getRightToMiddleFlatPath({ target: source, columnController }),
-    };
-  }
-
-  let path = [];
-
-  // We determine the angle point searching horizontal available space inside angleRow
-  const freeXPoint = angleRowController.indexController.getFreeAboveIndexes({
-    point: columnController.middlePoint + Config.separation,
-    unitSize: Config.baseUnits.fiber.height,
-    n: 1,
-  })[0];
-
-  // from: source.x, source.y
-  // to: freeXPoint, source.y
-  for (let iX = source.x; iX >= freeXPoint; iX -= 1) {
-    path.push([iX, source.y]);
-  }
-
-  // from: freeXPoint, source.y
-  // to: freeXPoint, target.y
-  if (source.y < fusionYPoint) {
-    for (let iY = source.y; iY < fusionYPoint; iY += 1) {
-      path.push([freeXPoint, iY]);
-    }
-  } else {
-    for (let iY = source.y; iY > fusionYPoint; iY -= 1) {
-      path.push([freeXPoint, iY]);
-    }
-  }
-
-  // from: freeXPoint, toY
-  // to: target.x, toY
-  for (let iX = freeXPoint; iX >= columnController.middlePoint; iX -= 1) {
-    path.push([iX, fusionYPoint]);
-  }
-
-  return {
-    path,
-    usedXPoint: freeXPoint,
-    usedYPoint: source.y,
-  };
-};
-
-const getLeftToMiddleFlatPath = ({
-  source,
-  columnController,
-}: {
-  source: Position; // The fiber on the left side
-  columnController: ColumnController; // In order to check where we can vertically place our connection
-}) => {
-  let path = [];
-
-  for (let iX = source.x; iX < columnController.middlePoint; iX += 1) {
-    path.push([iX, source.y]);
-  }
-
-  return path;
-};
-
-const getRightToMiddleFlatPath = ({
-  target,
-  columnController,
-}: {
-  target: Position; // The fiber on the left side
-  columnController: ColumnController; // In order to check where we can vertically place our connection
-}) => {
-  let path = [];
-
-  for (let iX = columnController.middlePoint; iX < target.x; iX += 1) {
-    path.push([iX, target.y]);
-  }
-
-  return path;
-};
-
 const getFiberToFiberFlatPath = ({
   fiberIn,
   fiberOut,
@@ -229,9 +86,9 @@ const getFiberToFiberFlatPath = ({
   columnController: ColumnController; // In order to check where we can vertically place our connection
   fusionYPoint: number;
 }) => {
-  const leftPath = getLeftToMiddleFlatPath({
+  const leftPath = getLeftToPointFlatPath({
     source: fiberIn.attr.position,
-    columnController,
+    point: columnController.middlePoint,
   });
   const leftLeg = getUnitsForPath({
     pathCoords: leftPath,
@@ -239,9 +96,9 @@ const getFiberToFiberFlatPath = ({
     unitSize: Config.baseUnits.fiber.height,
   });
 
-  const rightPath = getRightToMiddleFlatPath({
+  const rightPath = getRightToPointFlatPath({
     target: fiberOut.attr.position,
-    columnController,
+    point: columnController.middlePoint,
   });
   const rightLeg = getUnitsForPath({
     pathCoords: rightPath,
@@ -273,11 +130,12 @@ const getLeftLeg = ({
     path: leftPath,
     usedXPoint: leftUsedXPoint,
     usedYPoint: leftUsedYPoint,
-  } = getLeftToMiddlePath({
+  } = getLeftToPointPath({
     source: fiberIn.attr.position,
-    columnController,
+    point: columnController.middlePoint,
     angleRowController,
     fusionYPoint,
+    unitSize: Config.baseUnits.fiber.height,
   });
 
   if (leftUsedXPoint) {
@@ -319,11 +177,12 @@ const getRightLeg = ({
     path: rightPath,
     usedXPoint: rightUsedXPoint,
     usedYPoint: rightUsedYPoint,
-  } = getRightToMiddlePath({
+  } = getRightToPointPath({
     source: fiberOut.attr.position,
-    columnController,
+    point: columnController.middlePoint,
     angleRowController,
     fusionYPoint,
+    unitSize: Config.baseUnits.fiber.height,
   });
 
   if (rightUsedXPoint) {
