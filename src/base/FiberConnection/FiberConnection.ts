@@ -1,4 +1,3 @@
-import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { Grid, PathUnit, Position } from "base/Grid";
 import { Tube } from "base/Tube";
