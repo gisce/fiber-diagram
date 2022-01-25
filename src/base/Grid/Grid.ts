@@ -175,6 +175,13 @@ export class Grid {
       }
     });
 
+    // Then we calculate connections from/to splitters
+    this.fiberConnections.forEach((fiberConnection: FiberConnection) => {
+      if (fiberConnection.someFiberIsFromSplitter()) {
+        fiberConnection.calculate();
+      }
+    });
+
     // Finally we calculate our height
     const fusionColumnHeight =
       this.pathController.tubeFusionColumnController.indexController.getHeight();

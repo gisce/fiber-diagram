@@ -4,6 +4,9 @@ import { Tube } from "base/Tube";
 import { FiberConnectionData } from ".";
 import LeftTFiber2RightTFiber from "base/Path/LeftTFiber2RightTFiber";
 import SameSideTubeFiber from "base/Path/SameSideTubeFiber";
+import LeftTFiber2SplitterInput from "base/Path/LeftTFiber2SplitterInput";
+
+import { Splitter } from "base/Splitter";
 
 export class FiberConnection {
   fiber_in: number;
@@ -70,7 +73,11 @@ export class FiberConnection {
       (fiberIn.parentType === "SPLITTER" && fiberOut.parentType === "TUBE") ||
       (fiberIn.parentType === "TUBE" && fiberOut.parentType === "SPLITTER")
     ) {
-      this.calculateSplitterToTubeFiberConnection(fiberIn, fiberOut);
+      const splitterFiber =
+        fiberIn.parentType === "SPLITTER" ? fiberIn : fiberOut;
+      const tubeFiber = fiberIn.parentType === "TUBE" ? fiberIn : fiberOut;
+
+      this.calculateSplitterToTubeFiberConnection(splitterFiber, tubeFiber);
       return;
     }
 
@@ -143,7 +150,43 @@ export class FiberConnection {
     );
   }
 
-  calculateSplitterToTubeFiberConnection(fiberIn: Fiber, fiberOut: Fiber) {}
+  calculateSplitterToTubeFiberConnection(
+    splitterFiber: Fiber,
+    tubeFiber: Fiber
+  ) {
+    if ((splitterFiber.parent as Splitter).isFiberInput(splitterFiber)) {
+      this.calculateSplitterInputToTubeFiberConnection(
+        splitterFiber,
+        tubeFiber
+      );
+      return;
+    }
+
+    this.calculateSplitterOutputToTubeFiberConnection(splitterFiber, tubeFiber);
+  }
+
+  calculateSplitterInputToTubeFiberConnection(
+    splitterFiber: Fiber,
+    tubeFiber: Fiber
+  ) {
+    const { path, fusionPoint } = LeftTFiber2SplitterInput({
+      elementIn: tubeFiber,
+      elementOut: splitterFiber,
+      columnController:
+        this.parentGrid.pathController.tubeFusionColumnController,
+      leftAngleRowController:
+        this.parentGrid.pathController.leftAngleRowController,
+      rightAngleRowController:
+        this.parentGrid.pathController.rightAngleRowController,
+    });
+    this.path = path;
+    this.fusionPoint = fusionPoint;
+  }
+
+  calculateSplitterOutputToTubeFiberConnection(
+    splitterFiber: Fiber,
+    tubeFiber: Fiber
+  ) {}
 
   calculateSplitterToSplitterFiberConnection(fiberIn: Fiber, fiberOut: Fiber) {}
 }
