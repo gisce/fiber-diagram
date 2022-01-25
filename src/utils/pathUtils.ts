@@ -106,7 +106,7 @@ export const getLeftToPointPath = ({
 
   // We determine the angle point searching horizontal available space inside angleRow
   const freeXPoint = angleRowController.indexController.getFreeBelowIndexes({
-    point: point - Config.separation * 2,
+    point: point - unitSize * 2,
     unitSize,
     n: 1,
   })[0];
@@ -166,7 +166,7 @@ export const getRightToPointPath = ({
 
   // We determine the angle point searching horizontal available space inside angleRow
   const freeXPoint = angleRowController.indexController.getFreeAboveIndexes({
-    point: point + Config.separation,
+    point: point + unitSize,
     unitSize,
     n: 1,
   })[0];

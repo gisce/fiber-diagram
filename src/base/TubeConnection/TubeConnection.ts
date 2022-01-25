@@ -57,8 +57,7 @@ export class TubeConnection {
     const tubeIn = this.parentGrid.getTubeById(this.tube_in);
     const tubeOut = this.parentGrid.getTubeById(this.tube_out);
 
-    // Check if it's a same side connection
-    if (tubeIn.parentWire.disposition === tubeOut.parentWire.disposition) {
+    if (tubeIn.parentWire.disposition !== tubeOut.parentWire.disposition) {
       const { path, fusionPoint } = LeftTFiber2RightTFiber({
         elementIn: tubeIn,
         elementOut: tubeOut,
@@ -72,6 +71,7 @@ export class TubeConnection {
       this.path = path;
       this.fusionPoint = fusionPoint;
     } else {
+      // Check if it's a same side connection
       const { path, fusionPoint } = SameSideTubeFiber({
         elementIn: tubeIn,
         elementOut: tubeOut,

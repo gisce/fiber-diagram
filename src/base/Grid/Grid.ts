@@ -151,7 +151,9 @@ export class Grid {
     });
 
     // Finally we calculate our width and height
-    this.size.height = this.getWiresHeight();
+    const fusionColumnHeight =
+      this.pathController.tubeFusionColumnController.indexController.getHeight();
+    this.size.height = Math.max(this.getWiresHeight(), fusionColumnHeight);
   }
 
   parseWires(wiresData: WireData[]) {

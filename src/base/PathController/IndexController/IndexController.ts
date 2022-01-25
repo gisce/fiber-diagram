@@ -1,3 +1,4 @@
+import { Config } from "base/Config";
 import { getNPointsAbovePoint, getNPointsBelowPoint } from "utils/pathUtils";
 
 export class IndexController<T> {
@@ -190,5 +191,16 @@ export class IndexController<T> {
     for (let i = point; i < point + size; i++) {
       this.indexes[i] = element;
     }
+  }
+
+  getHeight() {
+    const yPoints: number[] = Object.keys(this.indexes)
+      .filter((entry) => {
+        return this.indexes[entry] !== undefined;
+      })
+      .map((pointKey: string) => {
+        return parseInt(pointKey, 10);
+      });
+    return Math.max(...yPoints) + Config.baseUnits.fiber.height * 3;
   }
 }
