@@ -21,8 +21,8 @@ export const validateFiberConnection = ({
     const fiberInIsOutput = !splitterIn.isFiberInput(fiberIn);
     const fiberOutIsOutput = !splitterOut.isFiberInput(fiberOut);
 
-    // Prevent connections if both fibers are outputs from a splitter
-    if (fiberInIsOutput && fiberOutIsOutput) {
+    // Prevent connections if both fibers are outputs/inputs from a splitter
+    if (fiberInIsOutput === fiberOutIsOutput) {
       return false;
     }
 

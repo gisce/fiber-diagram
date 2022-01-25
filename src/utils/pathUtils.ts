@@ -161,12 +161,14 @@ export const getRightToPointPath = ({
   angleRowController,
   fusionYPoint,
   unitSize,
+  minAngle,
 }: {
   source: Position; // The fiber on the left side
   point: number; // The X, as in, middle of the grid
   angleRowController: RowController; // In order to check where we can horizontally place our connection
   fusionYPoint: number; // The fusion point
   unitSize: number;
+  minAngle?: number;
 }) => {
   // If it's a flat path, we return it directly
   if (source.y === fusionYPoint) {
@@ -179,7 +181,7 @@ export const getRightToPointPath = ({
 
   // We determine the angle point searching horizontal available space inside angleRow
   const freeXPoint = angleRowController.indexController.getFreeAboveIndexes({
-    point: point + unitSize,
+    point: minAngle ? minAngle + unitSize : point + unitSize,
     unitSize,
     n: 1,
   })[0];

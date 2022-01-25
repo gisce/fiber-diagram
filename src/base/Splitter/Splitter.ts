@@ -66,12 +66,25 @@ export class Splitter {
       this.parentGrid.pathController.tubeFusionColumnController.indexController.getHeight();
     const wiresHeight = this.parentGrid.getWiresHeight();
 
-    const previousSibilingsHeight = this.getPreviousSibilingsHeight();
+    const previousSplitter =
+      this.index > 0 ? this.parentGrid.splitters[this.index - 1] : undefined;
 
-    this.attr.position = {
-      x,
-      y: Math.max(wiresHeight, fusionColumnHeight) + previousSibilingsHeight,
-    };
+    if (previousSplitter) {
+      // We have splitters above us
+      const previousSplitterYEnd =
+        previousSplitter.attr.position.y + previousSplitter.getHeight();
+
+      this.attr.position = {
+        x,
+        y: previousSplitterYEnd,
+      };
+    } else {
+      // We are the first splitter
+      this.attr.position = {
+        x,
+        y: Math.max(wiresHeight, fusionColumnHeight),
+      };
+    }
   }
 
   getParsedFibers(fibersData: FiberData[]) {
@@ -140,5 +153,9 @@ export class Splitter {
       fibers_out: this.fibers_out.map((fiber) => fiber.getJson()),
       index: this.index,
     };
+  }
+
+  getParentGrid() {
+    return this.parentGrid;
   }
 }

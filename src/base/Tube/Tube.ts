@@ -51,7 +51,7 @@ export class Tube {
     const tubesConnectedTo: { [key: number]: Tube } = {};
 
     const sameOrder = this.fibers.every((fiber) => {
-      const fiberConnection = this.parentGrid().getFiberConnectionWithId(
+      const fiberConnection = this.getParentGrid().getFiberConnectionWithId(
         fiber.id
       );
 
@@ -61,7 +61,7 @@ export class Tube {
       }
 
       const otherFiberId = fiberConnection.getOtherFiberId(fiber.id);
-      const otherFiber: Fiber = this.parentGrid().getFiberById(otherFiberId);
+      const otherFiber: Fiber = this.getParentGrid().getFiberById(otherFiberId);
 
       // If the other fiber belongs to a splitter, tube is not connected to another tube
       if (otherFiber.parentType !== "TUBE") {
@@ -106,7 +106,7 @@ export class Tube {
       return;
     }
 
-    this.parentGrid().onTubeExpand(this);
+    this.getParentGrid().onTubeExpand(this);
   }
 
   collapse() {
@@ -114,7 +114,7 @@ export class Tube {
       return;
     }
 
-    this.parentGrid().onTubeCollapse(this);
+    this.getParentGrid().onTubeCollapse(this);
   }
 
   calculateSize() {
@@ -166,7 +166,7 @@ export class Tube {
     };
   }
 
-  parentGrid() {
+  getParentGrid() {
     return this.parentWire.parentGrid;
   }
 

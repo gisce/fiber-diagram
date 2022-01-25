@@ -203,9 +203,13 @@ export class Grid {
         new Splitter({
           data: splitterData,
           parentGrid: this,
-          index: this.splitters.length,
+          index: splitterData.index || this.splitters.length,
         })
       )
+    );
+
+    this.splitters = this.splitters.sort((a: Splitter, b: Splitter) =>
+      a.index > b.index ? 1 : -1
     );
   }
 
@@ -439,6 +443,19 @@ export class Grid {
     return this.splitters.reduce((acc, splitter) => {
       return acc + splitter.getHeight();
     }, 0);
+  }
+
+  getSplittersMaxHposition() {
+    const splittersSorted = this.splitters.sort((a, b) => {
+      const maxHpositionA = a.attr.position.x + a.attr.size.width;
+      const maxHpositionB = b.attr.position.x + b.attr.size.width;
+
+      return maxHpositionB - maxHpositionA;
+    });
+
+    return (
+      splittersSorted[0].attr.position.x + splittersSorted[0].attr.size.width
+    );
   }
 
   recalculateWidth() {

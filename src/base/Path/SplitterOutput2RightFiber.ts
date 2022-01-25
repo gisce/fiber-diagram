@@ -2,7 +2,6 @@ import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
 import { ColumnController } from "base/PathController/ColumnController/ColumnController";
 import { RowController } from "base/PathController/RowController/RowController";
-import { Splitter } from "base/Splitter";
 import { Tube } from "base/Tube";
 import { getRightToPointPath, getUnitsForPath } from "utils/pathUtils";
 
@@ -71,7 +70,9 @@ const getRightLeg = ({
 }) => {
   const type = elementOut instanceof Tube ? "tube" : "fiber";
 
-  const sourceSplitter = (elementIn as Fiber).parent as Splitter;
+  const biggestXforSplitters = (elementIn as Fiber).parent
+    .getParentGrid()
+    .getSplittersMaxHposition();
 
   const {
     path: rightPath,
@@ -79,11 +80,11 @@ const getRightLeg = ({
     usedYPoint: rightUsedYPoint,
   } = getRightToPointPath({
     source: elementOut.attr.position,
-    point: elementIn.attr.position.x,
+    point: elementIn.attr.position.x + Config.baseUnits[type].width,
     angleRowController,
     fusionYPoint,
     unitSize: Config.baseUnits[type].height,
-    minAngle: sourceSplitter.attr.position.x + sourceSplitter.attr.size.width,
+    minAngle: biggestXforSplitters + Config.separation,
   });
 
   if (rightUsedXPoint) {
