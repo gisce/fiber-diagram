@@ -26,5 +26,9 @@ export const validateFiberConnection = ({
   // Check if both fibers are ouput and input from different splitters, but they have a loop
   // Only allow splitters fibers in to left - check if one fiber is an input of a splitter, and the other one is from the right
 
+  if (fiberIn.id === fiberOut.id) {
+    return false;
+  }
+
   return true;
 };
