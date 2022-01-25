@@ -108,6 +108,31 @@ export class Splitter {
     }, 0);
   }
 
+  getSplitterConnectedInInput() {
+    const fiberConnection = this.parentGrid.getFiberConnectionWithId(
+      this.fibers_in[0].id
+    );
+    if (!fiberConnection) {
+      return undefined;
+    }
+
+    const fiberIdConnectedTo =
+      this.fibers_in[0].id === fiberConnection.fiber_in
+        ? fiberConnection.fiber_out
+        : fiberConnection.fiber_in;
+    const fiberConnectedTo = this.parentGrid.getFiberById(fiberIdConnectedTo);
+
+    if (!fiberConnectedTo) {
+      return undefined;
+    }
+
+    if (fiberConnectedTo.parentType !== "SPLITTER") {
+      return undefined;
+    }
+
+    return fiberConnectedTo.parent as Splitter;
+  }
+
   getJson() {
     return {
       id: this.id,
