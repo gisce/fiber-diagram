@@ -9,14 +9,16 @@ import { Splitter } from "base/Splitter";
 import { SplitterData } from "base/Splitter/Splitter.types";
 import { GridData } from ".";
 import { PathController } from "base/PathController";
+import { Path } from "konva/lib/shapes/Path";
 
 export class Grid {
-  initialData: GridData;
   id: number;
   name: string;
   onChange?: (grid: Grid) => void;
 
   size: Size;
+  leftSideWidth: number;
+  rightSideWidth: number;
 
   // Wires > Tubes > Fibers
   leftWires: Wire[] = [];
@@ -41,22 +43,31 @@ export class Grid {
     input?: GridData;
     onChange?: (grid: Grid) => void;
   }) {
-    // We store the initial data for later comparing if our process detects any changes
-    this.initialData = { ...input };
-
     this.id = input?.res?.id;
     this.name = input?.res?.name;
     this.onChange = onChange;
 
     // Initial sizing
     this.size = { ...Config.gridSize };
+    this.leftSideWidth = this.size.width / 2;
+    this.rightSideWidth = this.size.width / 2;
+
+    if (input?.res?.leftSideWidth) {
+      this.leftSideWidth = input?.res?.leftSideWidth;
+      this.size.width = this.leftSideWidth + this.rightSideWidth;
+    }
+
+    if (input?.res?.rightSideWidth) {
+      this.rightSideWidth = input?.res?.rightSideWidth;
+      this.size.width = this.leftSideWidth + this.rightSideWidth;
+    }
 
     // We parse the data in order to create our logical objects without position or size
     this.parse({ input });
 
     // Initialization of path controller
     this.pathController = new PathController({
-      middlePoint: this.size.width / 2,
+      middlePoint: this.leftSideWidth,
     });
 
     // And then we calculate positions and sizes of our elements
@@ -150,10 +161,13 @@ export class Grid {
       }
     });
 
-    // Finally we calculate our width and height
+    // Finally we calculate our height
     const fusionColumnHeight =
       this.pathController.tubeFusionColumnController.indexController.getHeight();
     this.size.height = Math.max(this.getWiresHeight(), fusionColumnHeight);
+
+    // And recalculate our width
+    this.recalculateWidth();
   }
 
   parseWires(wiresData: WireData[]) {
@@ -398,6 +412,53 @@ export class Grid {
     return Math.max(leftHeight, rightHeight);
   }
 
+  recalculateWidth() {
+    let mustRedraw = false;
+
+    const leftAngleUsedWith =
+      this.pathController.leftAngleRowController.indexController.getWidth();
+    const rightAngleUsedWith =
+      this.pathController.rightAngleRowController.indexController.getWidth();
+
+    console.log("Recalculating width");
+    console.log("leftAngleUsedWith: " + leftAngleUsedWith);
+    console.log("rightAngleUsedWith: " + leftAngleUsedWith);
+    console.log("this.leftSideWidth: " + this.leftSideWidth);
+    console.log("this.rightSideWidth: " + this.rightSideWidth);
+
+    const wireTubeFiberSize =
+      Config.baseUnits.fiber.width +
+      Config.baseUnits.tube.width +
+      Config.baseUnits.wire.width;
+
+    // If the used width for left angle side is bigger than left width, then we reajust the left width
+    if (leftAngleUsedWith >= this.leftSideWidth - wireTubeFiberSize) {
+      mustRedraw = true;
+      this.leftSideWidth = leftAngleUsedWith + Config.separationWireToAngle;
+      console.log(
+        "RECALC ** leftAngleUsedWith >= this.leftSideWidth --> this.leftSideWidth: " +
+          this.leftSideWidth
+      );
+    }
+
+    if (rightAngleUsedWith >= this.rightSideWidth - wireTubeFiberSize) {
+      mustRedraw = true;
+      this.rightSideWidth = rightAngleUsedWith + Config.separationWireToAngle;
+      console.log(
+        "RECALC ** rightAngleUsedWith >= this.rightSideWidth --> this.rightSideWidth: " +
+          this.rightSideWidth
+      );
+    }
+
+    if (mustRedraw) {
+      this.size.width = this.leftSideWidth + this.rightSideWidth;
+      this.pathController = new PathController({
+        middlePoint: this.leftSideWidth,
+      });
+      this.calculate();
+    }
+  }
+
   getJson(): GridData {
     const output: GridData = {
       res: {
@@ -414,6 +475,8 @@ export class Grid {
             ...this.fiberConnections.map((connection) => connection.getJson()),
           ],
         },
+        rightSideWidth: this.rightSideWidth,
+        leftSideWidth: this.leftSideWidth,
       },
     };
 

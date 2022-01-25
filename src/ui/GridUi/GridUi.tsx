@@ -61,7 +61,7 @@ export const GridUi = ({
       <FiberConnectionContextProvider>
         <Layer>
           <Rect
-            x={(grid.size.width * Config.pixelsPerUnit) / 2}
+            x={grid.leftSideWidth * Config.pixelsPerUnit}
             y={0}
             width={1}
             height={grid.size.height * Config.pixelsPerUnit}
@@ -87,7 +87,8 @@ export const GridUi = ({
             ).map((key, i) => {
               return (
                 <Rect
-                  x={(grid.size.width / 2) * Config.pixelsPerUnit}
+                  key={i}
+                  x={grid.leftSideWidth * Config.pixelsPerUnit}
                   y={parseInt(key) * Config.pixelsPerUnit}
                   width={1}
                   height={1 * Config.pixelsPerUnit}
@@ -110,6 +111,7 @@ export const GridUi = ({
             ].map((key, i) => {
               return (
                 <Rect
+                  key={i}
                   x={parseInt(key) * Config.pixelsPerUnit}
                   y={1}
                   width={1 * Config.pixelsPerUnit}

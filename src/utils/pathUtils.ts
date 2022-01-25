@@ -105,11 +105,24 @@ export const getLeftToPointPath = ({
   let path = [];
 
   // We determine the angle point searching horizontal available space inside angleRow
-  const freeXPoint = angleRowController.indexController.getFreeBelowIndexes({
+  const freeXPoints = angleRowController.indexController.getFreeBelowIndexes({
     point: point - unitSize * 2,
     unitSize,
     n: 1,
-  })[0];
+  });
+
+  let freeXPoint: number;
+
+  // If there's no space, we return points below the minimum
+  if (!freeXPoints || freeXPoints.length === 0) {
+    freeXPoint = getNPointsBelowPoint({
+      point: angleRowController.indexController.getLowestUsedIndex(),
+      unitSize,
+      n: 1,
+    })[0];
+  } else {
+    freeXPoint = freeXPoints[0];
+  }
 
   // from: source.x, source.y
   // to: freeXPoint, source.y

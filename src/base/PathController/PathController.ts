@@ -19,4 +19,9 @@ export class PathController {
     this.leftAngleRowController = new RowController();
     this.rightAngleRowController = new RowController();
   }
+
+  setMiddlePoint(middlePoint: number) {
+    this.tubeFusionColumnController.middlePoint = middlePoint;
+    this.splitterFusionColumnController.middlePoint = middlePoint;
+  }
 }

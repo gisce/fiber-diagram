@@ -8,8 +8,7 @@ export const Config = {
   wireSeparation: 6,
   separation: 1,
   pixelsPerUnit: 10,
-  growHorizontalFactor: 0.5,
-  angleSeparatorFactor: 2.5,
+  separationWireToAngle: 15,
   splitterWidth: 2,
   colorForSplitters: "#555555",
 };

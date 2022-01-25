@@ -201,6 +201,29 @@ export class IndexController<T> {
       .map((pointKey: string) => {
         return parseInt(pointKey, 10);
       });
+    if (yPoints.length === 0) {
+      return 0;
+    }
+
     return Math.max(...yPoints) + Config.baseUnits.fiber.height * 3;
+  }
+
+  getWidth() {
+    const xPoints: number[] = Object.keys(this.indexes)
+      .filter((entry) => {
+        return this.indexes[entry] !== undefined;
+      })
+      .map((pointKey: string) => {
+        return parseInt(pointKey, 10);
+      });
+
+    if (xPoints.length === 0) {
+      return 0;
+    }
+
+    const maxPoint = Math.max(...xPoints);
+    const minPoint = Math.min(...xPoints);
+
+    return Math.abs(maxPoint - minPoint) + Config.baseUnits.fiber.width * 3;
   }
 }

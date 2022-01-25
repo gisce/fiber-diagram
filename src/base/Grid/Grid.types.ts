@@ -15,6 +15,8 @@ export type GridData = {
     connections?: {
       fibers: FiberConnectionData[];
     };
+    leftSideWidth?: number;
+    rightSideWidth?: number;
   };
 };
 
