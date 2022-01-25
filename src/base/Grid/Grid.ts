@@ -420,12 +420,6 @@ export class Grid {
     const rightAngleUsedWith =
       this.pathController.rightAngleRowController.indexController.getWidth();
 
-    console.log("Recalculating width");
-    console.log("leftAngleUsedWith: " + leftAngleUsedWith);
-    console.log("rightAngleUsedWith: " + leftAngleUsedWith);
-    console.log("this.leftSideWidth: " + this.leftSideWidth);
-    console.log("this.rightSideWidth: " + this.rightSideWidth);
-
     const wireTubeFiberSize =
       Config.baseUnits.fiber.width +
       Config.baseUnits.tube.width +
@@ -435,19 +429,11 @@ export class Grid {
     if (leftAngleUsedWith >= this.leftSideWidth - wireTubeFiberSize) {
       mustRedraw = true;
       this.leftSideWidth = leftAngleUsedWith + Config.separationWireToAngle;
-      console.log(
-        "RECALC ** leftAngleUsedWith >= this.leftSideWidth --> this.leftSideWidth: " +
-          this.leftSideWidth
-      );
     }
 
     if (rightAngleUsedWith >= this.rightSideWidth - wireTubeFiberSize) {
       mustRedraw = true;
       this.rightSideWidth = rightAngleUsedWith + Config.separationWireToAngle;
-      console.log(
-        "RECALC ** rightAngleUsedWith >= this.rightSideWidth --> this.rightSideWidth: " +
-          this.rightSideWidth
-      );
     }
 
     if (mustRedraw) {

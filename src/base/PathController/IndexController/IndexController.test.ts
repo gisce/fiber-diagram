@@ -14,8 +14,6 @@ describe("An IndexController", () => {
       point: 49,
     });
 
-    console.log();
-
     // Expect 48, 47, 46
     expect(freeIndexes).toHaveLength(3);
     expect(freeIndexes.indexOf(47)).not.toEqual(-1);
