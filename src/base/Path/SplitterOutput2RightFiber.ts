@@ -23,12 +23,7 @@ export default ({
   const type = elementIn instanceof Tube ? "tube" : "fiber";
 
   // First we determine the fusion point searching for the vertical available space inside fusionColumn
-  const fusionYPoint =
-    columnController.indexController.getNFreeIndexesFromPoint({
-      point: source.y,
-      unitSize: Config.baseUnits[type].height,
-      n: 1,
-    })[0];
+  const fusionYPoint = source.y;
 
   // And we set now this point as used index in the fusion column
   columnController.indexController.setUsedIndexWithSize({
