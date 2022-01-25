@@ -1,7 +1,7 @@
 import { Config } from "base/Config";
-import { Fiber, FiberDataType } from "base/Fiber";
+import { Fiber, FiberData } from "base/Fiber";
 import { Grid, InitialPositionSize, PositionSize } from "base/Grid";
-import { SplitterDataType } from "./Splitter.types";
+import { SplitterData } from "./Splitter.types";
 
 export class Splitter {
   id: number;
@@ -16,7 +16,7 @@ export class Splitter {
     parentGrid,
     index,
   }: {
-    data: SplitterDataType;
+    data: SplitterData;
     parentGrid: Grid;
     index: number;
   }) {
@@ -38,7 +38,43 @@ export class Splitter {
     };
   }
 
-  getParsedFibers(fibersData: FiberDataType[]) {
+  calculatePosition() {
+    const inputFiberConnection = this.parentGrid.getFiberConnectionWithId(
+      this.fibers_in[0].id
+    );
+
+    let inputFiber: Fiber;
+    let splitterOrigin: boolean;
+
+    if (inputFiberConnection) {
+      const inputFiberId =
+        this.fibers_in[0].id === inputFiberConnection.fiber_in
+          ? inputFiberConnection.fiber_out
+          : inputFiberConnection.fiber_in;
+
+      inputFiber = this.parentGrid.getFiberById(inputFiberId);
+      splitterOrigin = inputFiber.parentType === "SPLITTER";
+    }
+
+    const x = splitterOrigin
+      ? this.parentGrid.leftSideWidth +
+        this.attr.size.width +
+        Config.baseUnits.fiber.width
+      : this.parentGrid.leftSideWidth;
+
+    const fusionColumnHeight =
+      this.parentGrid.pathController.tubeFusionColumnController.indexController.getHeight();
+    const wiresHeight = this.parentGrid.getWiresHeight();
+
+    const previousSibilingsHeight = this.getPreviousSibilingsHeight();
+
+    this.attr.position = {
+      x,
+      y: Math.max(wiresHeight, fusionColumnHeight) + previousSibilingsHeight,
+    };
+  }
+
+  getParsedFibers(fibersData: FiberData[]) {
     return fibersData.map((fiberEntry, index) => {
       return new Fiber({
         data: { ...fiberEntry, color: Config.colorForSplitters },
@@ -55,6 +91,21 @@ export class Splitter {
   getSibilingsForFiber(fiber: Fiber) {
     const fibers = this.isFiberInput(fiber) ? this.fibers_in : this.fibers_out;
     return fibers.filter((f) => f.id !== fiber.id);
+  }
+
+  getHeight() {
+    return this.attr.size.height + Config.separation * 2;
+  }
+
+  getPreviousSibilingsHeight() {
+    const previousSibilings = this.parentGrid.splitters.filter((splitter) => {
+      const splitterIndex = splitter.index;
+      return splitterIndex < this.index;
+    });
+
+    return previousSibilings.reduce((acc, splitter) => {
+      return acc + splitter.getHeight();
+    }, 0);
   }
 
   getJson() {

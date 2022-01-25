@@ -91,14 +91,17 @@ export class Fiber {
 
   calculatePositionForParentSplitter() {
     const parentSplitter = this.parent as Splitter;
-    const splitterSibilings = parentSplitter.getSibilingsForFiber(this);
+
+    const totalSideFibers = parentSplitter.isFiberInput(this)
+      ? parentSplitter.fibers_in
+      : parentSplitter.fibers_out;
 
     const vUnitSpace =
       parentSplitter?.attr.size.height /
-      (splitterSibilings.length + splitterSibilings.length + 1);
+      (totalSideFibers.length + totalSideFibers.length + 1);
 
     let y: number, x: number;
-    if (splitterSibilings.length === 1) {
+    if (totalSideFibers.length === 1) {
       y =
         parentSplitter?.attr.size.height / 2 -
         Config.baseUnits.fiber.height / 2;

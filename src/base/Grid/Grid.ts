@@ -106,11 +106,9 @@ export class Grid {
     // First, sizing starting from deeper to outer (FIBER < TUBE < WIRE)
     // *******
 
-    // 1- FIBERS WHOSE PARENTS ARE TUBES - SIZING
+    // 1- FIBERS SIZING
     this.getAllFibers().forEach((fiber: Fiber) => {
-      if (fiber.parentType === "TUBE") {
-        fiber.calculateSize();
-      }
+      fiber.calculateSize();
     });
 
     // 2- TUBES SIZING
@@ -144,26 +142,45 @@ export class Grid {
       }
     });
 
-    // this.splitters.forEach((splitter: Splitter) => {
-    //   splitter.calculateSize();
-    // });
+    // 7- SPLITTERS SIZING
+    this.splitters.forEach((splitter: Splitter) => {
+      splitter.calculateSize();
+    });
 
     // We calculate the tube connections
     this.tubeConnections.forEach((tubeConnection: TubeConnection) => {
       tubeConnection.calculate();
     });
 
-    // We calculate the fiber connections for tubes that are expanded
+    // We calculate the fiber connections for tube to tube and that tubes that are expanded
+    // We avoid here connections to/from splitter
     this.fiberConnections.forEach((fiberConnection: FiberConnection) => {
-      if (fiberConnection.isVisible()) {
+      if (
+        !fiberConnection.someFiberIsFromSplitter() &&
+        fiberConnection.isVisible()
+      ) {
         fiberConnection.calculate();
+      }
+    });
+
+    // We can now position the splitters
+    this.splitters.forEach((splitter: Splitter) => {
+      splitter.calculatePosition();
+    });
+
+    // And the splitters fibers
+    this.getAllFibers().forEach((fiber: Fiber) => {
+      if (fiber.parentType === "SPLITTER") {
+        fiber.calculatePosition();
       }
     });
 
     // Finally we calculate our height
     const fusionColumnHeight =
       this.pathController.tubeFusionColumnController.indexController.getHeight();
-    this.size.height = Math.max(this.getWiresHeight(), fusionColumnHeight);
+    this.size.height =
+      Math.max(this.getWiresHeight(), fusionColumnHeight) +
+      this.getSplittersHeight();
 
     // And recalculate our width if needed
     this.recalculateWidth();
@@ -409,6 +426,12 @@ export class Grid {
       0
     );
     return Math.max(leftHeight, rightHeight);
+  }
+
+  getSplittersHeight() {
+    return this.splitters.reduce((acc, splitter) => {
+      return acc + splitter.getHeight();
+    }, 0);
   }
 
   recalculateWidth() {

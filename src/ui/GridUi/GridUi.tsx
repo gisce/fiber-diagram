@@ -71,9 +71,9 @@ export const GridUi = ({
           {grid.tubeConnections?.map((connection, i) => {
             return <TubeConnectionUi key={i} connection={connection} />;
           })}
-          {/* {grid.splitters?.map((splitter) => {
+          {grid.splitters?.map((splitter) => {
             return <SplitterUi key={splitter.id} splitter={splitter} />;
-          })} */}
+          })}
           {grid.fiberConnections?.map((connection, i) => {
             return <FiberConnectionUi key={i} connection={connection} />;
           })}

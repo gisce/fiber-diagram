@@ -134,6 +134,15 @@ export class FiberConnection {
     return oneFiber.parentType === "TUBE" && (oneFiber.parent as Tube).expanded;
   }
 
+  someFiberIsFromSplitter() {
+    const fiberIn = this.parentGrid.getFiberById(this.fiber_in);
+    const fiberOut = this.parentGrid.getFiberById(this.fiber_out);
+
+    return (
+      fiberIn.parentType === "SPLITTER" || fiberOut.parentType === "SPLITTER"
+    );
+  }
+
   calculateSplitterToTubeFiberConnection(fiberIn: Fiber, fiberOut: Fiber) {}
 
   calculateSplitterToSplitterFiberConnection(fiberIn: Fiber, fiberOut: Fiber) {}
