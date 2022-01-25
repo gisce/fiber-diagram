@@ -9,7 +9,6 @@ import { Splitter } from "base/Splitter";
 import { SplitterData } from "base/Splitter/Splitter.types";
 import { GridData } from ".";
 import { PathController } from "base/PathController";
-import { Path } from "konva/lib/shapes/Path";
 
 export class Grid {
   id: number;
@@ -166,7 +165,7 @@ export class Grid {
       this.pathController.tubeFusionColumnController.indexController.getHeight();
     this.size.height = Math.max(this.getWiresHeight(), fusionColumnHeight);
 
-    // And recalculate our width
+    // And recalculate our width if needed
     this.recalculateWidth();
   }
 
