@@ -75,6 +75,7 @@ export default ({
     freeXPoint,
     fusionYPoint,
     middlePoint: columnController.middlePoint,
+    color: elementOut.color,
   });
 
   const leftSideLeg = getLeftLeg({
@@ -98,15 +99,21 @@ const getRightSideLeg = ({
   freeXPoint,
   fusionYPoint,
   middlePoint,
+  color,
 }: {
   elementIn: Fiber; // The splitter output on the right
   freeXPoint: number;
   fusionYPoint: number;
   middlePoint: number;
+  color: string;
 }) => {
   let path = [];
 
-  for (let iX = elementIn.attr.position.x; iX < freeXPoint; iX += 1) {
+  for (
+    let iX = elementIn.attr.position.x + Config.baseUnits.fiber.width;
+    iX < freeXPoint;
+    iX += 1
+  ) {
     path.push([iX, elementIn.attr.position.y]);
   }
 
@@ -120,7 +127,7 @@ const getRightSideLeg = ({
 
   return getUnitsForPath({
     pathCoords: path,
-    color: elementIn.color,
+    color: color,
     unitSize: Config.baseUnits.fiber.height,
   });
 };
