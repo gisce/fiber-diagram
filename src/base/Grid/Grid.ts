@@ -207,6 +207,9 @@ export class Grid {
         })
       )
     );
+    this.splitters = this.splitters.sort((a: Splitter, b: Splitter) => {
+      return a.index - b.index;
+    });
   }
 
   parseConnections(connectionsData: FiberConnectionData[]) {
@@ -457,10 +460,19 @@ export class Grid {
   recalculateWidth() {
     let mustRedraw = false;
 
+    let maxWidthForSplitters = 0;
+
+    if (this.splitters && this.splitters.length > 0) {
+      const maxXforSplitters = this.getSplittersMaxHposition();
+      maxWidthForSplitters = maxXforSplitters - this.rightSideWidth;
+    }
+
     const leftAngleUsedWith =
       this.pathController.leftAngleRowController.indexController.getWidth();
-    const rightAngleUsedWith =
-      this.pathController.rightAngleRowController.indexController.getWidth();
+    const rightAngleUsedWith = Math.max(
+      this.pathController.rightAngleRowController.indexController.getWidth(),
+      maxWidthForSplitters
+    );
 
     const wireTubeFiberSize =
       Config.baseUnits.fiber.width +

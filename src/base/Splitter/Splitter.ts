@@ -56,18 +56,32 @@ export class Splitter {
       splitterOrigin = inputFiber.parentType === "SPLITTER";
     }
 
-    const x = splitterOrigin
-      ? this.parentGrid.leftSideWidth +
-        this.attr.size.width +
-        Config.baseUnits.fiber.width
-      : this.parentGrid.leftSideWidth;
+    let x: number;
+
+    if (splitterOrigin) {
+      const inputSplitter = inputFiber.parent as Splitter;
+
+      if (inputSplitter.attr.position.x === 0) {
+        inputSplitter.calculatePosition();
+      }
+
+      x =
+        inputSplitter.attr.position.x +
+        inputSplitter.attr.size.width +
+        Config.baseUnits.fiber.height;
+    } else {
+      x = this.parentGrid.leftSideWidth;
+    }
 
     const fusionColumnHeight =
       this.parentGrid.pathController.tubeFusionColumnController.indexController.getHeight();
     const wiresHeight = this.parentGrid.getWiresHeight();
 
-    const previousSplitter =
-      this.index > 0 ? this.parentGrid.splitters[this.index - 1] : undefined;
+    const previousSplitter = this.parentGrid.splitters.find(
+      (splitter: Splitter) => {
+        return splitter.index === this.index - 1;
+      }
+    );
 
     if (previousSplitter) {
       // We have splitters above us
