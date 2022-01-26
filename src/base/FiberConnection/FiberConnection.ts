@@ -7,6 +7,7 @@ import SameSideTubeFiber from "base/Path/SameSideTubeFiber";
 import LeftTFiber2SplitterInput from "base/Path/LeftTFiber2SplitterInput";
 import SplitterInput2SplitterOutput from "base/Path/SplitterInput2SplitterOutput";
 import SplitterOutput2RightFiber from "base/Path/SplitterOutput2RightFiber";
+import SplitterOutput2LeftFiber from "base/Path/SplitterOutput2LeftFiber";
 
 import { Splitter } from "base/Splitter";
 
@@ -190,6 +191,18 @@ export class FiberConnection {
     tubeFiber: Fiber
   ) {
     if ((tubeFiber.parent as Tube).parentWire.disposition === "LEFT") {
+      const { path, fusionPoint } = SplitterOutput2LeftFiber({
+        elementIn: splitterFiber,
+        elementOut: tubeFiber,
+        columnController:
+          this.parentGrid.pathController.tubeFusionColumnController,
+        leftAngleRowController:
+          this.parentGrid.pathController.leftAngleRowController,
+        rightAngleRowController:
+          this.parentGrid.pathController.rightAngleRowController,
+      });
+      this.path = path;
+      this.fusionPoint = fusionPoint;
     } else {
       const { path, fusionPoint } = SplitterOutput2RightFiber({
         elementIn: splitterFiber,

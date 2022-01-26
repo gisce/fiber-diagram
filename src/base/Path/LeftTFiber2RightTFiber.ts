@@ -120,7 +120,7 @@ const getFiberToFiberFlatPath = ({
   };
 };
 
-const getLeftLeg = ({
+export const getLeftLeg = ({
   elementIn,
   columnController,
   fusionYPoint,
