@@ -1,5 +1,16 @@
 {
   "res": {
+    "connections": {
+      "fibers": [
+        { "fiber_in": 231, "fiber_out": 227 },
+        { "fiber_in": 236, "fiber_out": 224 },
+        { "fiber_in": 238, "fiber_out": 226 },
+        { "fiber_in": 11, "fiber_out": 235 },
+        { "fiber_in": 17, "fiber_out": 237 },
+        { "fiber_in": 12, "fiber_out": 234 },
+        { "fiber_in": 15, "fiber_out": 14 }
+      ]
+    },
     "elements": {
       "wires": [
         {
@@ -9,8 +20,8 @@
           "tubes": [
             {
               "id": 23,
-              "name": "T1-Tub 1",
               "color": "#cfc",
+              "name": "T1-Tub 1",
               "fibers": [
                 { "id": 223, "name": "F1-F1 - ROJA", "color": "#448844" },
                 { "id": 224, "name": "F2-F2 - VERDE", "color": "#00f0ff" },
@@ -20,8 +31,8 @@
             },
             {
               "id": 24,
-              "name": "T2-Tub 2",
               "color": "#bbf",
+              "name": "T2-Tub 2",
               "fibers": [
                 { "id": 227, "name": "F1-F1 - ROJA", "color": "#FF0000" },
                 { "id": 228, "name": "F2-F2 - VERDE", "color": "#00FF00" },
@@ -38,8 +49,8 @@
           "tubes": [
             {
               "id": 25,
-              "name": "T1-Tub 1",
               "color": "#faf",
+              "name": "T1-Tub 1",
               "fibers": [
                 { "id": 231, "name": "F1-F1 - ROJA", "color": "#FF0000" },
                 { "id": 232, "name": "F2-F2 - VERDE", "color": "#00FF00" },
@@ -49,8 +60,8 @@
             },
             {
               "id": 26,
-              "name": "T2-Tub 2",
               "color": "#aafaff",
+              "name": "T2-Tub 2",
               "fibers": [
                 { "id": 235, "name": "F1-F1 - ROJA", "color": "#F000FF" },
                 { "id": 236, "name": "F2-F2 - VERDE", "color": "#3F090F" },
@@ -67,25 +78,55 @@
           "fibers_in": [
             {
               "id": 10,
-              "name": "1"
+              "name": "1",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 50, "y": 31 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 0
             }
           ],
           "fibers_out": [
             {
               "id": 11,
-              "name": "2"
+              "name": "2",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 28 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 0
             },
             {
               "id": 12,
-              "name": "3"
+              "name": "3",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 30 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 1
             },
             {
               "id": 13,
-              "name": "4"
+              "name": "4",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 32 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 2
             },
             {
               "id": 14,
-              "name": "5"
+              "name": "5",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 34 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 3
             }
           ]
         },
@@ -94,36 +135,105 @@
           "fibers_in": [
             {
               "id": 15,
-              "name": "15"
+              "name": "15",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 50, "y": 41 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 0
             }
           ],
           "fibers_out": [
             {
               "id": 16,
-              "name": "25"
+              "name": "25",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 39 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 0
             },
             {
               "id": 17,
-              "name": "35"
+              "name": "35",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 41 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 1
             },
             {
               "id": 18,
-              "name": "45"
+              "name": "45",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 43 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 2
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "fibers_in": [
+            {
+              "id": 19,
+              "name": "15",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 50, "y": 41 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 0
+            },
+            {
+              "id": 449,
+              "name": "15",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 50, "y": 41 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 0
+            }
+          ],
+          "fibers_out": [
+            {
+              "id": 20,
+              "name": "25",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 39 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 0
+            },
+            {
+              "id": 21,
+              "name": "35",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 41 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 1
+            },
+            {
+              "id": 22,
+              "name": "45",
+              "color": "#555555",
+              "attr": {
+                "position": { "x": 56, "y": 43 },
+                "size": { "width": 4, "height": 1 }
+              },
+              "index": 2
             }
           ]
         }
-      ]
-    },
-    "connections": {
-      "fibers": [
-        { "fiber_in": 231, "fiber_out": 227 },
-        { "fiber_in": 228, "fiber_out": 232 },
-        { "fiber_in": 233, "fiber_out": 229 },
-        { "fiber_in": 223, "fiber_out": 235 },
-        { "fiber_in": 236, "fiber_out": 224 },
-        { "fiber_in": 225, "fiber_out": 237 },
-        { "fiber_in": 238, "fiber_out": 226 },
-        { "fiber_in": 230, "fiber_out": 10 }
       ]
     }
   }

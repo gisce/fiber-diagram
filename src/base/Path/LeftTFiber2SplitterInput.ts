@@ -1,5 +1,6 @@
 import { Config } from "base/Config";
 import { Fiber } from "base/Fiber";
+import { Position } from "base/Grid";
 import { ColumnController } from "base/PathController/ColumnController/ColumnController";
 import { RowController } from "base/PathController/RowController/RowController";
 import { Tube } from "base/Tube";
@@ -56,12 +57,23 @@ export default ({
     fusionYPoint,
   });
 
+  let rightLeg = [];
+
+  if (target.x > columnController.middlePoint) {
+    // This means the fiber from the splitter is not placed on the middle, therefore we must draw a line to middlepoint
+    rightLeg = getPendingLineToMiddle({
+      element: elementOut as Fiber,
+      fusionYPoint,
+      middlePoint: columnController.middlePoint,
+    });
+  }
+
   return {
     fusionPoint: {
       x: columnController.middlePoint,
       y: fusionYPoint,
     },
-    path: [...leftLeg],
+    path: [...leftLeg, ...rightLeg],
   };
 };
 
@@ -153,5 +165,27 @@ const getLeftLeg = ({
     pathCoords: leftPath,
     color: elementIn.color,
     unitSize: Config.baseUnits[type].height,
+  });
+};
+
+const getPendingLineToMiddle = ({
+  element,
+  fusionYPoint,
+  middlePoint,
+}: {
+  element: Fiber;
+  fusionYPoint: number;
+  middlePoint: number;
+}) => {
+  let path = [];
+
+  for (let iX = element.attr.position.x; iX >= middlePoint; iX -= 1) {
+    path.push([iX, fusionYPoint]);
+  }
+
+  return getUnitsForPath({
+    pathCoords: path,
+    color: element.color,
+    unitSize: Config.baseUnits.fiber.height,
   });
 };

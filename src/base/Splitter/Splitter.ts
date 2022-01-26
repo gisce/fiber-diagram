@@ -64,11 +64,21 @@ export class Splitter {
       if (inputSplitter.attr.position.x === 0) {
         inputSplitter.calculatePosition();
       }
-
       x =
         inputSplitter.attr.position.x +
         inputSplitter.attr.size.width +
         Config.baseUnits.fiber.height;
+
+      const freeXPoints =
+        this.parentGrid.pathController.rightAngleRowController.indexController.getFreeAboveIndexes(
+          {
+            point: x + Config.baseUnits.fiber.height * 2,
+            n: 1,
+            unitSize: this.attr.size.width,
+          }
+        );
+
+      x = freeXPoints[0];
     } else {
       x = this.parentGrid.leftSideWidth;
     }
