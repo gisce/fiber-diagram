@@ -207,10 +207,6 @@ export class Grid {
         })
       )
     );
-
-    this.splitters = this.splitters.sort((a: Splitter, b: Splitter) =>
-      a.index > b.index ? 1 : -1
-    );
   }
 
   parseConnections(connectionsData: FiberConnectionData[]) {
@@ -500,7 +496,11 @@ export class Grid {
           wires: this.leftWires
             .concat(this.rightWires)
             .map((wire) => wire.getJson()),
-          splitters: this.splitters.map((splitter) => splitter.getJson()),
+          splitters: this.splitters
+            .map((splitter) => splitter.getJson())
+            .sort((a: SplitterData, b: SplitterData) => {
+              return a.index - b.index;
+            }),
         },
         connections: {
           fibers: [
