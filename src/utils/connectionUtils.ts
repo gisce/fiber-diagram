@@ -41,14 +41,7 @@ export const validateFiberConnection = ({
       splitterFiber.parent as Splitter
     ).isFiberInput(splitterFiber);
 
-    if (otherFiber.parentType === "TUBE") {
-      const otherFiberIsFromRight =
-        (otherFiber.parent as Tube).parentWire.disposition === "RIGHT";
-
-      if (splitterFiberIsInput && otherFiberIsFromRight) {
-        return false;
-      }
-    } else {
+    if (otherFiber.parentType !== "TUBE") {
       const splitterConnectedToSplitterFiber = (
         splitterFiber.parent as Splitter
       ).getSplitterConnectedInInput();

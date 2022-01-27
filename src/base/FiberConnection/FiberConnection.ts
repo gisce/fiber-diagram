@@ -5,6 +5,7 @@ import { FiberConnectionData } from ".";
 import LeftTFiber2RightTFiber from "base/Path/LeftTFiber2RightTFiber";
 import SameSideTubeFiber from "base/Path/SameSideTubeFiber";
 import LeftTFiber2SplitterInput from "base/Path/LeftTFiber2SplitterInput";
+import RightTFiber2SplitterInput from "base/Path/RightTFiber2SplitterInput";
 import SplitterInput2SplitterOutput from "base/Path/SplitterInput2SplitterOutput";
 import SplitterOutput2RightFiber from "base/Path/SplitterOutput2RightFiber";
 import SplitterOutput2LeftFiber from "base/Path/SplitterOutput2LeftFiber";
@@ -172,18 +173,33 @@ export class FiberConnection {
     splitterFiber: Fiber,
     tubeFiber: Fiber
   ) {
-    const { path, fusionPoint } = LeftTFiber2SplitterInput({
-      elementIn: tubeFiber,
-      elementOut: splitterFiber,
-      columnController:
-        this.parentGrid.pathController.tubeFusionColumnController,
-      leftAngleRowController:
-        this.parentGrid.pathController.leftAngleRowController,
-      rightAngleRowController:
-        this.parentGrid.pathController.rightAngleRowController,
-    });
-    this.path = path;
-    this.fusionPoint = fusionPoint;
+    if ((tubeFiber.parent as Tube).parentWire.disposition === "LEFT") {
+      const { path, fusionPoint } = LeftTFiber2SplitterInput({
+        elementIn: tubeFiber,
+        elementOut: splitterFiber,
+        columnController:
+          this.parentGrid.pathController.tubeFusionColumnController,
+        leftAngleRowController:
+          this.parentGrid.pathController.leftAngleRowController,
+        rightAngleRowController:
+          this.parentGrid.pathController.rightAngleRowController,
+      });
+      this.path = path;
+      this.fusionPoint = fusionPoint;
+    } else {
+      const { path, fusionPoint } = RightTFiber2SplitterInput({
+        elementIn: tubeFiber,
+        elementOut: splitterFiber,
+        columnController:
+          this.parentGrid.pathController.tubeFusionColumnController,
+        leftAngleRowController:
+          this.parentGrid.pathController.leftAngleRowController,
+        rightAngleRowController:
+          this.parentGrid.pathController.rightAngleRowController,
+      });
+      this.path = path;
+      this.fusionPoint = fusionPoint;
+    }
   }
 
   calculateSplitterOutputToTubeFiberConnection(

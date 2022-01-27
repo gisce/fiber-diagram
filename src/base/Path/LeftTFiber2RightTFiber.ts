@@ -169,7 +169,7 @@ export const getLeftLeg = ({
   });
 };
 
-const getRightLeg = ({
+export const getRightLeg = ({
   elementOut,
   columnController,
   fusionYPoint,
