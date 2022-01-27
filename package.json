@@ -11,6 +11,11 @@
     "storybook": "start-storybook -p 6006",
     "test": "jest"
   },
+  "files": [
+    "build",
+    "src"
+  ],
+  "types": "build/index.d.ts",
   "author": "",
   "license": "ISC",
   "peerDependencies": {
