@@ -13,8 +13,8 @@ export default ({
   leftAngleRowController,
   rightAngleRowController,
 }: {
-  elementIn: Fiber | Tube; // The fiber on the left side
-  elementOut: Fiber | Tube; // The fiber on the right side
+  elementIn: Fiber | Tube; // The splitter fiber output
+  elementOut: Fiber | Tube; // The splitter fiber input
   columnController: ColumnController; // In order to check where we can vertically place our connection
   leftAngleRowController: RowController; // In order to check where we can horizontally place our connection
   rightAngleRowController: RowController; // In order to check where we can horizontally place our connection
@@ -23,13 +23,7 @@ export default ({
 
   const type = elementIn instanceof Tube ? "tube" : "fiber";
 
-  // First we determine the fusion point searching for the vertical available space inside fusionColumn
-  const fusionYPoint =
-    columnController.indexController.getNFreeIndexesFromPoint({
-      point: source.y,
-      unitSize: Config.baseUnits[type].height,
-      n: 1,
-    })[0];
+  const fusionYPoint = source.y;
 
   // And we set now this point as used index in the fusion column
   columnController.indexController.setUsedIndexWithSize({

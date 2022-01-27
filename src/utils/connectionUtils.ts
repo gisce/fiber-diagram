@@ -80,7 +80,7 @@ export const validateFiberConnection = ({
       if (
         splitterFiberIsInput !== otherFiberIsInput &&
         splittersConnectedToOtherFiber.length > 0 &&
-        splittersConnectedToOtherFiber.map((splitter) => {
+        splittersConnectedToOtherFiber.some((splitter) => {
           splitter.id === (splitterFiber.parent as Splitter).id;
         })
       ) {
