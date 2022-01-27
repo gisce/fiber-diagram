@@ -1,9 +1,10 @@
-import { GridDataType } from "base/Grid";
+import { GridData } from "base/Grid";
 
 export const sanitize = (input: any) => {
-  const output: GridDataType = { res: {} };
-  output.res.connections = {};
-  output.res.connections.fibers = input.res.connections?.fibers;
+  const output: GridData = { res: {} };
+  output.res.connections = {
+    fibers: input.res.connections?.fibers,
+  };
 
   output.res.elements = {};
   output.res.elements.wires = input.res.elements.wires?.map((wire: any) => {

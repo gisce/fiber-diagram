@@ -1,7 +1,7 @@
 import { Config } from "base/Config";
 import { Grid, InitialPositionSize, PositionSize } from "base/Grid";
-import { Tube, TubeDataType } from "base/Tube";
-import { WireApiType, WireDataType, WireDisposition } from "./Wire.types";
+import { Tube, TubeData } from "base/Tube";
+import { WireData, WireDisposition } from "./Wire.types";
 
 export class Wire {
   id: number;
@@ -20,7 +20,7 @@ export class Wire {
     parentGrid,
     index,
   }: {
-    data?: WireDataType;
+    data?: WireData;
     parentGrid: Grid;
     index: number;
   }) {
@@ -40,10 +40,10 @@ export class Wire {
     this.disposition = disposition;
     this.expanded = expanded;
 
-    tubesData.forEach((tubeData: TubeDataType) => this.addTube(tubeData));
+    tubesData.forEach((tubeData: TubeData) => this.addTube(tubeData));
   }
 
-  addTube(tubeData: TubeDataType) {
+  addTube(tubeData: TubeData) {
     const tube = new Tube({
       data: tubeData,
       parentWire: this,
@@ -97,7 +97,7 @@ export class Wire {
     };
   }
 
-  getJson(): WireDataType {
+  getJson(): WireData {
     const { id, name, expanded, tubes, attr, disposition } = this;
 
     return {

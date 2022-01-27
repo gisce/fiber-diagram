@@ -1,5 +1,4 @@
-import { getJsonString } from "utils/jsonUtils";
-import { Grid, GridDataType } from ".";
+import { Grid } from ".";
 import { sanitize } from "utils/sanitizer";
 
 import exampleInput from "examples/basic2Splitter.json";
