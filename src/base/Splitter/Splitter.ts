@@ -39,27 +39,38 @@ export class Splitter {
   }
 
   calculatePosition() {
-    const inputFiberConnection = this.parentGrid.getFiberConnectionWithId(
-      this.fibers_in[0].id
-    );
+    const inputFiberConnections = this.fibers_in
+      .map((fiber) => this.parentGrid.getFiberConnectionWithId(fiber.id))
+      .filter((fiberConnection) => fiberConnection !== undefined);
 
-    let inputFiber: Fiber;
-    let splitterOrigin: boolean;
+    const fiberInputsWithSplitterOrigin = inputFiberConnections
+      .map((fiberConnection) => {
+        const inputFiberId = this.fibers_in.some(
+          (f) => f.id === fiberConnection.fiber_in
+        )
+          ? fiberConnection.fiber_out
+          : fiberConnection.fiber_in;
 
-    if (inputFiberConnection) {
-      const inputFiberId =
-        this.fibers_in[0].id === inputFiberConnection.fiber_in
-          ? inputFiberConnection.fiber_out
-          : inputFiberConnection.fiber_in;
+        const inputFiber = this.parentGrid.getFiberById(inputFiberId);
+        const splitterOrigin = inputFiber.parentType === "SPLITTER";
 
-      inputFiber = this.parentGrid.getFiberById(inputFiberId);
-      splitterOrigin = inputFiber.parentType === "SPLITTER";
-    }
+        if (splitterOrigin) {
+          return inputFiber;
+        } else {
+          return undefined;
+        }
+      })
+      .filter((fiber) => fiber !== undefined)
+      .sort((a, b) => {
+        return a.attr.position.x - b.attr.position.x;
+      });
 
     let x: number;
 
-    if (splitterOrigin) {
-      const inputSplitter = inputFiber.parent as Splitter;
+    if (fiberInputsWithSplitterOrigin.length > 0) {
+      const farestFiber: Fiber = fiberInputsWithSplitterOrigin[0];
+
+      const inputSplitter = farestFiber.parent as Splitter;
 
       if (inputSplitter.attr.position.x === 0) {
         inputSplitter.calculatePosition();
@@ -145,16 +156,22 @@ export class Splitter {
     }, 0);
   }
 
-  getSplitterConnectedInInput() {
-    const fiberConnection = this.parentGrid.getFiberConnectionWithId(
-      this.fibers_in[0].id
-    );
+  getSplittersConnectedInInput() {
+    return this.fibers_in
+      .map((fiber) => {
+        return this.getSplitterConnectedInInput(fiber);
+      })
+      .filter((splitter) => splitter !== undefined);
+  }
+
+  getSplitterConnectedInInput(fiber: Fiber) {
+    const fiberConnection = this.parentGrid.getFiberConnectionWithId(fiber.id);
     if (!fiberConnection) {
       return undefined;
     }
 
     const fiberIdConnectedTo =
-      this.fibers_in[0].id === fiberConnection.fiber_in
+      fiber.id === fiberConnection.fiber_in
         ? fiberConnection.fiber_out
         : fiberConnection.fiber_in;
     const fiberConnectedTo = this.parentGrid.getFiberById(fiberIdConnectedTo);

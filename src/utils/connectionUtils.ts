@@ -1,6 +1,5 @@
 import { Fiber } from "base/Fiber";
 import { Splitter } from "base/Splitter";
-import { Tube } from "base/Tube";
 
 export const validateFiberConnection = ({
   fiberIn,
@@ -42,13 +41,13 @@ export const validateFiberConnection = ({
     ).isFiberInput(splitterFiber);
 
     if (otherFiber.parentType !== "TUBE") {
-      const splitterConnectedToSplitterFiber = (
+      const splittersConnectedToSplitterFiber = (
         splitterFiber.parent as Splitter
-      ).getSplitterConnectedInInput();
+      ).getSplittersConnectedInInput();
 
-      const splitterConnectedToOtherFiber = (
+      const splittersConnectedToOtherFiber = (
         otherFiber.parent as Splitter
-      ).getSplitterConnectedInInput();
+      ).getSplittersConnectedInInput();
 
       const otherFiberIsInput = (otherFiber.parent as Splitter).isFiberInput(
         otherFiber
@@ -56,28 +55,34 @@ export const validateFiberConnection = ({
 
       // Check if both fibers are ouput and input from different splitters, but they have a loop
       if (
-        splitterConnectedToSplitterFiber !== undefined &&
-        splitterConnectedToOtherFiber !== undefined &&
+        splittersConnectedToSplitterFiber.length > 0 &&
+        splittersConnectedToOtherFiber.length > 0 &&
         splitterFiberIsInput !== otherFiberIsInput &&
-        splitterConnectedToSplitterFiber.id === splitterConnectedToOtherFiber.id
+        splittersConnectedToSplitterFiber.some((splitter) =>
+          splittersConnectedToOtherFiber.some(
+            (anotherSplitter) => anotherSplitter.id === splitter.id
+          )
+        )
       ) {
         return false;
       }
 
       if (
         splitterFiberIsInput !== otherFiberIsInput &&
-        splitterConnectedToSplitterFiber !== undefined &&
-        splitterConnectedToSplitterFiber.id ===
-          (otherFiber.parent as Splitter).id
+        splittersConnectedToSplitterFiber.length > 0 &&
+        splittersConnectedToSplitterFiber.some(
+          (splitter) => splitter.id === (otherFiber.parent as Splitter).id
+        )
       ) {
         return false;
       }
 
       if (
         splitterFiberIsInput !== otherFiberIsInput &&
-        splitterConnectedToOtherFiber !== undefined &&
-        splitterConnectedToOtherFiber.id ===
-          (splitterFiber.parent as Splitter).id
+        splittersConnectedToOtherFiber.length > 0 &&
+        splittersConnectedToOtherFiber.map((splitter) => {
+          splitter.id === (splitterFiber.parent as Splitter).id;
+        })
       ) {
         return false;
       }
