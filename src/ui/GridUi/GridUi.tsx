@@ -79,7 +79,7 @@ export const GridUi = ({
           })}
           {leftWires}
           {rightWires}
-          {
+          {/* {
             // For debugging purposes
             Object.keys(
               grid.pathController.tubeFusionColumnController.indexController
@@ -120,7 +120,7 @@ export const GridUi = ({
                 />
               );
             })
-          }
+          } */}
         </Layer>
       </FiberConnectionContextProvider>
     </Stage>
