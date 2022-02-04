@@ -12,6 +12,9 @@ import "antd/dist/antd.css";
 import { AddSplitterButton } from "ui/AddSplitterButton/AddSplitterButton";
 import { SplitterOpts } from "base/Splitter/Splitter.types";
 import LocaleContextProvider from "ui/locales/LocaleContext";
+import { Splitter } from "base/Splitter";
+import { RemoveSplitterButton } from "ui/RemoveSplitterButton/RemoveSplitterButton";
+import { Space } from "antd";
 
 export const GridUi = ({
   inputJson,
@@ -24,6 +27,7 @@ export const GridUi = ({
 }) => {
   const [grid, setGrid] = useState<Grid>();
   const [gridData, setGridData] = useState<GridData>();
+  const [selectedSplitter, setSelectedSplitter] = useState<Splitter>();
 
   const onChangeGrid = useCallback(
     (newGrid: Grid) => {
@@ -62,11 +66,21 @@ export const GridUi = ({
   return (
     <LocaleContextProvider lang={locale}>
       <div style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}>
-        <AddSplitterButton
-          onAddSplitter={(splitterOpts: SplitterOpts) => {
-            grid.addNewSplitter(splitterOpts);
-          }}
-        />
+        <Space>
+          <AddSplitterButton
+            disabled={selectedSplitter !== undefined}
+            onAddSplitter={(splitterOpts: SplitterOpts) => {
+              grid.addNewSplitter(splitterOpts);
+            }}
+          />
+          <RemoveSplitterButton
+            onRemoveSelectedSplitter={() => {
+              selectedSplitter.remove();
+              setSelectedSplitter(undefined);
+            }}
+            disabled={selectedSplitter === undefined}
+          />
+        </Space>
       </div>
       <Stage
         width={grid.size.width * Config.pixelsPerUnit}
@@ -86,7 +100,20 @@ export const GridUi = ({
               return <TubeConnectionUi key={i} connection={connection} />;
             })}
             {grid.splitters?.map((splitter) => {
-              return <SplitterUi key={splitter.id} splitter={splitter} />;
+              return (
+                <SplitterUi
+                  key={splitter.id}
+                  splitter={splitter}
+                  splitterIsSelected={splitter.id === selectedSplitter?.id}
+                  onSplitterSelected={(splitterToSelect: Splitter) => {
+                    if (splitterToSelect.id === selectedSplitter?.id) {
+                      setSelectedSplitter(undefined);
+                    } else {
+                      setSelectedSplitter(splitterToSelect);
+                    }
+                  }}
+                />
+              );
             })}
             {grid.fiberConnections?.map((connection, i) => {
               return <FiberConnectionUi key={i} connection={connection} />;

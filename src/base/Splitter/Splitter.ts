@@ -199,4 +199,8 @@ export class Splitter {
   getParentGrid() {
     return this.parentGrid;
   }
+
+  remove() {
+    this.parentGrid.removeSplitter(this);
+  }
 }

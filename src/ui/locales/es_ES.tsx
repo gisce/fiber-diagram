@@ -5,4 +5,7 @@ export default {
   inputs: "Entradas",
   outputs: "Salidas",
   selectInputsOutputs: "Selecciona el número de entradas y salidas",
+  removeSplitter: "Eliminar splitter",
+  removeSplitterConfirm:
+    "Estás seguro que quieres eliminar el splitter? Se eliminaran todas las conexiones que tenga.",
 };

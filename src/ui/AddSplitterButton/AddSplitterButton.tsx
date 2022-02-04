@@ -5,17 +5,19 @@ import { SplitterOpts } from "base/Splitter/Splitter.types";
 import { LocaleContext, LocaleContextType } from "ui/locales/LocaleContext";
 
 type AddSplitterButtonProps = {
+  disabled: boolean;
   onAddSplitter: (splitterOpts: SplitterOpts) => void;
 };
 
 export const AddSplitterButton = (props: AddSplitterButtonProps) => {
   const [visible, setVisible] = useState(false);
-  const { onAddSplitter } = props;
+  const { onAddSplitter, disabled } = props;
   const { t } = useContext(LocaleContext) as LocaleContextType;
 
   return (
     <>
       <Button
+        disabled={disabled}
         onClick={() => {
           setVisible(true);
         }}

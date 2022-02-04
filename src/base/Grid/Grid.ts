@@ -296,6 +296,27 @@ export class Grid {
     this.dataHasChanged();
   }
 
+  removeSplitter(splitter: Splitter) {
+    [...splitter.fibers_in, ...splitter.fibers_out].forEach((fiber) => {
+      const connection = this.getFiberConnectionWithId(fiber.id);
+      if (connection) {
+        connection.remove();
+      }
+    });
+
+    this.splitters = this.splitters
+      .sort((a: Splitter, b: Splitter) => {
+        return a.index - b.index;
+      })
+      .filter((splt: Splitter) => splitter.id !== splt.id)
+      .map((splt: Splitter, idx) => {
+        splt.index = idx;
+        return splt;
+      });
+
+    this.dataHasChanged();
+  }
+
   addNewSplitter(splitterOpts: SplitterOpts) {
     this.splitters.push(
       new Splitter({
@@ -333,12 +354,6 @@ export class Grid {
         name: "#" + id,
       });
     }
-
-    const splitterData = {
-      id: splitterId,
-      fibers_in,
-      fibers_out,
-    };
 
     return {
       id: splitterId,

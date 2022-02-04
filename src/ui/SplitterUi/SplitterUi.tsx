@@ -5,7 +5,15 @@ import { Splitter } from "base/Splitter";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 import { FiberCircleUi } from "ui/FiberUi/FiberCircleUi";
 
-export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
+export const SplitterUi = ({
+  splitter,
+  splitterIsSelected,
+  onSplitterSelected,
+}: {
+  splitter: Splitter;
+  splitterIsSelected: boolean;
+  onSplitterSelected: (splitter: Splitter) => void;
+}) => {
   const { attr } = splitter;
 
   const fiberIsConnected = (fiberId: number) => {
@@ -25,8 +33,19 @@ export const SplitterUi = ({ splitter }: { splitter: Splitter }) => {
         width={Config.splitterWidth * Config.pixelsPerUnit}
         height={opts.size.height}
         fill={"#d0d0d0"}
-        stroke={"#555555"}
+        stroke={splitterIsSelected ? "red" : "#555555"}
         strokeWidth={strokeWidth}
+        onMouseEnter={(e) => {
+          const container = e.target.getStage().container();
+          container.style.cursor = "pointer";
+        }}
+        onMouseLeave={(e) => {
+          const container = e.target.getStage().container();
+          container.style.cursor = "default";
+        }}
+        onClick={(e) => {
+          onSplitterSelected(splitter);
+        }}
       />
       {/* Inputs */}
       {splitter.fibers_in.map((splitterFiber, index) => {
