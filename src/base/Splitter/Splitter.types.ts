@@ -4,5 +4,10 @@ export type SplitterData = {
   id: number;
   fibers_in: FiberData[];
   fibers_out: FiberData[];
-  index: number;
+  index?: number;
+};
+
+export type SplitterOpts = {
+  nInputs: number;
+  nOutputs: number;
 };

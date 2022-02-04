@@ -6,7 +6,7 @@ import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionData } from "base/TubeConnection";
 import { Fiber } from "base/Fiber";
 import { Splitter } from "base/Splitter";
-import { SplitterData } from "base/Splitter/Splitter.types";
+import { SplitterData, SplitterOpts } from "base/Splitter/Splitter.types";
 import { GridData } from ".";
 import { PathController } from "base/PathController";
 
@@ -294,6 +294,94 @@ export class Grid {
     );
 
     this.dataHasChanged();
+  }
+
+  addNewSplitter(splitterOpts: SplitterOpts) {
+    this.splitters.push(
+      new Splitter({
+        data: this.getNewSplitterData(splitterOpts),
+        parentGrid: this,
+        index: this.splitters.length,
+      })
+    );
+    this.dataHasChanged();
+  }
+
+  getNewSplitterData(splitterOpts: SplitterOpts): SplitterData {
+    const splitterId = this.getNextTempSplitterId();
+    const fibers_in = [];
+    const fibers_out = [];
+
+    const newTempIds = this.getNextTempFiberIds(
+      splitterOpts.nInputs + splitterOpts.nOutputs
+    );
+
+    for (let i = 0; i < splitterOpts.nInputs; i++) {
+      const id = newTempIds[i];
+
+      fibers_in.push({
+        id,
+        name: "#" + id,
+      });
+    }
+
+    for (let i = 0; i < splitterOpts.nOutputs; i++) {
+      const id = newTempIds[splitterOpts.nInputs + i];
+
+      fibers_out.push({
+        id,
+        name: "#" + id,
+      });
+    }
+
+    const splitterData = {
+      id: splitterId,
+      fibers_in,
+      fibers_out,
+    };
+
+    return {
+      id: splitterId,
+      fibers_in,
+      fibers_out,
+    };
+  }
+
+  getNextTempFiberIds(n: number) {
+    const genIds = [];
+    const allFiberIds = this.getAllFibers().map((fiber) => fiber.id);
+    const allTemporaryFiberIds = allFiberIds
+      .filter((id) => id < 0)
+      .sort((a, b) => {
+        return a - b;
+      });
+
+    let startingPoint = -1;
+
+    if (allTemporaryFiberIds.length > 0) {
+      startingPoint = allTemporaryFiberIds[0] - 1;
+    }
+
+    for (let i = 0; i < n; i++) {
+      genIds.push(startingPoint - i);
+    }
+
+    return genIds;
+  }
+
+  getNextTempSplitterId() {
+    const allSplitterIds = this.splitters.map((splitter) => splitter.id);
+    const allTemporarySplitterIds = allSplitterIds
+      .filter((id) => id < 0)
+      .sort((a, b) => {
+        return a - b;
+      });
+
+    if (allTemporarySplitterIds.length === 0) {
+      return -1;
+    } else {
+      return allTemporarySplitterIds[0] - 1;
+    }
   }
 
   addFiberConnection(fiberConnectionData: FiberConnectionData) {
