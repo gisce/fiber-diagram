@@ -20,7 +20,7 @@ export const GridUi = ({
 }: {
   inputJson: string;
   onChange: (outputJson: string) => void;
-  locale?: string;
+  locale?: "en_US" | "ca_ES" | "es_ES";
 }) => {
   const [grid, setGrid] = useState<Grid>();
   const [gridData, setGridData] = useState<GridData>();
