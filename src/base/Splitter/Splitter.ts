@@ -157,11 +157,22 @@ export class Splitter {
   }
 
   getSplittersConnectedInInput() {
-    return this.fibers_in
+    const splittersConnected = [];
+
+    const immediateSplitters = this.fibers_in
       .map((fiber) => {
         return this.getSplitterConnectedInInput(fiber);
       })
       .filter((splitter) => splitter !== undefined);
+
+    splittersConnected.push(...immediateSplitters);
+
+    immediateSplitters.forEach((splitter) => {
+      const moreSplitters = splitter.getSplittersConnectedInInput();
+      splittersConnected.push(...moreSplitters);
+    });
+
+    return splittersConnected;
   }
 
   getSplitterConnectedInInput(fiber: Fiber) {

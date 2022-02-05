@@ -67,24 +67,20 @@ export const validateFiberConnection = ({
         return false;
       }
 
-      if (
-        splitterFiberIsInput !== otherFiberIsInput &&
-        splittersConnectedToSplitterFiber.length > 0 &&
-        splittersConnectedToSplitterFiber.some(
-          (splitter) => splitter.id === (otherFiber.parent as Splitter).id
-        )
-      ) {
-        return false;
-      }
+      if (splitterFiberIsInput !== otherFiberIsInput) {
+        const inputFiber = splitterFiberIsInput ? splitterFiber : otherFiber;
+        const splittersConnected = splitterFiberIsInput
+          ? splittersConnectedToOtherFiber
+          : splittersConnectedToSplitterFiber;
 
-      if (
-        splitterFiberIsInput !== otherFiberIsInput &&
-        splittersConnectedToOtherFiber.length > 0 &&
-        splittersConnectedToOtherFiber.some((splitter) => {
-          splitter.id === (splitterFiber.parent as Splitter).id;
-        })
-      ) {
-        return false;
+        if (
+          splittersConnected.length > 0 &&
+          splittersConnected.some(
+            (splitter) => splitter.id === (inputFiber.parent as Splitter).id
+          )
+        ) {
+          return false;
+        }
       }
     }
   }
