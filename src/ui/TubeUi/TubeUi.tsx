@@ -25,10 +25,12 @@ export const TubeUi = ({ tube }: { tube: Tube }) => {
         width={opts.size.width}
         height={opts.size.height}
         onClick={onClick}
+        onTap={onClick}
         fill={color}
       />
       <Text
         onClick={onClick}
+        onTap={onClick}
         text={`#${tube.id}`}
         x={opts.position.x}
         y={opts.position.y}

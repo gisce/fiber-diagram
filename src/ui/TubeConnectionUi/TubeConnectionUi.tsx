@@ -73,6 +73,9 @@ export const TubeConnectionUi = ({
           container.style.cursor = "default";
           tube_in.expand();
         }}
+        onTap={() => {
+          tube_in.expand();
+        }}
         style={{ cursor: "pointer" }}
         onMouseEnter={(e) => {
           const container = e.target.getStage().container();

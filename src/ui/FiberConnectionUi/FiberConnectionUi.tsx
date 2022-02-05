@@ -79,6 +79,9 @@ export const FiberConnectionUi = ({
         fill={"#FFFFFF"}
         stroke={"#000000"}
         strokeWidth={2}
+        onTap={() => {
+          connection.remove();
+        }}
         onClick={(e) => {
           const container = e.target.getStage().container();
           container.style.cursor = "default";

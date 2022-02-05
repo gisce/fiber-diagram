@@ -46,6 +46,9 @@ export const SplitterUi = ({
         onClick={(e) => {
           onSplitterSelected(splitter);
         }}
+        onTap={() => {
+          onSplitterSelected(splitter);
+        }}
       />
       {/* Inputs */}
       {splitter.fibers_in.map((splitterFiber, index) => {

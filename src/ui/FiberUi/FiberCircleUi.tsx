@@ -31,6 +31,40 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
     return "#000000";
   }
 
+  function onClickCircle() {
+    // If we don't have any selected fiber points, we set it
+    if (selectedFiber === undefined) {
+      setSelectedFiber(fiber);
+      return;
+    }
+
+    // Here we have a previously selected fiber (firstFiber) and the fiber we clicked on (fiber)
+    const parentGrid =
+      fiber.parentType === "SPLITTER"
+        ? (fiber.parent as Splitter).parentGrid
+        : (fiber.parent as Tube).parentWire.parentGrid;
+
+    // try {
+    if (
+      validateFiberConnection({
+        fiberIn: selectedFiber,
+        fiberOut: fiber,
+      })
+    ) {
+      // We add our fiber connection
+      parentGrid.addFiberConnection({
+        fiber_in: selectedFiber.id,
+        fiber_out: fiber.id,
+      });
+
+      // And we reset our selected fiber
+      setSelectedFiber(undefined);
+    } else {
+      // alert(err.message);
+      setSelectedFiber(undefined);
+    }
+  }
+
   return (
     <Circle
       x={x}
@@ -47,41 +81,11 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
         const container = e.target.getStage().container();
         container.style.cursor = "default";
       }}
+      onTap={onClickCircle}
       onClick={(e) => {
         const container = e.target.getStage().container();
         container.style.cursor = "default";
-
-        // If we don't have any selected fiber points, we set it
-        if (selectedFiber === undefined) {
-          setSelectedFiber(fiber);
-          return;
-        }
-
-        // Here we have a previously selected fiber (firstFiber) and the fiber we clicked on (fiber)
-        const parentGrid =
-          fiber.parentType === "SPLITTER"
-            ? (fiber.parent as Splitter).parentGrid
-            : (fiber.parent as Tube).parentWire.parentGrid;
-
-        // try {
-        if (
-          validateFiberConnection({
-            fiberIn: selectedFiber,
-            fiberOut: fiber,
-          })
-        ) {
-          // We add our fiber connection
-          parentGrid.addFiberConnection({
-            fiber_in: selectedFiber.id,
-            fiber_out: fiber.id,
-          });
-
-          // And we reset our selected fiber
-          setSelectedFiber(undefined);
-        } else {
-          // alert(err.message);
-          setSelectedFiber(undefined);
-        }
+        onClickCircle();
       }}
     />
   );
