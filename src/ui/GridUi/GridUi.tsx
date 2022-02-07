@@ -65,7 +65,13 @@ export const GridUi = ({
 
   return (
     <LocaleContextProvider lang={locale}>
-      <div style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}>
+      <div
+        style={{
+          paddingTop: "0.5rem",
+          paddingBottom: "0.5rem",
+          backgroundColor: "#EEEEEE",
+        }}
+      >
         <Space>
           <AddSplitterButton
             disabled={selectedSplitter !== undefined}
@@ -83,6 +89,7 @@ export const GridUi = ({
         </Space>
       </div>
       <Stage
+        style={{ backgroundColor: "#EEEEEE" }}
         width={grid.size.width * Config.pixelsPerUnit}
         height={grid.size.height * Config.pixelsPerUnit}
       >
