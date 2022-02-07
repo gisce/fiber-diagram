@@ -20,7 +20,7 @@ export declare class Splitter {
     getSibilingsForFiber(fiber: Fiber): Fiber[];
     getHeight(): number;
     getPreviousSibilingsHeight(): number;
-    getSplittersConnectedInInput(): Splitter[];
+    getSplittersConnectedInInput(): any[];
     getSplitterConnectedInInput(fiber: Fiber): Splitter;
     getJson(): {
         id: number;
@@ -29,4 +29,5 @@ export declare class Splitter {
         index: number;
     };
     getParentGrid(): Grid;
+    remove(): void;
 }

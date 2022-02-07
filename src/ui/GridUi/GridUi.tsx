@@ -8,7 +8,6 @@ import { FiberConnectionContextProvider } from "ui/FiberConnectionUi/FiberConnec
 import { sanitize } from "utils/sanitizer";
 import { TubeConnectionUi } from "ui/TubeConnectionUi/TubeConnectionUi";
 import { SplitterUi } from "ui/SplitterUi/SplitterUi";
-import "antd/dist/antd.css";
 import { AddSplitterButton } from "ui/AddSplitterButton/AddSplitterButton";
 import { SplitterOpts } from "base/Splitter/Splitter.types";
 import LocaleContextProvider from "ui/locales/LocaleContext";

@@ -5,7 +5,7 @@ import { Tube } from "base/Tube";
 import { TubeConnection, TubeConnectionData } from "base/TubeConnection";
 import { Fiber } from "base/Fiber";
 import { Splitter } from "base/Splitter";
-import { SplitterData } from "base/Splitter/Splitter.types";
+import { SplitterData, SplitterOpts } from "base/Splitter/Splitter.types";
 import { GridData } from ".";
 import { PathController } from "base/PathController";
 export declare class Grid {
@@ -39,6 +39,11 @@ export declare class Grid {
     addSplitter({ splitterData }: {
         splitterData: SplitterData;
     }): void;
+    removeSplitter(splitter: Splitter): void;
+    addNewSplitter(splitterOpts: SplitterOpts): void;
+    getNewSplitterData(splitterOpts: SplitterOpts): SplitterData;
+    getNextTempFiberIds(n: number): any[];
+    getNextTempSplitterId(): number;
     addFiberConnection(fiberConnectionData: FiberConnectionData): void;
     removeFiberConnection(fiberConnectionData: FiberConnectionData): void;
     addTubeConnection(tubeConnectionData: TubeConnectionData): void;
