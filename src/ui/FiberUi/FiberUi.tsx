@@ -5,7 +5,13 @@ import { Group, Rect, Text } from "react-konva";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 import { FiberCircleUi } from "./FiberCircleUi";
 
-export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
+export const FiberUi = ({
+  fiber,
+  readonly,
+}: {
+  fiber: Fiber;
+  readonly: boolean;
+}) => {
   const { attr, color } = fiber;
 
   const opts = convertAttrUnitsToPixels(attr);
@@ -40,6 +46,7 @@ export const FiberUi = ({ fiber }: { fiber: Fiber }) => {
       />
       {!fiberIsConnected && (
         <FiberCircleUi
+          readonly={readonly}
           x={opts.position.x + opts.size.width * (rightFiber ? 0 : 1)}
           y={opts.position.y}
           fiber={fiber}

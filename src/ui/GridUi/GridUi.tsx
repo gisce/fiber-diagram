@@ -19,10 +19,12 @@ export const GridUi = ({
   inputJson,
   onChange,
   locale = "en_US",
+  readonly = false,
 }: {
   inputJson: string;
   onChange: (outputJson: string) => void;
   locale?: "en_US" | "ca_ES" | "es_ES";
+  readonly?: boolean;
 }) => {
   const [grid, setGrid] = useState<Grid>();
   const [gridData, setGridData] = useState<GridData>();
@@ -56,10 +58,10 @@ export const GridUi = ({
   }
 
   const leftWires = grid.leftWires.map((wire, i) => {
-    return <WireUi key={i} wire={wire} />;
+    return <WireUi key={i} wire={wire} readonly={readonly} />;
   });
   const rightWires = grid.rightWires.map((wire, i) => {
-    return <WireUi key={i} wire={wire} />;
+    return <WireUi key={i} wire={wire} readonly={readonly} />;
   });
 
   return (
@@ -71,21 +73,27 @@ export const GridUi = ({
           backgroundColor: "#EEEEEE",
         }}
       >
-        <Space>
-          <AddSplitterButton
-            disabled={selectedSplitter !== undefined}
-            onAddSplitter={(splitterOpts: SplitterOpts) => {
-              grid.addNewSplitter(splitterOpts);
-            }}
-          />
-          <RemoveSplitterButton
-            onRemoveSelectedSplitter={() => {
-              selectedSplitter.remove();
-              setSelectedSplitter(undefined);
-            }}
-            disabled={selectedSplitter === undefined}
-          />
-        </Space>
+        {!readonly && (
+          <Space>
+            <AddSplitterButton
+              disabled={selectedSplitter !== undefined}
+              onAddSplitter={(splitterOpts: SplitterOpts) => {
+                grid.addNewSplitter(splitterOpts);
+              }}
+            />
+            <RemoveSplitterButton
+              onRemoveSelectedSplitter={() => {
+                if (readonly) {
+                  return;
+                }
+
+                selectedSplitter.remove();
+                setSelectedSplitter(undefined);
+              }}
+              disabled={selectedSplitter === undefined}
+            />
+          </Space>
+        )}
       </div>
       <Stage
         style={{ backgroundColor: "#EEEEEE" }}
@@ -103,13 +111,20 @@ export const GridUi = ({
             />
 
             {grid.tubeConnections?.map((connection, i) => {
-              return <TubeConnectionUi key={i} connection={connection} />;
+              return (
+                <TubeConnectionUi
+                  key={i}
+                  connection={connection}
+                  readonly={readonly}
+                />
+              );
             })}
             {grid.splitters?.map((splitter) => {
               return (
                 <SplitterUi
                   key={splitter.id}
                   splitter={splitter}
+                  readonly={readonly}
                   splitterIsSelected={splitter.id === selectedSplitter?.id}
                   onSplitterSelected={(splitterToSelect: Splitter) => {
                     if (splitterToSelect.id === selectedSplitter?.id) {
@@ -122,7 +137,13 @@ export const GridUi = ({
               );
             })}
             {grid.fiberConnections?.map((connection, i) => {
-              return <FiberConnectionUi key={i} connection={connection} />;
+              return (
+                <FiberConnectionUi
+                  key={i}
+                  connection={connection}
+                  readonly={readonly}
+                />
+              );
             })}
             {leftWires}
             {rightWires}

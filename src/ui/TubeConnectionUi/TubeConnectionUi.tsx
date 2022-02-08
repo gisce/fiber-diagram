@@ -7,8 +7,10 @@ import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 
 export const TubeConnectionUi = ({
   connection,
+  readonly,
 }: {
   connection: TubeConnection;
+  readonly: boolean;
 }) => {
   const { path } = connection;
 

@@ -4,7 +4,13 @@ import { Rect, Group } from "react-konva";
 import { TubeUi } from "ui/TubeUi";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 
-export const WireUi = ({ wire }: { wire: Wire }) => {
+export const WireUi = ({
+  wire,
+  readonly,
+}: {
+  wire: Wire;
+  readonly: boolean;
+}) => {
   const { attr } = wire;
   const opts = convertAttrUnitsToPixels(attr);
 
@@ -19,7 +25,7 @@ export const WireUi = ({ wire }: { wire: Wire }) => {
       />
       {wire.expanded &&
         wire.tubes.map((tube, i) => {
-          return <TubeUi key={i} tube={tube} />;
+          return <TubeUi key={i} tube={tube} readonly={readonly} />;
         })}
     </Group>
   );

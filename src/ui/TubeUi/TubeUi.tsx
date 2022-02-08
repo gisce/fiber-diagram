@@ -4,7 +4,13 @@ import { Group, Rect, Text } from "react-konva";
 import { FiberUi } from "ui/FiberUi/FiberUi";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 
-export const TubeUi = ({ tube }: { tube: Tube }) => {
+export const TubeUi = ({
+  tube,
+  readonly,
+}: {
+  tube: Tube;
+  readonly: boolean;
+}) => {
   const { attr, color } = tube;
 
   const opts = convertAttrUnitsToPixels(attr);
@@ -44,7 +50,7 @@ export const TubeUi = ({ tube }: { tube: Tube }) => {
       />
       {tube.expanded &&
         tube.fibers.map((fiber, i) => {
-          return <FiberUi key={i} fiber={fiber} />;
+          return <FiberUi key={i} fiber={fiber} readonly={readonly} />;
         })}
     </Group>
   );

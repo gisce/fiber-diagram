@@ -13,10 +13,11 @@ import { validateFiberConnection } from "utils/connectionUtils";
 
 export type FiberCircleUiProps = Position & {
   fiber: Fiber;
+  readonly: boolean;
 };
 
 export const FiberCircleUi = (props: FiberCircleUiProps) => {
-  const { x, y, fiber } = props;
+  const { x, y, fiber, readonly } = props;
   const connectorRadius =
     (Config.baseUnits.fiber.height * Config.pixelsPerUnit) / 2;
 
@@ -32,6 +33,10 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
   }
 
   function onClickCircle() {
+    if (readonly) {
+      return;
+    }
+
     // If we don't have any selected fiber points, we set it
     if (selectedFiber === undefined) {
       setSelectedFiber(fiber);
@@ -74,15 +79,27 @@ export const FiberCircleUi = (props: FiberCircleUiProps) => {
       stroke={getStrokeColor()}
       strokeWidth={2}
       onMouseEnter={(e) => {
+        if (readonly) {
+          return;
+        }
+
         const container = e.target.getStage().container();
         container.style.cursor = "pointer";
       }}
       onMouseLeave={(e) => {
+        if (readonly) {
+          return;
+        }
+
         const container = e.target.getStage().container();
         container.style.cursor = "default";
       }}
       onTap={onClickCircle}
       onClick={(e) => {
+        if (readonly) {
+          return;
+        }
+
         const container = e.target.getStage().container();
         container.style.cursor = "default";
         onClickCircle();

@@ -8,8 +8,10 @@ import { Tube } from "base/Tube";
 
 export const FiberConnectionUi = ({
   connection,
+  readonly,
 }: {
   connection: FiberConnection;
+  readonly: boolean;
 }) => {
   const { path } = connection;
 
@@ -80,19 +82,35 @@ export const FiberConnectionUi = ({
         stroke={"#000000"}
         strokeWidth={2}
         onTap={() => {
+          if (readonly) {
+            return;
+          }
+
           connection.remove();
         }}
         onClick={(e) => {
+          if (readonly) {
+            return;
+          }
+
           const container = e.target.getStage().container();
           container.style.cursor = "default";
           connection.remove();
         }}
         style={{ cursor: "pointer" }}
         onMouseEnter={(e) => {
+          if (readonly) {
+            return;
+          }
+
           const container = e.target.getStage().container();
           container.style.cursor = "pointer";
         }}
         onMouseLeave={(e) => {
+          if (readonly) {
+            return;
+          }
+
           const container = e.target.getStage().container();
           container.style.cursor = "default";
         }}

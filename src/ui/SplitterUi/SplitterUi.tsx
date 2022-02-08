@@ -9,10 +9,12 @@ export const SplitterUi = ({
   splitter,
   splitterIsSelected,
   onSplitterSelected,
+  readonly,
 }: {
   splitter: Splitter;
   splitterIsSelected: boolean;
   onSplitterSelected: (splitter: Splitter) => void;
+  readonly: boolean;
 }) => {
   const { attr } = splitter;
 
@@ -36,10 +38,18 @@ export const SplitterUi = ({
         stroke={splitterIsSelected ? "red" : "#555555"}
         strokeWidth={strokeWidth}
         onMouseEnter={(e) => {
+          if (readonly) {
+            return;
+          }
+
           const container = e.target.getStage().container();
           container.style.cursor = "pointer";
         }}
         onMouseLeave={(e) => {
+          if (readonly) {
+            return;
+          }
+
           const container = e.target.getStage().container();
           container.style.cursor = "default";
         }}
@@ -79,6 +89,7 @@ export const SplitterUi = ({
                 x={sfOpts.position.x}
                 y={sfOpts.position.y}
                 fiber={splitterFiber}
+                readonly={readonly}
               />
             )}
           </Group>
@@ -113,6 +124,7 @@ export const SplitterUi = ({
                 x={sfOpts.position.x + sfOpts.size.width}
                 y={sfOpts.position.y}
                 fiber={splitterFiber}
+                readonly={readonly}
               />
             )}
           </Group>
