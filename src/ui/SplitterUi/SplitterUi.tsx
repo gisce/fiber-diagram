@@ -27,39 +27,6 @@ export const SplitterUi = ({
 
   return (
     <Group>
-      <Rect
-        x={
-          opts.position.x + Config.baseUnits.fiber.width * Config.pixelsPerUnit
-        }
-        y={opts.position.y}
-        width={Config.splitterWidth * Config.pixelsPerUnit}
-        height={opts.size.height}
-        fill={"#d0d0d0"}
-        stroke={splitterIsSelected ? "red" : "#555555"}
-        strokeWidth={strokeWidth}
-        onMouseEnter={(e) => {
-          if (readonly) {
-            return;
-          }
-
-          const container = e.target.getStage().container();
-          container.style.cursor = "pointer";
-        }}
-        onMouseLeave={(e) => {
-          if (readonly) {
-            return;
-          }
-
-          const container = e.target.getStage().container();
-          container.style.cursor = "default";
-        }}
-        onClick={(e) => {
-          onSplitterSelected(splitter);
-        }}
-        onTap={() => {
-          onSplitterSelected(splitter);
-        }}
-      />
       {/* Inputs */}
       {splitter.fibers_in.map((splitterFiber, index) => {
         const sfOpts = convertAttrUnitsToPixels(splitterFiber.attr);
@@ -130,6 +97,39 @@ export const SplitterUi = ({
           </Group>
         );
       })}
+      <Rect
+        x={
+          opts.position.x + Config.baseUnits.fiber.width * Config.pixelsPerUnit
+        }
+        y={opts.position.y}
+        width={Config.splitterWidth * Config.pixelsPerUnit}
+        height={opts.size.height}
+        fill={"#d0d0d0"}
+        stroke={splitterIsSelected ? "red" : "#555555"}
+        strokeWidth={strokeWidth}
+        onMouseEnter={(e) => {
+          if (readonly) {
+            return;
+          }
+
+          const container = e.target.getStage().container();
+          container.style.cursor = "pointer";
+        }}
+        onMouseLeave={(e) => {
+          if (readonly) {
+            return;
+          }
+
+          const container = e.target.getStage().container();
+          container.style.cursor = "default";
+        }}
+        onClick={(e) => {
+          onSplitterSelected(splitter);
+        }}
+        onTap={() => {
+          onSplitterSelected(splitter);
+        }}
+      />
     </Group>
   );
 };

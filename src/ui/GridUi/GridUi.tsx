@@ -127,6 +127,9 @@ export const GridUi = ({
                   readonly={readonly}
                   splitterIsSelected={splitter.id === selectedSplitter?.id}
                   onSplitterSelected={(splitterToSelect: Splitter) => {
+                    if (readonly) {
+                      return;
+                    }
                     if (splitterToSelect.id === selectedSplitter?.id) {
                       setSelectedSplitter(undefined);
                     } else {

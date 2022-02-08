@@ -73,7 +73,7 @@ const getRightLeg = ({
     usedYPoint: rightUsedYPoint,
   } = getRightToPointPath({
     source: elementOut.attr.position,
-    point: elementIn.attr.position.x,
+    point: elementIn.attr.position.x + 1,
     angleRowController,
     fusionYPoint,
     unitSize: Config.baseUnits[type].height,
