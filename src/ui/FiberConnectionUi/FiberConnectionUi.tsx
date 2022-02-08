@@ -1,10 +1,14 @@
 import { Config } from "base/Config";
 import { FiberConnection } from "base/FiberConnection";
 import { Fiber } from "base/Fiber";
-import React from "react";
+import React, { useContext } from "react";
 import { Rect, Circle, Group } from "react-konva";
 import { convertAttrUnitsToPixels } from "utils/pixelUtils";
 import { Tube } from "base/Tube";
+import { Modal } from "antd";
+import { LocaleContext, LocaleContextType } from "ui/locales/LocaleContext";
+
+const confirm = Modal.confirm;
 
 export const FiberConnectionUi = ({
   connection,
@@ -14,6 +18,8 @@ export const FiberConnectionUi = ({
   readonly: boolean;
 }) => {
   const { path } = connection;
+  const { t } = useContext(LocaleContext) as LocaleContextType;
+  const [connectionIsSelected, setConnectionIsSelected] = React.useState(false);
 
   if (!path) {
     return null;
@@ -49,6 +55,13 @@ export const FiberConnectionUi = ({
     return null;
   }
 
+  function getStrokeColor() {
+    if (connectionIsSelected) {
+      return "#ff0000";
+    }
+    return "#000000";
+  }
+
   const pathWithConvertedUnits = path.map((leg) => {
     const { position, size } = leg;
     const convertedUnits = convertAttrUnitsToPixels({ position, size });
@@ -71,6 +84,24 @@ export const FiberConnectionUi = ({
   const fusionPointRadius =
     (Config.baseUnits.fiber.height * Config.pixelsPerUnit) / 2;
 
+  function removeConnection() {
+    setConnectionIsSelected(true);
+
+    confirm({
+      title: t("removeConnection"),
+      content: t("removeConnectionConfirm"),
+      okText: t("ok"),
+      cancelText: t("cancel"),
+      onOk() {
+        connection.remove();
+        setConnectionIsSelected(false);
+      },
+      onCancel() {
+        setConnectionIsSelected(false);
+      },
+    });
+  }
+
   return (
     <Group>
       {pathRects}
@@ -79,14 +110,14 @@ export const FiberConnectionUi = ({
         y={connection.fusionPoint.y * Config.pixelsPerUnit + fusionPointRadius}
         radius={fusionPointRadius}
         fill={"#FFFFFF"}
-        stroke={"#000000"}
+        stroke={getStrokeColor()}
         strokeWidth={2}
         onTap={() => {
           if (readonly) {
             return;
           }
 
-          connection.remove();
+          removeConnection();
         }}
         onClick={(e) => {
           if (readonly) {
@@ -95,7 +126,7 @@ export const FiberConnectionUi = ({
 
           const container = e.target.getStage().container();
           container.style.cursor = "default";
-          connection.remove();
+          removeConnection();
         }}
         style={{ cursor: "pointer" }}
         onMouseEnter={(e) => {

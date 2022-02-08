@@ -139,15 +139,17 @@ export const GridUi = ({
                 />
               );
             })}
-            {grid.fiberConnections?.map((connection, i) => {
-              return (
-                <FiberConnectionUi
-                  key={i}
-                  connection={connection}
-                  readonly={readonly}
-                />
-              );
-            })}
+            <LocaleContextProvider lang={locale}>
+              {grid.fiberConnections?.map((connection, i) => {
+                return (
+                  <FiberConnectionUi
+                    key={i}
+                    connection={connection}
+                    readonly={readonly}
+                  />
+                );
+              })}
+            </LocaleContextProvider>
             {leftWires}
             {rightWires}
             {/* {

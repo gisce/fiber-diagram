@@ -8,4 +8,6 @@ export default {
   removeSplitter: "Eliminar splitter",
   removeSplitterConfirm:
     "Estás seguro que quieres eliminar el splitter? Se eliminaran todas las conexiones que tenga.",
+  removeConnection: "Eliminar connexión",
+  removeConnectionConfirm: "Estás seguro que quieres eliminar la conexión?",
 };
