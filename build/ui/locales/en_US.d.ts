@@ -7,5 +7,7 @@ declare const _default: {
     selectInputsOutputs: string;
     removeSplitter: string;
     removeSplitterConfirm: string;
+    removeConnection: string;
+    removeConnectionConfirm: string;
 };
 export default _default;
