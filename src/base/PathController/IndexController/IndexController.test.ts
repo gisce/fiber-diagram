@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { IndexController } from ".";
 
 const ic = new IndexController();

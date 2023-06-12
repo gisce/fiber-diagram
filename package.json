@@ -23,7 +23,7 @@
     "start": "while :; do tsc && vite build --watch --force; done",
     "build": "tsc && vite build",
     "storybook": "storybook dev -p 6006",
-    "test": "jest",
+    "test": "vitest",
     "build-storybook": "storybook build"
   },
   "author": "",
@@ -53,7 +53,8 @@
     "storybook": "^7.0.20",
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
-    "vite-plugin-dts": "^2.3.0"
+    "vite-plugin-dts": "^2.3.0",
+    "vitest": "^0.32.0"
   },
   "dependencies": {
     "antd": "4.12.3",
