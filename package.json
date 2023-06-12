@@ -1,21 +1,32 @@
 {
-  "name": "fiber-diagram",
+  "name": "@gisce/fiber-diagram",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
-  "module": "build/index.esm.js",
+  "main": "./dist/fiber-diagram.umd.js",
+  "module": "./dist/fiber-diagram.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/fiber-diagram.es.js",
+      "require": "./dist/fiber-diagram.umd.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "clean": "rimraf build/",
-    "build": "npm run clean && rollup -c",
+    "preminor": "npm version preminor --preid rc",
+    "prerelease": "npm version prerelease --preid rc",
+    "prepatch": "npm version prepatch --preid rc",
+    "premajor": "npm version premajor --preid rc",
+    "start": "while :; do tsc && vite build --watch --force; done",
+    "build": "tsc && vite build",
+    "prebuild:storybook": "npm run test:generate-output",
     "build:storybook": "build-storybook -c .storybook -o storybook-static/",
     "storybook": "start-storybook -p 6006",
     "test": "jest"
   },
-  "files": [
-    "build",
-    "src"
-  ],
-  "types": "build/index.d.ts",
   "author": "",
   "license": "ISC",
   "peerDependencies": {
@@ -26,45 +37,15 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.6",
-    "@storybook/addon-actions": "^6.4.1",
-    "@storybook/addon-docs": "^6.4.0-rc.11",
-    "@storybook/addon-essentials": "^6.4.1",
-    "@storybook/addon-jest": "^6.4.9",
-    "@storybook/addon-links": "^6.4.1",
-    "@storybook/builder-webpack5": "^6.4.0",
-    "@storybook/manager-webpack5": "^6.4.0",
-    "@storybook/node-logger": "^6.4.0",
-    "@storybook/react": "^6.4.1",
-    "@storybook/testing-react": "^1.2.2",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@types/jest": "^27.0.3",
-    "@types/node": "^12.20.37",
-    "@types/react": "^17.0.37",
-    "@types/react-dom": "^17.0.11",
-    "@types/styled-components": "^5.1.15",
-    "babel-loader": "^8.2.3",
-    "identity-obj-proxy": "^3.0.0",
-    "jest": "^27.4.3",
-    "jest-styled-components": "^7.0.8",
+    "@types/react": "17.0.60",
+    "@types/react-dom": "17.0.20",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.60.2",
-    "rollup-plugin-ignore": "^1.0.10",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "@vitejs/plugin-react": "^4.0.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.31.1",
-    "ts-jest": "^27.1.1",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.2",
-    "webpack": "^5.14.0",
-    "webpack-bundle-analyzer": "^4.3.0",
-    "webpack-cli": "^4.3.1"
+    "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
     "antd": "4.12.3",
