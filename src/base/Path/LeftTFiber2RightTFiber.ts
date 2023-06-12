@@ -1,15 +1,15 @@
-import { Config } from "base/Config";
-import { Fiber } from "base/Fiber";
-import { ColumnController } from "base/PathController/ColumnController/ColumnController";
-import { RowController } from "base/PathController/RowController/RowController";
-import { Tube } from "base/Tube";
+import { Config } from "@/base/Config";
+import { Fiber } from "@/base/Fiber";
+import { ColumnController } from "@/base/PathController/ColumnController/ColumnController";
+import { RowController } from "@/base/PathController/RowController/RowController";
+import { Tube } from "@/base/Tube";
 import {
   getLeftToPointFlatPath,
   getLeftToPointPath,
   getRightToPointFlatPath,
   getRightToPointPath,
   getUnitsForPath,
-} from "utils/pathUtils";
+} from "@/utils/pathUtils";
 
 export default ({
   elementIn,
@@ -85,7 +85,7 @@ const getFiberToFiberFlatPath = ({
   fusionYPoint,
 }: {
   elementIn: Fiber | Tube; // The fiber on the left side
-  elementOut: Fiber | Tube; // The fiber on the right side
+  elementOut: Fiber | Tube; // The fiber on the right side
   columnController: ColumnController; // In order to check where we can vertically place our connection
   fusionYPoint: number;
 }) => {
@@ -126,7 +126,7 @@ export const getLeftLeg = ({
   fusionYPoint,
   angleRowController,
 }: {
-  elementIn: Fiber | Tube; // The fiber on the left side
+  elementIn: Fiber | Tube; // The fiber on the left side
   columnController: ColumnController; // In order to check where we can vertically place our connection
   angleRowController: RowController; // In order to check where we can horizontally place our connection
   fusionYPoint: number;
@@ -175,7 +175,7 @@ export const getRightLeg = ({
   fusionYPoint,
   angleRowController,
 }: {
-  elementOut: Fiber | Tube; // The fiber on the right side
+  elementOut: Fiber | Tube; // The fiber on the right side
   columnController: ColumnController; // In order to check where we can vertically place our connection
   angleRowController: RowController; // In order to check where we can horizontally place our connection
   fusionYPoint: number;

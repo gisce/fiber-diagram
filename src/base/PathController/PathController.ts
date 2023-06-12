@@ -1,4 +1,4 @@
-import { AngleRow, MiddleFusionColumn } from "base/Grid";
+import { AngleRow, MiddleFusionColumn } from "@/base/Grid";
 import { ColumnController } from "./ColumnController/ColumnController";
 import { RowController } from "./RowController/RowController";
 

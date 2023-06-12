@@ -1,8 +1,8 @@
-import { Fiber } from "base/Fiber";
-import { Tube } from "base/Tube";
 import React from "react";
 import { Group, Rect, Text } from "react-konva";
-import { convertAttrUnitsToPixels } from "utils/pixelUtils";
+import { Fiber } from "@/base/Fiber";
+import { Tube } from "@/base/Tube";
+import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
 import { FiberCircleUi } from "./FiberCircleUi";
 
 export const FiberUi = ({

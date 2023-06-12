@@ -1,7 +1,7 @@
-import { Config } from "base/Config";
-import { Fiber, FiberData } from "base/Fiber";
-import { InitialPositionSize, PositionSize } from "base/Grid";
-import { Wire } from "base/Wire";
+import { Config } from "@/base/Config";
+import { Fiber, FiberData } from "@/base/Fiber";
+import { InitialPositionSize, PositionSize } from "@/base/Grid";
+import { Wire } from "@/base/Wire";
 import { TubeData } from ".";
 
 export class Tube {

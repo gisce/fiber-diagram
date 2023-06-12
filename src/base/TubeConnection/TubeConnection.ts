@@ -1,9 +1,7 @@
-import { Config } from "base/Config";
-import { Tube } from "base/Tube";
-import { Grid, PathUnit, Position } from "base/Grid";
+import { Grid, PathUnit, Position } from "@/base/Grid";
+import LeftTFiber2RightTFiber from "@/base/Path/LeftTFiber2RightTFiber";
+import SameSideTubeFiber from "@/base/Path/SameSideTubeFiber";
 import { TubeConnectionData } from ".";
-import LeftTFiber2RightTFiber from "base/Path/LeftTFiber2RightTFiber";
-import SameSideTubeFiber from "base/Path/SameSideTubeFiber";
 
 export class TubeConnection {
   tube_in: number;

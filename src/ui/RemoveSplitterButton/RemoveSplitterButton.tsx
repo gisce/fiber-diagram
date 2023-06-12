@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Button, Modal } from "antd";
-import { LocaleContext, LocaleContextType } from "ui/locales/LocaleContext";
+import { LocaleContext, LocaleContextType } from "@/ui/locales/LocaleContext";
 const confirm = Modal.confirm;
 
 type RemoveSplitterButtonProps = {

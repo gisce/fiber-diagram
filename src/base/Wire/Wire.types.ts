@@ -1,5 +1,5 @@
-import { PositionSize } from "base/Grid";
-import { TubeData } from "base/Tube";
+import { PositionSize } from "@/base/Grid";
+import { TubeData } from "@/base/Tube";
 
 export type WireDisposition = "LEFT" | "RIGHT";
 

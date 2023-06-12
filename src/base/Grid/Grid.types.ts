@@ -1,8 +1,8 @@
-import { Fiber } from "base/Fiber";
-import { FiberConnectionData } from "base/FiberConnection";
-import { SplitterData } from "base/Splitter/Splitter.types";
-import { Tube } from "base/Tube";
-import { WireData } from "base/Wire";
+import { Fiber } from "@/base/Fiber";
+import { FiberConnectionData } from "@/base/FiberConnection";
+import { SplitterData } from "@/base/Splitter/Splitter.types";
+import { Tube } from "@/base/Tube";
+import { WireData } from "@/base/Wire";
 
 export type GridData = {
   res?: {

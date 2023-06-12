@@ -1,4 +1,4 @@
-import { PositionSize } from "base/Grid";
+import { PositionSize } from "@/base/Grid";
 
 export type FiberData = {
   id: number;

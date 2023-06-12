@@ -1,8 +1,8 @@
-import { Tube } from "base/Tube";
 import React from "react";
 import { Group, Rect, Text } from "react-konva";
-import { FiberUi } from "ui/FiberUi/FiberUi";
-import { convertAttrUnitsToPixels } from "utils/pixelUtils";
+import { FiberUi } from "@/ui/FiberUi/FiberUi";
+import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
+import { Tube } from "@/base/Tube";
 
 export const TubeUi = ({
   tube,

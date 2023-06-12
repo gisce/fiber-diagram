@@ -1,14 +1,14 @@
-import { Config } from "base/Config";
-import { FiberConnection, FiberConnectionData } from "base/FiberConnection";
-import { Wire, WireData } from "base/Wire";
+import { Config } from "@/base/Config";
+import { FiberConnection, FiberConnectionData } from "@/base/FiberConnection";
+import { Wire, WireData } from "@/base/Wire";
 import { Size } from "./Grid.types";
-import { Tube } from "base/Tube";
-import { TubeConnection, TubeConnectionData } from "base/TubeConnection";
-import { Fiber } from "base/Fiber";
-import { Splitter } from "base/Splitter";
-import { SplitterData, SplitterOpts } from "base/Splitter/Splitter.types";
+import { Tube } from "@/base/Tube";
+import { TubeConnection, TubeConnectionData } from "@/base/TubeConnection";
+import { Fiber } from "@/base/Fiber";
+import { Splitter } from "@/base/Splitter";
+import { SplitterData, SplitterOpts } from "@/base/Splitter/Splitter.types";
 import { GridData } from ".";
-import { PathController } from "base/PathController";
+import { PathController } from "@/base/PathController";
 
 export class Grid {
   id: number;

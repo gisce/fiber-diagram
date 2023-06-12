@@ -1,6 +1,6 @@
-import { Config } from "base/Config";
-import { PathUnit, Position } from "base/Grid/Grid.types";
-import { RowController } from "base/PathController/RowController/RowController";
+import { Config } from "@/base/Config";
+import { PathUnit, Position } from "@/base/Grid/Grid.types";
+import { RowController } from "@/base/PathController/RowController/RowController";
 
 export const getUnitsForPath = ({
   pathCoords,

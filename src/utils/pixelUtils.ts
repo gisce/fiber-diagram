@@ -1,5 +1,5 @@
-import { Config } from "base/Config";
-import { PositionSize } from "base/Grid";
+import { Config } from "@/base/Config";
+import { PositionSize } from "@/base/Grid";
 
 export const convertAttrUnitsToPixels = (attr: PositionSize) => {
   const { size, position } = attr;
