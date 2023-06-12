@@ -29,7 +29,7 @@ export default defineConfig({
       fileName: (format) => `fiber-diagram.${format}.js`,
     },
     rollupOptions: {
-      external: ["react", "react-dom", "antd", "react-konva", "konva"],
+      external: ["react", "react-dom", "antd", "react-konva", "konva", "@ant-design/icons"],
       output: {
         globals: {
           react: "React",
