@@ -2,6 +2,7 @@ import react from "@vitejs/plugin-react";
 import * as path from "path";
 import { defineConfig } from "vite";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   resolve: {
@@ -14,6 +15,9 @@ export default defineConfig({
       includeDependencies: true,
     }),
     react(),
+    dts({
+      insertTypesEntry: true,
+    }),
   ],
   build: {
     emptyOutDir: true,
