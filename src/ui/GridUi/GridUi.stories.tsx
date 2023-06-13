@@ -9,7 +9,6 @@ import ten from "../../examples/10.json";
 import simpleConnections from "../../examples/simpleConnections.json";
 import basic1Splitter from "../../examples/basic1Splitter.json";
 import basic2Splitter from "../../examples/basic2Splitter.json";
-import "antd/dist/antd.css";
 
 const meta: Meta<typeof GridUi> = {
   title: "Components/GridUi",
@@ -18,13 +17,6 @@ const meta: Meta<typeof GridUi> = {
 
 export default meta;
 type Story = StoryObj<typeof GridUi>;
-
-// export default {
-//   title: "Components/GridUi",
-//   component: GridUi,
-// } as ComponentMeta<typeof GridUi>;
-
-// const Template: ComponentStory<typeof GridUi> = (args) => <GridUi {...args} />;
 
 export const Basic: Story = {
   args: { inputJson: JSON.stringify(basic) },
