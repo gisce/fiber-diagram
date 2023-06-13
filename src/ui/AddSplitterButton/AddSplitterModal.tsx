@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Modal, Button, Row, Space, Col, Select, Divider } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { LocaleContext, LocaleContextType } from "ui/locales/LocaleContext";
-import { SplitterOpts } from "base/Splitter/Splitter.types";
+import { LocaleContext, LocaleContextType } from "@/ui/locales/LocaleContext";
+import { SplitterOpts } from "@/base/Splitter/Splitter.types";
 const { Option } = Select;
 
 type AddSplitterModalProps = {

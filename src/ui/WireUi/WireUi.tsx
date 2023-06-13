@@ -1,8 +1,8 @@
-import { Wire } from "base/Wire";
 import React from "react";
 import { Rect, Group } from "react-konva";
-import { TubeUi } from "ui/TubeUi";
-import { convertAttrUnitsToPixels } from "utils/pixelUtils";
+import { Wire } from "@/base/Wire";
+import { TubeUi } from "@/ui/TubeUi";
+import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
 
 export const WireUi = ({
   wire,

@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Stage, Layer, Rect } from "react-konva";
-import { WireUi } from "ui/WireUi";
-import { Grid, GridData } from "base/Grid";
-import { Config } from "base/Config";
-import { FiberConnectionUi } from "ui/FiberConnectionUi/FiberConnectionUi";
-import { FiberConnectionContextProvider } from "ui/FiberConnectionUi/FiberConnectionContext";
-import { sanitize } from "utils/sanitizer";
-import { TubeConnectionUi } from "ui/TubeConnectionUi/TubeConnectionUi";
-import { SplitterUi } from "ui/SplitterUi/SplitterUi";
-import { AddSplitterButton } from "ui/AddSplitterButton/AddSplitterButton";
-import { SplitterOpts } from "base/Splitter/Splitter.types";
-import LocaleContextProvider from "ui/locales/LocaleContext";
-import { Splitter } from "base/Splitter";
-import { RemoveSplitterButton } from "ui/RemoveSplitterButton/RemoveSplitterButton";
+import { WireUi } from "@/ui/WireUi";
+import { Grid, GridData } from "@/base/Grid";
+import { Config } from "@/base/Config";
+import { FiberConnectionUi } from "@/ui/FiberConnectionUi/FiberConnectionUi";
+import { FiberConnectionContextProvider } from "@/ui/FiberConnectionUi/FiberConnectionContext";
+import { sanitize } from "@/utils/sanitizer";
+import { TubeConnectionUi } from "@/ui/TubeConnectionUi/TubeConnectionUi";
+import { SplitterUi } from "@/ui/SplitterUi/SplitterUi";
+import { AddSplitterButton } from "@/ui/AddSplitterButton/AddSplitterButton";
+import { SplitterOpts } from "@/base/Splitter/Splitter.types";
+import LocaleContextProvider from "@/ui/locales/LocaleContext";
+import { Splitter } from "@/base/Splitter";
+import { RemoveSplitterButton } from "@/ui/RemoveSplitterButton/RemoveSplitterButton";
 import { Space } from "antd";
 
 export const GridUi = ({

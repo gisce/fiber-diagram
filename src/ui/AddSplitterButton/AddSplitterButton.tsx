@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Button } from "antd";
 import { AddSplitterModal } from "./AddSplitterModal";
-import { SplitterOpts } from "base/Splitter/Splitter.types";
-import { LocaleContext, LocaleContextType } from "ui/locales/LocaleContext";
+import { SplitterOpts } from "@/base/Splitter/Splitter.types";
+import { LocaleContext, LocaleContextType } from "@/ui/locales/LocaleContext";
 
 type AddSplitterButtonProps = {
   disabled: boolean;

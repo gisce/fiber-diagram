@@ -1,4 +1,4 @@
-import { FiberData } from "base/Fiber";
+import { FiberData } from "@/base/Fiber";
 
 export type SplitterData = {
   id: number;

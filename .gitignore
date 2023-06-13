@@ -27,3 +27,6 @@ package-lock.json
 .jest-test-results.json
 
 /storybook-static
+
+build/
+dist/

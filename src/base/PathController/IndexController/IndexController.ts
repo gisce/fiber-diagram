@@ -1,5 +1,5 @@
-import { Config } from "base/Config";
-import { getNPointsAbovePoint, getNPointsBelowPoint } from "utils/pathUtils";
+import { Config } from "@/base/Config";
+import { getNPointsAbovePoint, getNPointsBelowPoint } from "@/utils/pathUtils";
 
 export class IndexController<T> {
   indexes: T;

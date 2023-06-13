@@ -1,12 +1,12 @@
-import { Config } from "base/Config";
-import { FiberConnection } from "base/FiberConnection";
-import { Fiber } from "base/Fiber";
 import React, { useContext } from "react";
 import { Rect, Circle, Group } from "react-konva";
-import { convertAttrUnitsToPixels } from "utils/pixelUtils";
-import { Tube } from "base/Tube";
 import { Modal } from "antd";
-import { LocaleContext, LocaleContextType } from "ui/locales/LocaleContext";
+import { Config } from "@/base/Config";
+import { FiberConnection } from "@/base/FiberConnection";
+import { Fiber } from "@/base/Fiber";
+import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
+import { Tube } from "@/base/Tube";
+import { LocaleContext, LocaleContextType } from "@/ui/locales/LocaleContext";
 
 const confirm = Modal.confirm;
 

@@ -1,4 +1,4 @@
-import { MiddleFusionColumn } from "base/Grid";
+import { MiddleFusionColumn } from "@/base/Grid";
 import { IndexController } from "../IndexController/IndexController";
 
 export class ColumnController {

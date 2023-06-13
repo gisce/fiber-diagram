@@ -1,9 +1,9 @@
-import { Config } from "base/Config";
 import React from "react";
 import { Group, Rect, Text } from "react-konva";
-import { Splitter } from "base/Splitter";
-import { convertAttrUnitsToPixels } from "utils/pixelUtils";
-import { FiberCircleUi } from "ui/FiberUi/FiberCircleUi";
+import { Config } from "@/base/Config";
+import { Splitter } from "@/base/Splitter";
+import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
+import { FiberCircleUi } from "@/ui/FiberUi/FiberCircleUi";
 
 export const SplitterUi = ({
   splitter,

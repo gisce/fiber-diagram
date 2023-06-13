@@ -1,4 +1,4 @@
-import { AngleRow } from "base/Grid";
+import { AngleRow } from "@/base/Grid";
 import { IndexController } from "../IndexController";
 
 export class RowController {

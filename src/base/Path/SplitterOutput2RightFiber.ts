@@ -1,9 +1,9 @@
-import { Config } from "base/Config";
-import { Fiber } from "base/Fiber";
-import { ColumnController } from "base/PathController/ColumnController/ColumnController";
-import { RowController } from "base/PathController/RowController/RowController";
-import { Tube } from "base/Tube";
-import { getRightToPointPath, getUnitsForPath } from "utils/pathUtils";
+import { Config } from "@/base/Config";
+import { Fiber } from "@/base/Fiber";
+import { ColumnController } from "@/base/PathController/ColumnController/ColumnController";
+import { RowController } from "@/base/PathController/RowController/RowController";
+import { Tube } from "@/base/Tube";
+import { getRightToPointPath, getUnitsForPath } from "@/utils/pathUtils";
 
 export default ({
   elementIn,

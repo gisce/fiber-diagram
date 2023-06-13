@@ -1,6 +1,6 @@
-import { Config } from "base/Config";
-import { Grid, InitialPositionSize, PositionSize } from "base/Grid";
-import { Tube, TubeData } from "base/Tube";
+import { Config } from "@/base/Config";
+import { Grid, InitialPositionSize, PositionSize } from "@/base/Grid";
+import { Tube, TubeData } from "@/base/Tube";
 import { WireData, WireDisposition } from "./Wire.types";
 
 export class Wire {
