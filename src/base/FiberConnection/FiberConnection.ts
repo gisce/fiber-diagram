@@ -1,16 +1,16 @@
-import { Fiber } from "base/Fiber";
-import { Grid, PathUnit, Position } from "base/Grid";
-import { Tube } from "base/Tube";
+import { Fiber } from "@/base/Fiber";
+import { Grid, PathUnit, Position } from "@/base/Grid";
+import { Tube } from "@/base/Tube";
 import { FiberConnectionData } from ".";
-import LeftTFiber2RightTFiber from "base/Path/LeftTFiber2RightTFiber";
-import SameSideTubeFiber from "base/Path/SameSideTubeFiber";
-import LeftTFiber2SplitterInput from "base/Path/LeftTFiber2SplitterInput";
-import RightTFiber2SplitterInput from "base/Path/RightTFiber2SplitterInput";
-import SplitterInput2SplitterOutput from "base/Path/SplitterInput2SplitterOutput";
-import SplitterOutput2RightFiber from "base/Path/SplitterOutput2RightFiber";
-import SplitterOutput2LeftFiber from "base/Path/SplitterOutput2LeftFiber";
+import LeftTFiber2RightTFiber from "@/base/Path/LeftTFiber2RightTFiber";
+import SameSideTubeFiber from "@/base/Path/SameSideTubeFiber";
+import LeftTFiber2SplitterInput from "@/base/Path/LeftTFiber2SplitterInput";
+import RightTFiber2SplitterInput from "@/base/Path/RightTFiber2SplitterInput";
+import SplitterInput2SplitterOutput from "@/base/Path/SplitterInput2SplitterOutput";
+import SplitterOutput2RightFiber from "@/base/Path/SplitterOutput2RightFiber";
+import SplitterOutput2LeftFiber from "@/base/Path/SplitterOutput2LeftFiber";
 
-import { Splitter } from "base/Splitter";
+import { Splitter } from "@/base/Splitter";
 
 export class FiberConnection {
   fiber_in: number;

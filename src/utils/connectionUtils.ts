@@ -1,5 +1,5 @@
-import { Fiber } from "base/Fiber";
-import { Splitter } from "base/Splitter";
+import { Fiber } from "@/base/Fiber";
+import { Splitter } from "@/base/Splitter";
 
 export const validateFiberConnection = ({
   fiberIn,

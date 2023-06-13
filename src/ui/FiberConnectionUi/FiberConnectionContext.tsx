@@ -1,4 +1,4 @@
-import { Fiber } from "base/Fiber";
+import { Fiber } from "@/base/Fiber";
 import React from "react";
 
 export type FiberConnectionContextType = {

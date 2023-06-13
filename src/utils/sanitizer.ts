@@ -1,4 +1,4 @@
-import { GridData } from "base/Grid";
+import { GridData } from "@/base/Grid";
 
 export const sanitize = (input: any) => {
   const output: GridData = { res: {} };

@@ -1,5 +1,5 @@
-import { FiberData } from "base/Fiber";
-import { PositionSize } from "base/Grid";
+import { FiberData } from "@/base/Fiber";
+import { PositionSize } from "@/base/Grid";
 
 export type TubeData = {
   id: number;

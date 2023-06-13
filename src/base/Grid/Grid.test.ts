@@ -1,12 +1,13 @@
+import { describe, expect, it, vi } from "vitest";
 import { Grid } from ".";
-import { sanitize } from "utils/sanitizer";
+import { sanitize } from "../../utils/sanitizer";
 
-import exampleInput from "examples/basic2Splitter.json";
-import { Tube } from "base/Tube";
-import { Config } from "base/Config";
-import { Splitter } from "base/Splitter";
+import exampleInput from "../../examples/basic2Splitter.json";
+import { Tube } from "../../base/Tube";
+import { Config } from "../../base/Config";
+import { Splitter } from "../../base/Splitter";
 
-const onChange = jest.fn();
+const onChange = vi.fn();
 const grid = new Grid({ input: sanitize(exampleInput), onChange });
 
 describe("A Grid", () => {

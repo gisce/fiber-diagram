@@ -1,7 +1,7 @@
-import { Config } from "base/Config";
-import { InitialPositionSize, PositionSize } from "base/Grid";
-import { Splitter } from "base/Splitter";
-import { Tube } from "base/Tube";
+import { Config } from "@/base/Config";
+import { InitialPositionSize, PositionSize } from "@/base/Grid";
+import { Splitter } from "@/base/Splitter";
+import { Tube } from "@/base/Tube";
 import { FiberData } from ".";
 
 export class Fiber {

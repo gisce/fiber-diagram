@@ -1,9 +1,9 @@
-import { Config } from "base/Config";
-import { TubeConnection } from "base/TubeConnection";
-import { Tube } from "base/Tube";
 import React from "react";
 import { Rect, Circle, Group } from "react-konva";
-import { convertAttrUnitsToPixels } from "utils/pixelUtils";
+import { Config } from "@/base/Config";
+import { TubeConnection } from "@/base/TubeConnection";
+import { Tube } from "@/base/Tube";
+import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
 
 export const TubeConnectionUi = ({
   connection,

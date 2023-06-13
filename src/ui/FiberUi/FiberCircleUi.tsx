@@ -1,15 +1,15 @@
-import { Config } from "base/Config";
-import { Fiber } from "base/Fiber";
 import React, { useContext } from "react";
 import { Circle } from "react-konva";
+import { Config } from "@/base/Config";
+import { Fiber } from "@/base/Fiber";
 import {
   FiberConnectionContext,
   FiberConnectionContextType,
-} from "ui/FiberConnectionUi/FiberConnectionContext";
-import { Position } from "base/Grid";
-import { Splitter } from "base/Splitter";
-import { Tube } from "base/Tube";
-import { validateFiberConnection } from "utils/connectionUtils";
+} from "@/ui/FiberConnectionUi/FiberConnectionContext";
+import { Position } from "@/base/Grid";
+import { Splitter } from "@/base/Splitter";
+import { Tube } from "@/base/Tube";
+import { validateFiberConnection } from "@/utils/connectionUtils";
 
 export type FiberCircleUiProps = Position & {
   fiber: Fiber;
