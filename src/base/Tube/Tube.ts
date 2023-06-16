@@ -3,7 +3,6 @@ import { Fiber, FiberData } from "@/base/Fiber";
 import { InitialPositionSize, PositionSize } from "@/base/Grid";
 import { Wire } from "@/base/Wire";
 import { TubeData } from ".";
-import { arraysContainSameNumbers } from "@/utils/connectionUtils";
 
 export class Tube {
   id: number;
@@ -89,18 +88,8 @@ export class Tube {
   }
 
   canWeCollapse() {
-    const tubeConnectedTo = this.getTubeConnectedTo();
-
-    if (tubeConnectedTo !== undefined) {
-      // Check if fibers from tubeConnectedTo are the same id's that the ones we have in this.fibers
-      const fibersFromTubeConnectedTo = tubeConnectedTo.fibers.map(
-        (fiber) => fiber.id
-      );
-      const fibersFromThisTube = this.fibers.map((fiber) => fiber.id);
-      return arraysContainSameNumbers(
-        fibersFromTubeConnectedTo,
-        fibersFromThisTube
-      );
+    if (this.getTubeConnectedTo() !== undefined) {
+      return true;
     } else {
       return false;
     }
