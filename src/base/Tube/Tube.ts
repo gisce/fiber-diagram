@@ -79,7 +79,9 @@ export class Tube {
     });
 
     const connectedToSameTube =
-      sameOrder && Object.values(tubesConnectedTo).length === 1;
+      sameOrder &&
+      Object.values(tubesConnectedTo).length === 1 &&
+      Object.values(tubesConnectedTo)[0].fibers.length === this.fibers.length;
 
     if (connectedToSameTube) {
       return Object.values(tubesConnectedTo)[0];
@@ -92,15 +94,7 @@ export class Tube {
     const tubeConnectedTo = this.getTubeConnectedTo();
 
     if (tubeConnectedTo !== undefined) {
-      // Check if fibers from tubeConnectedTo are the same id's that the ones we have in this.fibers
-      const fibersFromTubeConnectedTo = tubeConnectedTo.fibers.map(
-        (fiber) => fiber.id
-      );
-      const fibersFromThisTube = this.fibers.map((fiber) => fiber.id);
-      return arraysContainSameNumbers(
-        fibersFromTubeConnectedTo,
-        fibersFromThisTube
-      );
+      return true;
     } else {
       return false;
     }
