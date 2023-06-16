@@ -87,3 +87,27 @@ export const validateFiberConnection = ({
 
   return true;
 };
+
+export const arraysContainSameNumbers = (
+  arr1: number[],
+  arr2: number[]
+): boolean => {
+  // Step 1: Sort the arrays
+  const sortedArr1 = arr1.sort((a, b) => a - b);
+  const sortedArr2 = arr2.sort((a, b) => a - b);
+
+  // Step 2: Check array lengths
+  if (sortedArr1.length !== sortedArr2.length) {
+    return false;
+  }
+
+  // Step 3: Compare each element
+  for (let i = 0; i < sortedArr1.length; i++) {
+    if (sortedArr1[i] !== sortedArr2[i]) {
+      return false;
+    }
+  }
+
+  // Step 4: All pairs of elements are equal
+  return true;
+};
