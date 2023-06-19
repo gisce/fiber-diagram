@@ -1,6 +1,10 @@
 import { GridData } from "@/base/Grid";
 
 export const sanitize = (input: any) => {
+  if (!input) {
+    return undefined;
+  }
+  
   const output: GridData = { res: {} };
   output.res.connections = {
     fibers: input.res.connections?.fibers,
