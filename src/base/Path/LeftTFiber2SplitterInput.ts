@@ -9,6 +9,7 @@ import {
   getRightToPointFlatPath,
   getUnitsForPath,
 } from "@/utils/pathUtils";
+import { PathUnit } from "../Grid";
 
 export default ({
   elementIn,
@@ -56,7 +57,7 @@ export default ({
     fusionYPoint,
   });
 
-  let rightLeg = [];
+  let rightLeg: PathUnit[] = [];
 
   if (target.x > columnController.middlePoint) {
     // This means the fiber from the splitter is not placed on the middle, therefore we must draw a line to middlepoint
@@ -176,7 +177,7 @@ const getPendingLineToMiddle = ({
   fusionYPoint: number;
   middlePoint: number;
 }) => {
-  let path = [];
+  const path = [];
 
   for (let iX = element.attr.position.x; iX >= middlePoint; iX -= 1) {
     path.push([iX, fusionYPoint]);
