@@ -24,7 +24,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "react-ooui",
       formats: ["es"],
-      fileName: (format) => `figer-diagram.${format}.js`,
+      fileName: (format) => `fiber-diagram.${format}.js`,
     },
     rollupOptions: {
       // We manually add these since they are not directly in package.json, but they end up in the bundle if we don't exclude them.
