@@ -1,6 +1,6 @@
 {
   "name": "@gisce/fiber-diagram",
-  "version": "1.0.4",
+  "version": "2.0.0-alpha.1",
   "description": "",
   "packageManager": "npm@9.8.0",
   "engines": {
