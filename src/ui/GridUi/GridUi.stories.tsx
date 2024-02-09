@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { GridUi } from "./GridUi";
@@ -9,7 +8,6 @@ import ten from "../../examples/10.json";
 import simpleConnections from "../../examples/simpleConnections.json";
 import basic1Splitter from "../../examples/basic1Splitter.json";
 import basic2Splitter from "../../examples/basic2Splitter.json";
-import "antd/dist/antd.css";
 
 const meta: Meta<typeof GridUi> = {
   title: "Components/GridUi",

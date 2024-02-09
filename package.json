@@ -41,6 +41,14 @@
     "access": "public"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.13",
+    "@storybook/addon-interactions": "^7.6.13",
+    "@storybook/addon-links": "^7.6.13",
+    "@storybook/addon-onboarding": "^1.0.11",
+    "@storybook/blocks": "^7.6.13",
+    "@storybook/react": "^7.6.13",
+    "@storybook/react-vite": "^7.6.13",
+    "@storybook/test": "^7.6.13",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
     "@vitejs/plugin-react-swc": "3.3.2",
@@ -58,6 +66,7 @@
     "prettier": "3.0.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "semantic-release": "21.0.7",
+    "storybook": "^7.6.13",
     "typescript": "5.3.3",
     "vite": "4.5.2",
     "vite-bundle-visualizer": "^0.10.0",
@@ -66,10 +75,10 @@
     "vitest": "^0.34.6"
   },
   "dependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "antd": "5.13.1",
     "konva": "^8.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-konva": "18.2.10"
   },
   "overrides": {
