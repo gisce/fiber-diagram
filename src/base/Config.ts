@@ -1,5 +1,6 @@
 export const Config = {
   gridSize: { width: 100, height: 100 },
+  paddingTop: 2,
   baseUnits: {
     wire: { width: 5, height: 4 },
     tube: { width: 4, height: 2 },
