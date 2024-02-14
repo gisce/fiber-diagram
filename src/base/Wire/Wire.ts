@@ -8,6 +8,7 @@ export class Wire {
   name: string;
   disposition: WireDisposition;
   attr: PositionSize;
+  position?: number;
   expanded: boolean = true;
   tubes?: Tube[] = [];
   parentGrid: Grid;
@@ -34,11 +35,13 @@ export class Wire {
       tubes: tubesData = [],
       disposition,
       expanded = true,
+      position,
     } = data;
     this.id = id;
     this.name = name;
     this.disposition = disposition;
     this.expanded = expanded;
+    this.position = position;
 
     tubesData.forEach((tubeData: TubeData) => this.addTube(tubeData));
   }
@@ -55,7 +58,7 @@ export class Wire {
   calculateSize() {
     const usedChildrenHeight = this.tubes.reduce(
       (a, b) => a + b.attr.size.height,
-      0
+      0,
     );
 
     const heightWithSeparation =
@@ -98,12 +101,13 @@ export class Wire {
   }
 
   getJson(): WireData {
-    const { id, name, expanded, tubes, attr, disposition } = this;
+    const { id, name, expanded, tubes, attr, disposition, position } = this;
 
     return {
       id,
       name,
       expanded,
+      position,
       disposition,
       attr,
       tubes: tubes.map((tube) => tube.getJson()),
