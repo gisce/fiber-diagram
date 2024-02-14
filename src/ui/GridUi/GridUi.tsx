@@ -111,7 +111,6 @@ export const GridUi = ({
               height={grid.size.height * Config.pixelsPerUnit}
               fill={"#cccccc"}
             />
-
             {grid.tubeConnections?.map((connection, i) => {
               return (
                 <TubeConnectionUi

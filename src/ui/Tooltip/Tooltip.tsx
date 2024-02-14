@@ -5,9 +5,10 @@ export type TooltipProps = {
   text: string;
   x: number;
   y: number;
+  direction: "left" | "right";
 };
 
-export const Tooltip = ({ visible, text, x, y }: TooltipProps) => {
+export const Tooltip = ({ visible, text, x, y, direction }: TooltipProps) => {
   if (!visible) {
     return null;
   }
@@ -16,7 +17,7 @@ export const Tooltip = ({ visible, text, x, y }: TooltipProps) => {
     <Label x={x} y={y} opacity={0.75}>
       <Tag
         fill="black"
-        pointerDirection={"down"}
+        pointerDirection={direction}
         pointerWidth={10}
         pointerHeight={10}
         lineJoin="round"

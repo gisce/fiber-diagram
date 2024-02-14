@@ -96,7 +96,7 @@ export class Wire {
         this.disposition === "LEFT"
           ? 0
           : this.parentGrid.size.width - Config.baseUnits.wire.width,
-      y: usedHeightPlusSeparation,
+      y: Config.paddingTop + usedHeightPlusSeparation,
     };
   }
 

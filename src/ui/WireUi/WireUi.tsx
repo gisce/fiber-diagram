@@ -19,6 +19,7 @@ export const WireUi = ({
     tooltipVisible,
     handleOnMouseEnter,
     handleOnMouseLeave,
+    direction,
   } = useTooltip();
 
   return (
@@ -44,16 +45,17 @@ export const WireUi = ({
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
       />
+      {wire.expanded &&
+        wire.tubes.map((tube, i) => {
+          return <TubeUi key={i} tube={tube} readonly={readonly} />;
+        })}
       <Tooltip
         x={tooltipPosition.x}
         y={tooltipPosition.y}
         visible={tooltipVisible}
         text={wire.name}
+        direction={direction}
       />
-      {wire.expanded &&
-        wire.tubes.map((tube, i) => {
-          return <TubeUi key={i} tube={tube} readonly={readonly} />;
-        })}
     </Group>
   );
 };
