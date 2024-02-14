@@ -1,5 +1,4 @@
-import React from "react";
-import { Group, Rect, Text } from "react-konva";
+import { Group, Rect } from "react-konva";
 import { Fiber } from "@/base/Fiber";
 import { Tube } from "@/base/Tube";
 import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
@@ -20,7 +19,7 @@ export const FiberUi = ({
 
   const fiberIsConnected =
     (fiber.parent as Tube).parentWire.parentGrid.getFiberConnectionWithId(
-      fiber.id
+      fiber.id,
     ) !== undefined;
 
   return (
@@ -31,18 +30,6 @@ export const FiberUi = ({
         width={opts.size.width}
         height={opts.size.height}
         fill={color}
-      />
-      <Text
-        text={`#${fiber.id}`}
-        x={opts.position.x - (rightFiber ? opts.size.width * 0.1 : 0)}
-        y={opts.position.y}
-        width={opts.size.width * 1.2}
-        height={opts.size.height}
-        fontSize={10}
-        padding={opts.size.height}
-        fill="red"
-        strokeWidth={0.5}
-        stroke={"#000000"}
       />
       {!fiberIsConnected && (
         <FiberCircleUi
