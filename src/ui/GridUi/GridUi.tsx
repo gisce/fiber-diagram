@@ -34,12 +34,10 @@ export const GridUi = ({
     (newGrid: Grid) => {
       if (JSON.stringify(newGrid.getJson()) !== JSON.stringify(gridData)) {
         setGridData(newGrid.getJson());
-        if (gridData !== undefined) {
-          onChange(JSON.stringify(sanitize(newGrid.getJson())));
-        }
+        onChange(JSON.stringify(sanitize(newGrid.getJson())));
       }
     },
-    [grid, gridData]
+    [grid, gridData],
   );
 
   useEffect(() => {
