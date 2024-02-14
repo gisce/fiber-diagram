@@ -2,6 +2,8 @@ import { Rect, Group, Text } from "react-konva";
 import { Wire } from "@/base/Wire";
 import { TubeUi } from "@/ui/TubeUi";
 import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
+import { useTooltip } from "@/hooks/useTooltip";
+import { Tooltip } from "../Tooltip";
 
 export const WireUi = ({
   wire,
@@ -12,6 +14,12 @@ export const WireUi = ({
 }) => {
   const { attr } = wire;
   const opts = convertAttrUnitsToPixels(attr);
+  const {
+    tooltipPosition,
+    tooltipVisible,
+    handleOnMouseEnter,
+    handleOnMouseLeave,
+  } = useTooltip();
 
   return (
     <Group>
@@ -33,6 +41,14 @@ export const WireUi = ({
         fontSize={12}
         padding={5}
         fill="white"
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
+      />
+      <Tooltip
+        x={tooltipPosition.x}
+        y={tooltipPosition.y}
+        visible={tooltipVisible}
+        text={wire.name}
       />
       {wire.expanded &&
         wire.tubes.map((tube, i) => {
