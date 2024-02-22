@@ -1,0 +1,444 @@
+{
+  "res": {
+    "connections": {
+      "fibers": [
+        { "fiber_out": 903, "fiber_in": 800 },
+        { "fiber_out": 799, "fiber_in": 18 },
+        { "fiber_out": 889, "fiber_in": 6 }
+      ]
+    },
+    "elements": {
+      "splitters": [
+        {
+          "fibers_in": [
+            { "number": 0, "id": 799, "name": "Splitter 1x2 - Port Downstream" }
+          ],
+          "position": false,
+          "fibers_out": [
+            { "number": 1, "id": 800, "name": "Splitter 1x2 - Port Upstream" },
+            { "number": 1, "id": 801, "name": "Splitter 1x2 - Port Upstream" }
+          ],
+          "model": ["giscedata.network.fo.splitter", "Splitter"]
+        },
+        {
+          "fibers_in": [
+            {
+              "number": 0,
+              "id": 154621,
+              "name": "Splitter 2x4 - Port Downstream"
+            },
+            {
+              "number": 0,
+              "id": 154622,
+              "name": "Splitter 2x4 - Port Downstream"
+            }
+          ],
+          "position": false,
+          "fibers_out": [
+            {
+              "number": 1,
+              "id": 154623,
+              "name": "Splitter 2x4 - Port Upstream"
+            },
+            {
+              "number": 1,
+              "id": 154624,
+              "name": "Splitter 2x4 - Port Upstream"
+            },
+            {
+              "number": 1,
+              "id": 154625,
+              "name": "Splitter 2x4 - Port Upstream"
+            },
+            {
+              "number": 1,
+              "id": 154626,
+              "name": "Splitter 2x4 - Port Upstream"
+            }
+          ],
+          "model": ["giscedata.network.fo.splitter", "Splitter"]
+        }
+      ],
+      "wires": [
+        {
+          "position": 2,
+          "tubes": [
+            {
+              "color": "#FFFFFF",
+              "fibers": [
+                {
+                  "color": "#00FF00",
+                  "color_2": false,
+                  "id": 2,
+                  "name": "Cable 1 - Tube 1 - Fiber 1"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 4,
+                  "name": "Cable 1 - Tube 1 - Fiber 2"
+                }
+              ],
+              "color_2": false,
+              "id": 1,
+              "name": "Cable 1 - Tube 1"
+            }
+          ],
+          "id": 1,
+          "disposition": "LEFT",
+          "name": "Cable 1"
+        },
+        {
+          "position": 1,
+          "tubes": [
+            {
+              "color": "#FFFFFF",
+              "fibers": [
+                {
+                  "color": "#00FF00",
+                  "color_2": false,
+                  "id": 6,
+                  "name": "Cable 2 - Tube 1 - Fiber 1"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 8,
+                  "name": "Cable 2 - Tube 1 - Fiber 2"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 10,
+                  "name": "Cable 2 - Tube 1 - Fiber 3"
+                },
+                {
+                  "color": "#FFFF00",
+                  "color_2": false,
+                  "id": 12,
+                  "name": "Cable 2 - Tube 1 - Fiber 4"
+                },
+                {
+                  "color": "#888888",
+                  "color_2": false,
+                  "id": 14,
+                  "name": "Cable 2 - Tube 1 - Fiber 5"
+                },
+                {
+                  "color": "#8800FF",
+                  "color_2": false,
+                  "id": 16,
+                  "name": "Cable 2 - Tube 1 - Fiber 6"
+                }
+              ],
+              "color_2": false,
+              "id": 2,
+              "name": "Cable 2 - Tube 1"
+            },
+            {
+              "color": "#FFFFFF",
+              "fibers": [
+                {
+                  "color": "#00FF00",
+                  "color_2": false,
+                  "id": 18,
+                  "name": "Cable 2 - Tube 2 - Fiber 1"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 20,
+                  "name": "Cable 2 - Tube 2 - Fiber 2"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 22,
+                  "name": "Cable 2 - Tube 2 - Fiber 3"
+                },
+                {
+                  "color": "#FFFF00",
+                  "color_2": false,
+                  "id": 24,
+                  "name": "Cable 2 - Tube 2 - Fiber 4"
+                },
+                {
+                  "color": "#888888",
+                  "color_2": false,
+                  "id": 26,
+                  "name": "Cable 2 - Tube 2 - Fiber 5"
+                },
+                {
+                  "color": "#8800FF",
+                  "color_2": false,
+                  "id": 28,
+                  "name": "Cable 2 - Tube 2 - Fiber 6"
+                }
+              ],
+              "color_2": false,
+              "id": 3,
+              "name": "Cable 2 - Tube 2"
+            },
+            {
+              "color": "#FF0000",
+              "fibers": [
+                {
+                  "color": "#00FF00",
+                  "color_2": false,
+                  "id": 30,
+                  "name": "Cable 2 - Tube 3 - Fiber 1"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 32,
+                  "name": "Cable 2 - Tube 3 - Fiber 2"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 34,
+                  "name": "Cable 2 - Tube 3 - Fiber 3"
+                },
+                {
+                  "color": "#FFFF00",
+                  "color_2": false,
+                  "id": 36,
+                  "name": "Cable 2 - Tube 3 - Fiber 4"
+                },
+                {
+                  "color": "#888888",
+                  "color_2": false,
+                  "id": 38,
+                  "name": "Cable 2 - Tube 3 - Fiber 5"
+                },
+                {
+                  "color": "#8800FF",
+                  "color_2": false,
+                  "id": 40,
+                  "name": "Cable 2 - Tube 3 - Fiber 6"
+                }
+              ],
+              "color_2": false,
+              "id": 4,
+              "name": "Cable 2 - Tube 3"
+            },
+            {
+              "color": "#FF0000",
+              "fibers": [
+                {
+                  "color": "#00FF00",
+                  "color_2": false,
+                  "id": 42,
+                  "name": "Cable 2 - Tube 4 - Fiber 1"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 44,
+                  "name": "Cable 2 - Tube 4 - Fiber 2"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 46,
+                  "name": "Cable 2 - Tube 4 - Fiber 3"
+                },
+                {
+                  "color": "#FFFF00",
+                  "color_2": false,
+                  "id": 48,
+                  "name": "Cable 2 - Tube 4 - Fiber 4"
+                },
+                {
+                  "color": "#888888",
+                  "color_2": false,
+                  "id": 50,
+                  "name": "Cable 2 - Tube 4 - Fiber 5"
+                },
+                {
+                  "color": "#8800FF",
+                  "color_2": false,
+                  "id": 52,
+                  "name": "Cable 2 - Tube 4 - Fiber 6"
+                }
+              ],
+              "color_2": false,
+              "id": 5,
+              "name": "Cable 2 - Tube 4"
+            }
+          ],
+          "id": 2,
+          "disposition": "LEFT",
+          "name": "Cable 2"
+        },
+        {
+          "position": false,
+          "tubes": [
+            {
+              "color": "#FFFFFF",
+              "fibers": [
+                {
+                  "color": "#FFFFFF",
+                  "color_2": false,
+                  "id": 889,
+                  "name": "Cable 3 - Tube 1 - Fiber 1"
+                },
+                {
+                  "color": "#FFFFFF",
+                  "color_2": false,
+                  "id": 891,
+                  "name": "Cable 3 - Tube 1 - Fiber 2"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 893,
+                  "name": "Cable 3 - Tube 1 - Fiber 3"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 895,
+                  "name": "Cable 3 - Tube 1 - Fiber 4"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 897,
+                  "name": "Cable 3 - Tube 1 - Fiber 5"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 899,
+                  "name": "Cable 3 - Tube 1 - Fiber 6"
+                }
+              ],
+              "color_2": false,
+              "id": 71,
+              "name": "Cable 3 - Tube 1"
+            },
+            {
+              "color": "#000000",
+              "fibers": [
+                {
+                  "color": "#FFFFFF",
+                  "color_2": false,
+                  "id": 901,
+                  "name": "Cable 3 - Tube 2 - Fiber 1"
+                },
+                {
+                  "color": "#FFFFFF",
+                  "color_2": false,
+                  "id": 903,
+                  "name": "Cable 3 - Tube 2 - Fiber 2"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 905,
+                  "name": "Cable 3 - Tube 2 - Fiber 3"
+                },
+                {
+                  "color": "#FF0000",
+                  "color_2": false,
+                  "id": 907,
+                  "name": "Cable 3 - Tube 2 - Fiber 4"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 909,
+                  "name": "Cable 3 - Tube 2 - Fiber 5"
+                },
+                {
+                  "color": "#0000FF",
+                  "color_2": false,
+                  "id": 911,
+                  "name": "Cable 3 - Tube 2 - Fiber 6"
+                }
+              ],
+              "color_2": false,
+              "id": 72,
+              "name": "Cable 3 - Tube 2"
+            }
+          ],
+          "id": 3,
+          "disposition": "RIGHT",
+          "name": "Cable 3"
+        }
+      ],
+      "patch_panels": [
+        {
+          "fibers_in": [
+            {
+              "number": 1,
+              "id": 913,
+              "name": "Patch Panel 2x3 - CTO A - Port Downstream 1"
+            },
+            {
+              "number": 2,
+              "id": 914,
+              "name": "Patch Panel 2x3 - CTO A - Port Downstream 2"
+            },
+            {
+              "number": 3,
+              "id": 915,
+              "name": "Patch Panel 2x3 - CTO A - Port Downstream 3"
+            },
+            {
+              "number": 4,
+              "id": 916,
+              "name": "Patch Panel 2x3 - CTO A - Port Downstream 4"
+            },
+            {
+              "number": 5,
+              "id": 917,
+              "name": "Patch Panel 2x3 - CTO A - Port Downstream 5"
+            },
+            {
+              "number": 6,
+              "id": 918,
+              "name": "Patch Panel 2x3 - CTO A - Port Downstream 6"
+            }
+          ],
+          "position": false,
+          "fibers_out": [
+            {
+              "number": 1,
+              "id": 919,
+              "name": "Patch Panel 2x3 - CTO A - Port Upstream 1"
+            },
+            {
+              "number": 2,
+              "id": 920,
+              "name": "Patch Panel 2x3 - CTO A - Port Upstream 2"
+            },
+            {
+              "number": 3,
+              "id": 921,
+              "name": "Patch Panel 2x3 - CTO A - Port Upstream 3"
+            },
+            {
+              "number": 4,
+              "id": 922,
+              "name": "Patch Panel 2x3 - CTO A - Port Upstream 4"
+            },
+            {
+              "number": 5,
+              "id": 923,
+              "name": "Patch Panel 2x3 - CTO A - Port Upstream 5"
+            },
+            {
+              "number": 6,
+              "id": 924,
+              "name": "Patch Panel 2x3 - CTO A - Port Upstream 6"
+            }
+          ],
+          "model": ["giscedata.network.fo.patch.panel", "Patch Panel"]
+        }
+      ]
+    }
+  }
+}

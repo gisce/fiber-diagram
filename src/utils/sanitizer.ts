@@ -18,8 +18,11 @@ export const sanitize = (input: any) => {
       return {
         id: wire.id,
         name: wire.name,
-        position: wire.position,
-        disposition: wire.position || wire.disposition,
+        position:
+          typeof wire.position === "number" && isFinite(wire.position)
+            ? wire.position
+            : undefined,
+        disposition: wire.disposition,
         tubes: wire.tubes?.map((tube: any) => {
           return {
             id: tube.id,
