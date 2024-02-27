@@ -1,15 +1,9 @@
 import { Config } from "@/base/Config";
 import { Fiber } from "@/base/Fiber";
-import { Position } from "@/base/Grid";
 import { ColumnController } from "@/base/PathController/ColumnController/ColumnController";
 import { RowController } from "@/base/PathController/RowController/RowController";
 import { Tube } from "@/base/Tube";
-import {
-  getLeftToPointFlatPath,
-  getLeftToPointPath,
-  getRightToPointFlatPath,
-  getUnitsForPath,
-} from "@/utils/pathUtils";
+import { getLeftToPointPath, getUnitsForPath } from "@/utils/pathUtils";
 import { getRightLeg } from "./LeftTFiber2RightTFiber";
 
 export default ({
@@ -26,8 +20,6 @@ export default ({
   rightAngleRowController: RowController; // In order to check where we can horizontally place our connection
 }) => {
   const source = elementIn.attr.position;
-  const target = elementOut.attr.position;
-
   const type = elementIn instanceof Tube ? "tube" : "fiber";
 
   // First we determine the fusion point searching for the vertical available space inside fusionColumn
@@ -53,7 +45,7 @@ export default ({
     color: elementIn.color,
   });
 
-  let pendingToMiddleLeg = [];
+  const pendingToMiddleLeg: any[] = [];
 
   const rightLeg = getRightLeg({
     elementOut: elementIn,
@@ -122,29 +114,7 @@ const getLeftLeg = ({
 
   return getUnitsForPath({
     pathCoords: leftPath,
-    color: color,
+    color,
     unitSize: Config.baseUnits[type].height,
-  });
-};
-
-const getPendingLineToMiddle = ({
-  element,
-  fusionYPoint,
-  middlePoint,
-}: {
-  element: Fiber;
-  fusionYPoint: number;
-  middlePoint: number;
-}) => {
-  let path = [];
-
-  for (let iX = element.attr.position.x; iX >= middlePoint; iX -= 1) {
-    path.push([iX, fusionYPoint]);
-  }
-
-  return getUnitsForPath({
-    pathCoords: path,
-    color: element.color,
-    unitSize: Config.baseUnits.fiber.height,
   });
 };

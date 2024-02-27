@@ -163,7 +163,7 @@ const getOrderedFibers = ({
 }) => {
   const allFibers = [elementIn, elementOut];
 
-  const sortedFibers = allFibers.sort((a: Fiber, b: Fiber) => {
+  const sortedFibers = allFibers.sort((a: Fiber | Tube, b: Fiber | Tube) => {
     return a.attr.position.y - b.attr.position.y;
   });
 
@@ -243,7 +243,7 @@ const getLeftLeg = ({
     angleRowController.indexController.setUsedIndexWithSize({
       point: leftUsedXPoint,
       size: Config.baseUnits[type].height,
-      element: element,
+      element,
     });
   }
 
@@ -251,7 +251,7 @@ const getLeftLeg = ({
     columnController.indexController.setUsedIndexWithSize({
       point: leftUsedYPoint,
       size: Config.baseUnits[type].height,
-      element: element,
+      element,
     });
   }
 
@@ -292,7 +292,7 @@ const getRightLeg = ({
     angleRowController.indexController.setUsedIndexWithSize({
       point: rightUsedXPoint,
       size: Config.baseUnits[type].height,
-      element: element,
+      element,
     });
   }
 
@@ -300,7 +300,7 @@ const getRightLeg = ({
     columnController.indexController.setUsedIndexWithSize({
       point: rightUsedYPoint,
       size: Config.baseUnits[type].height,
-      element: element,
+      element,
     });
   }
 

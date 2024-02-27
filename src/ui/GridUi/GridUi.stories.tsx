@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { GridUi } from "./GridUi";
@@ -9,7 +8,7 @@ import ten from "../../examples/10.json";
 import simpleConnections from "../../examples/simpleConnections.json";
 import basic1Splitter from "../../examples/basic1Splitter.json";
 import basic2Splitter from "../../examples/basic2Splitter.json";
-import "antd/dist/antd.css";
+import positions from "../../examples/positions.json";
 
 const meta: Meta<typeof GridUi> = {
   title: "Components/GridUi",
@@ -52,6 +51,10 @@ export const BasicW1Splitter: Story = {
 
 export const BasicW2Splitter: Story = {
   args: { inputJson: JSON.stringify(basic2Splitter) },
+};
+
+export const Positions: Story = {
+  args: { inputJson: JSON.stringify(positions) },
 };
 
 export const Error: Story = {

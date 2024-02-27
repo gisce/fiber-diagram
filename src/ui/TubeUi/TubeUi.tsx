@@ -1,5 +1,4 @@
-import React from "react";
-import { Group, Rect, Text } from "react-konva";
+import { Group, Rect } from "react-konva";
 import { FiberUi } from "@/ui/FiberUi/FiberUi";
 import { convertAttrUnitsToPixels } from "@/utils/pixelUtils";
 import { Tube } from "@/base/Tube";
@@ -33,20 +32,6 @@ export const TubeUi = ({
         onClick={onClick}
         onTap={onClick}
         fill={color}
-      />
-      <Text
-        onClick={onClick}
-        onTap={onClick}
-        text={`#${tube.id}`}
-        x={opts.position.x}
-        y={opts.position.y}
-        width={opts.size.width}
-        height={opts.size.height}
-        fontSize={14}
-        padding={5}
-        fill="red"
-        strokeWidth={0.5}
-        stroke={"#000000"}
       />
       {tube.expanded &&
         tube.fibers.map((fiber, i) => {

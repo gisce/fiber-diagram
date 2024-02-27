@@ -2,7 +2,7 @@ import { Config } from "@/base/Config";
 import { getNPointsAbovePoint, getNPointsBelowPoint } from "@/utils/pathUtils";
 
 export class IndexController<T> {
-  indexes: T;
+  indexes: any;
 
   constructor() {
     (this.indexes as any) = {};

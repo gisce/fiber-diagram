@@ -34,17 +34,16 @@ export const GridUi = ({
     (newGrid: Grid) => {
       if (JSON.stringify(newGrid.getJson()) !== JSON.stringify(gridData)) {
         setGridData(newGrid.getJson());
-        if (gridData !== undefined) {
-          onChange(JSON.stringify(sanitize(newGrid.getJson())));
-        }
+        onChange(JSON.stringify(sanitize(newGrid.getJson())));
       }
     },
-    [grid, gridData]
+    [gridData, onChange],
   );
 
   useEffect(() => {
     const input = sanitize(JSON.parse(inputJson));
     setGrid(new Grid({ input, onChange: onChangeGrid }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputJson]);
 
   useEffect(() => {
@@ -53,6 +52,7 @@ export const GridUi = ({
     }
 
     setGrid(new Grid({ input: gridData, onChange: onChangeGrid }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gridData]);
 
   if (!grid) {
@@ -111,7 +111,6 @@ export const GridUi = ({
               height={grid.size.height * Config.pixelsPerUnit}
               fill={"#cccccc"}
             />
-
             {grid.tubeConnections?.map((connection, i) => {
               return (
                 <TubeConnectionUi

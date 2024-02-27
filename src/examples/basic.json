@@ -4,6 +4,7 @@
       "wires": [
         {
           "id": 21,
+          "position": 0,
           "name": "TRAM1 23/06",
           "disposition": "LEFT",
           "tubes": [
@@ -34,6 +35,7 @@
         {
           "id": 22,
           "name": "TRAM2 23/06",
+          "position": 1,
           "disposition": "RIGHT",
           "tubes": [
             {

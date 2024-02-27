@@ -10,4 +10,5 @@ export type WireData = {
   tubes?: TubeData[];
   attr?: PositionSize;
   expanded?: boolean;
+  position?: number;
 };
