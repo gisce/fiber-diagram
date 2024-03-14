@@ -11,5 +11,7 @@ export const Config = {
   pixelsPerUnit: 10,
   separationWireToAngle: 15,
   splitterWidth: 2,
-  colorForSplitters: "#555555",
+  splitterFiberColors: "#555555",
+  colorForSplitters: "#d0d0d0",
+  colorForPatchPanels: "#000000",
 };
