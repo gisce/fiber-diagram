@@ -1,4 +1,4 @@
-name: Update dependent projects (v2)
+name: Update dependent projects (main)
 
 on:
   release:
@@ -29,7 +29,7 @@ jobs:
         run: |
           TAG_NAME="${{ github.event.release.tag_name || github.event.inputs.tag_name }}"
           PRERELEASE="${{ github.event.release.prerelease || github.event.inputs.prerelease }}"
-          if [ "$PRERELEASE" != "true" ] && [[ "$TAG_NAME" == *'v2'* ]]; then
+          if [ "$PRERELEASE" != "true" ]; then
             SHOULD_RUN="true"
           else
             SHOULD_RUN="false"

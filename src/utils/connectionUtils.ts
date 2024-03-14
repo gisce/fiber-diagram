@@ -26,7 +26,10 @@ export const validateFiberConnection = ({
     }
 
     // Prevent connections if both fibers are from the same splitter
-    if (splitterIn.id === splitterOut.id) {
+    if (
+      splitterIn.id === splitterOut.id &&
+      splitterIn.type === splitterOut.type
+    ) {
       return false;
     }
   }
@@ -50,7 +53,7 @@ export const validateFiberConnection = ({
       ).getSplittersConnectedInInput();
 
       const otherFiberIsInput = (otherFiber.parent as Splitter).isFiberInput(
-        otherFiber
+        otherFiber,
       );
 
       // Check if both fibers are ouput and input from different splitters, but they have a loop
@@ -60,8 +63,10 @@ export const validateFiberConnection = ({
         splitterFiberIsInput !== otherFiberIsInput &&
         splittersConnectedToSplitterFiber.some((splitter) =>
           splittersConnectedToOtherFiber.some(
-            (anotherSplitter) => anotherSplitter.id === splitter.id
-          )
+            (anotherSplitter) =>
+              anotherSplitter.id === splitter.id &&
+              anotherSplitter.type === splitter.type,
+          ),
         )
       ) {
         return false;
@@ -76,7 +81,9 @@ export const validateFiberConnection = ({
         if (
           splittersConnected.length > 0 &&
           splittersConnected.some(
-            (splitter) => splitter.id === (inputFiber.parent as Splitter).id
+            (splitter) =>
+              splitter.id === (inputFiber.parent as Splitter).id &&
+              splitter.type === (inputFiber.parent as Splitter).type,
           )
         ) {
           return false;
@@ -90,7 +97,7 @@ export const validateFiberConnection = ({
 
 export const arraysContainSameNumbers = (
   arr1: number[],
-  arr2: number[]
+  arr2: number[],
 ): boolean => {
   // Step 1: Sort the arrays
   const sortedArr1 = arr1.sort((a, b) => a - b);
