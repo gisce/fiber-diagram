@@ -39,18 +39,6 @@ export const SplitterUi = ({
               height={sfOpts.size.height}
               fill={Config.splitterFiberColors}
             />
-            <Text
-              text={`#${splitterFiber.id}`}
-              x={sfOpts.position.x}
-              y={sfOpts.position.y}
-              width={sfOpts.size.width * 1.2}
-              height={sfOpts.size.height}
-              fontSize={10}
-              padding={sfOpts.size.height}
-              fill="red"
-              strokeWidth={0.5}
-              stroke={"#000000"}
-            />
             {!fiberIsConnected(splitterFiber.id) && (
               <FiberCircleUi
                 x={sfOpts.position.x}
@@ -73,18 +61,6 @@ export const SplitterUi = ({
               width={sfOpts.size.width}
               height={sfOpts.size.height}
               fill={Config.splitterFiberColors}
-            />
-            <Text
-              text={`#${splitterFiber.id}`}
-              x={sfOpts.position.x}
-              y={sfOpts.position.y}
-              width={sfOpts.size.width * 1.2}
-              height={sfOpts.size.height}
-              fontSize={10}
-              padding={sfOpts.size.height}
-              fill="red"
-              strokeWidth={0.5}
-              stroke={"#000000"}
             />
             {!fiberIsConnected(splitterFiber.id) && (
               <FiberCircleUi
