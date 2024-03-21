@@ -21,6 +21,9 @@
     "build:tsc": "tsc -p tsconfig.build.json --noEmit",
     "build:vite": "vite build",
     "build": "concurrently npm:build:*",
+    "build-vanilla:tsc": "tsc -p tsconfig.build.json --noEmit",
+    "build-vanilla:vite": "vite build --config vite.config.vanilla.ts",
+    "build-vanilla": "concurrently npm:build-vanilla:*",
     "dev:vite": "npm run build:vite -- --watch --force",
     "dev:tsc": "npm run build:tsc -- --watch",
     "start": "concurrently npm:dev:*",
@@ -113,6 +116,12 @@
         "@semantic-release/exec",
         {
           "prepareCmd": "npm run build"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run build-vanilla"
         }
       ],
       [
