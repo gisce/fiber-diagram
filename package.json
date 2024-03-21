@@ -119,15 +119,15 @@
         }
       ],
       [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "npm run build-vanilla"
-        }
-      ],
-      [
         "@semantic-release/npm",
         {
           "npmPublish": true
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run build-vanilla"
         }
       ],
       [
