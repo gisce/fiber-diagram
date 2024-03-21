@@ -1,1 +1,5 @@
 package-lock.json
+dist/*vanilla*.js
+dist/*vanilla*.js.map
+dist/*vanilla*.d.ts
+dist/*vanilla*.d.ts.map
