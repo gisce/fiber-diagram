@@ -130,7 +130,17 @@
           "npmPublish": true
         }
       ],
-      "@semantic-release/github",
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "./dist/fiber-diagram.vanilla.es.js",
+              "label": "Vanilla JS Bundle"
+            }
+          ]
+        }
+      ],
       "@semantic-release/git"
     ]
   }
