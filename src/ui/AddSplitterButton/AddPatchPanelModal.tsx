@@ -44,7 +44,7 @@ export const AddPatchPanelModal = (props: AddPatchPanelModalProps) => {
     >
       <Row style={{ paddingBottom: 20 }}>
         <Col flex="8rem" style={{ paddingRight: 10 }}>
-          {t("inputs")}
+          {t("ports")}
         </Col>
         <Col flex="auto">
           <Select
