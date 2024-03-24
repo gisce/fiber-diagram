@@ -11,7 +11,7 @@
   "exports": {
     ".": {
       "import": "./dist/fiber-diagram.es.js",
-      "require": "./dist/fiber-diagram.umd.js"
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -119,15 +119,15 @@
         }
       ],
       [
-        "@semantic-release/npm",
-        {
-          "npmPublish": true
-        }
-      ],
-      [
         "@semantic-release/exec",
         {
           "prepareCmd": "npm run build-vanilla"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true
         }
       ],
       [
