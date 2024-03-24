@@ -14,7 +14,6 @@ export default defineConfig({
     viteTsconfigPaths(),
   ],
   build: {
-    emptyOutDir: true,
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, "src/index.vanilla.ts"),
