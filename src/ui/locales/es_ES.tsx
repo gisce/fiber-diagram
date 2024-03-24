@@ -7,7 +7,7 @@ export default {
   outputs: "Salidas",
   selectInputsOutputs: "Selecciona el número de entradas y salidas",
   selectPorts: "Selecciona el número de puertos",
-  ports: "Puertos",
+  ports: "Número de puertos simple",
   removeSplitter: "Eliminar splitter",
   removeSplitterConfirm:
     "Estás seguro que quieres eliminar el splitter? Se eliminaran todas las conexiones que tenga.",
