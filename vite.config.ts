@@ -22,7 +22,7 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "react-ooui",
+      name: "fiber-diagram",
       formats: ["es"],
       fileName: (format) => `fiber-diagram.${format}.js`,
     },
