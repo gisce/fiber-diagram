@@ -10,15 +10,18 @@ export class Splitter {
   fibers_in?: Fiber[] = [];
   fibers_out?: Fiber[] = [];
   index: number;
+  type: "SPLITTER" | "PATCH_PANEL" = "SPLITTER";
 
   constructor({
     data,
     parentGrid,
     index,
+    type = "SPLITTER",
   }: {
     data: SplitterData;
     parentGrid: Grid;
     index: number;
+    type?: "SPLITTER" | "PATCH_PANEL";
   }) {
     const { id, fibers_in, fibers_out } = data;
     this.id = id;
@@ -27,6 +30,7 @@ export class Splitter {
 
     this.parentGrid = parentGrid;
     this.index = index;
+    this.type = type;
   }
 
   calculateSize() {
@@ -46,7 +50,7 @@ export class Splitter {
     const fiberInputsWithSplitterOrigin = inputFiberConnections
       .map((fiberConnection) => {
         const inputFiberId = this.fibers_in.some(
-          (f) => f.id === fiberConnection.fiber_in
+          (f) => f.id === fiberConnection.fiber_in,
         )
           ? fiberConnection.fiber_out
           : fiberConnection.fiber_in;
@@ -86,7 +90,7 @@ export class Splitter {
             point: x + Config.baseUnits.fiber.height * 2,
             n: 1,
             unitSize: this.attr.size.width,
-          }
+          },
         );
 
       x = freeXPoints[0];
@@ -101,7 +105,7 @@ export class Splitter {
     const previousSplitter = this.parentGrid.splitters.find(
       (splitter: Splitter) => {
         return splitter.index === this.index - 1;
-      }
+      },
     );
 
     if (previousSplitter) {
@@ -125,9 +129,12 @@ export class Splitter {
   getParsedFibers(fibersData: FiberData[]) {
     return fibersData.map((fiberEntry, index) => {
       return new Fiber({
-        data: { ...fiberEntry, color: Config.colorForSplitters },
+        data: {
+          ...fiberEntry,
+          color: Config.splitterFiberColors,
+        },
         parent: this,
-        index: index,
+        index,
       });
     });
   }
@@ -148,7 +155,7 @@ export class Splitter {
   getPreviousSibilingsHeight() {
     const previousSibilings = this.parentGrid.splitters.filter((splitter) => {
       const splitterIndex = splitter.index;
-      return splitterIndex < this.index;
+      return splitter.type === this.type && splitterIndex < this.index;
     });
 
     return previousSibilings.reduce((acc, splitter) => {

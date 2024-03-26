@@ -12,6 +12,7 @@ export class Fiber {
   attr?: PositionSize;
   parent?: Tube | Splitter;
   parentType: "TUBE" | "SPLITTER";
+  number?: number;
 
   constructor({
     data,
@@ -22,11 +23,12 @@ export class Fiber {
     parent?: Tube | Splitter;
     index: number;
   }) {
-    const { id, name, color } = data;
+    const { id, name, color, number } = data;
 
     this.id = id;
     this.name = name;
     this.color = color;
+    this.number = number;
 
     this.index = index;
     this.parent = parent;
@@ -119,7 +121,7 @@ export class Fiber {
 
     this.attr = {
       position: {
-        x: x,
+        x,
         y: y + parentSplitter.attr.position.y,
       },
       size: {
@@ -130,13 +132,14 @@ export class Fiber {
   }
 
   getJson(): FiberData {
-    const { id, name, color, attr, index } = this;
+    const { id, name, color, attr, index, number } = this;
     return {
       id,
       name,
       color,
       attr,
       index,
+      number,
     };
   }
 }

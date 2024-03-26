@@ -51,5 +51,16 @@ export const sanitize = (input: any) => {
     },
   );
 
+  output.res.elements.patch_panels = input.res.elements.patch_panels?.map(
+    (splitter: any) => {
+      const { id, fibers_in, fibers_out } = splitter;
+      return {
+        id,
+        fibers_in,
+        fibers_out,
+      };
+    },
+  );
+
   return output;
 };

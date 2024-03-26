@@ -9,6 +9,7 @@ import simpleConnections from "../../examples/simpleConnections.json";
 import basic1Splitter from "../../examples/basic1Splitter.json";
 import basic2Splitter from "../../examples/basic2Splitter.json";
 import positions from "../../examples/positions.json";
+import patchPanels from "../../examples/patchPanels.json";
 
 const meta: Meta<typeof GridUi> = {
   title: "Components/GridUi",
@@ -531,4 +532,8 @@ export const Error: Story = {
       },
     }),
   },
+};
+
+export const PatchPanels: Story = {
+  args: { inputJson: JSON.stringify(patchPanels) },
 };

@@ -90,6 +90,11 @@ export class Grid {
       this.parseSplitters(input.res?.elements?.splitters);
     }
 
+    // Check for splitters
+    if (input.res?.elements?.patch_panels) {
+      this.parseSplitters(input.res?.elements?.patch_panels, "PATCH_PANEL");
+    }
+
     // Check for connections
     if (input.res?.connections?.fibers) {
       this.parseConnections(input.res?.connections?.fibers);
@@ -197,15 +202,19 @@ export class Grid {
     wiresData.forEach((wireData: WireData) => this.addWire({ wireData }));
   }
 
-  parseSplitters(splittersData: SplitterData[]) {
+  parseSplitters(
+    splittersData: SplitterData[],
+    type: "SPLITTER" | "PATCH_PANEL" = "SPLITTER",
+  ) {
     splittersData.forEach((splitterData: SplitterData) =>
       this.splitters.push(
         new Splitter({
           data: splitterData,
           parentGrid: this,
           index: splitterData.index || this.splitters.length,
-        })
-      )
+          type,
+        }),
+      ),
     );
     this.splitters = this.splitters.sort((a: Splitter, b: Splitter) => {
       return a.index - b.index;
@@ -219,8 +228,8 @@ export class Grid {
         new FiberConnection({
           data: connectionData,
           parentGrid: this,
-        })
-      )
+        }),
+      ),
     );
 
     // Once we have parsed all the fiber connections, we must evaluate every tube in order to determine if it's expanded or not by default
@@ -235,9 +244,9 @@ export class Grid {
           new TubeConnection({
             data: connectedPairTube,
             parentGrid: this,
-          })
+          }),
         );
-      }
+      },
     );
   }
 
@@ -253,7 +262,7 @@ export class Grid {
       // To avoid duplicates, we check if the tube is already in the array
       if (
         connectedPairTubes.find(
-          (conn) => conn.tube_in === tube.id || conn.tube_out === tube.id
+          (conn) => conn.tube_in === tube.id || conn.tube_out === tube.id,
         )
       ) {
         return;
@@ -280,7 +289,7 @@ export class Grid {
         data: wireData,
         parentGrid: this,
         index: wires.length,
-      })
+      }),
     );
   }
 
@@ -290,7 +299,7 @@ export class Grid {
         data: splitterData,
         parentGrid: this,
         index: this.splitters.length,
-      })
+      }),
     );
 
     this.dataHasChanged();
@@ -308,7 +317,10 @@ export class Grid {
       .sort((a: Splitter, b: Splitter) => {
         return a.index - b.index;
       })
-      .filter((splt: Splitter) => splitter.id !== splt.id)
+      .filter(
+        (splt: Splitter) =>
+          !(splitter.id === splt.id && splitter.type === splt.type),
+      )
       .map((splt: Splitter, idx) => {
         splt.index = idx;
         return splt;
@@ -323,7 +335,8 @@ export class Grid {
         data: this.getNewSplitterData(splitterOpts),
         parentGrid: this,
         index: this.splitters.length,
-      })
+        type: splitterOpts.type,
+      }),
     );
     this.dataHasChanged();
   }
@@ -334,7 +347,7 @@ export class Grid {
     const fibers_out = [];
 
     const newTempIds = this.getNextTempFiberIds(
-      splitterOpts.nInputs + splitterOpts.nOutputs
+      splitterOpts.nInputs + splitterOpts.nOutputs,
     );
 
     for (let i = 0; i < splitterOpts.nInputs; i++) {
@@ -359,6 +372,7 @@ export class Grid {
       id: splitterId,
       fibers_in,
       fibers_out,
+      type: splitterOpts.type,
     };
   }
 
@@ -404,7 +418,7 @@ export class Grid {
       new FiberConnection({
         data: fiberConnectionData,
         parentGrid: this,
-      })
+      }),
     );
 
     this.dataHasChanged();
@@ -414,7 +428,7 @@ export class Grid {
     this.fiberConnections = this.fiberConnections.filter(
       (fiberConnection) =>
         fiberConnection.fiber_in !== fiberConnectionData.fiber_in &&
-        fiberConnection.fiber_out !== fiberConnectionData.fiber_out
+        fiberConnection.fiber_out !== fiberConnectionData.fiber_out,
     );
 
     this.dataHasChanged();
@@ -425,7 +439,7 @@ export class Grid {
       new TubeConnection({
         data: tubeConnectionData,
         parentGrid: this,
-      })
+      }),
     );
 
     this.dataHasChanged();
@@ -435,7 +449,7 @@ export class Grid {
     this.tubeConnections = this.tubeConnections.filter(
       (tubeConnection) =>
         tubeConnection.tube_in !== tubeConnectionData.tube_in &&
-        tubeConnection.tube_out !== tubeConnectionData.tube_out
+        tubeConnection.tube_out !== tubeConnectionData.tube_out,
     );
 
     this.dataHasChanged();
@@ -519,24 +533,24 @@ export class Grid {
 
   getFiberConnectionWithId(id: number) {
     return this.fiberConnections.find((fiberConnection) =>
-      fiberConnection.fiberIdBelongsToConnection(id)
+      fiberConnection.fiberIdBelongsToConnection(id),
     );
   }
 
   getTubeConnectionWithId(id: number) {
     return this.tubeConnections.find((tubeConnection) =>
-      tubeConnection.tubeIdBelongsToConnection(id)
+      tubeConnection.tubeIdBelongsToConnection(id),
     );
   }
 
   getWiresHeight() {
     const leftHeight = this.leftWires.reduce(
       (a, b) => a + b.attr.size.height + Config.wireSeparation,
-      0
+      0,
     );
     const rightHeight = this.rightWires.reduce(
       (a, b) => a + b.attr.size.height + Config.wireSeparation,
-      0
+      0,
     );
     return Math.max(leftHeight, rightHeight);
   }
@@ -574,7 +588,7 @@ export class Grid {
       this.pathController.leftAngleRowController.indexController.getWidth();
     const rightAngleUsedWith = Math.max(
       this.pathController.rightAngleRowController.indexController.getWidth(),
-      maxWidthForSplitters
+      maxWidthForSplitters,
     );
 
     const wireTubeFiberSize =
@@ -612,6 +626,13 @@ export class Grid {
             .concat(this.rightWires)
             .map((wire) => wire.getJson()),
           splitters: this.splitters
+            .filter((splitter) => splitter.type === "SPLITTER")
+            .map((splitter) => splitter.getJson())
+            .sort((a: SplitterData, b: SplitterData) => {
+              return a.index - b.index;
+            }),
+          patch_panels: this.splitters
+            .filter((splitter) => splitter.type === "PATCH_PANEL")
             .map((splitter) => splitter.getJson())
             .sort((a: SplitterData, b: SplitterData) => {
               return a.index - b.index;

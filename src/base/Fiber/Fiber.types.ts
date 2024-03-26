@@ -6,4 +6,5 @@ export type FiberData = {
   color?: string;
   index?: number;
   attr?: PositionSize;
+  number?: number;
 };
