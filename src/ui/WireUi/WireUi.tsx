@@ -22,6 +22,8 @@ export const WireUi = ({
     direction,
   } = useTooltip();
 
+  const fontSize = wire.position ? 16 : 12;
+
   return (
     <Group>
       <Rect
@@ -39,7 +41,8 @@ export const WireUi = ({
         height={opts.size.height}
         verticalAlign={"middle"}
         align="center"
-        fontSize={12}
+        fontSize={fontSize}
+        fontWeight="bold"
         padding={5}
         fill="white"
         onMouseEnter={handleOnMouseEnter}
