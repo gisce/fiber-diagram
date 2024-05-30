@@ -25,6 +25,7 @@ export const AddSplitterModal = (props: AddSplitterModalProps) => {
     const splitterOpts: SplitterOpts = {
       nInputs: parseInt(inputsValue),
       nOutputs: parseInt(outputsValue),
+      type: "SPLITTER",
     };
     onOk(splitterOpts);
   }

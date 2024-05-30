@@ -6,11 +6,15 @@ const confirm = Modal.confirm;
 type RemoveSplitterButtonProps = {
   disabled: boolean;
   onRemoveSelectedSplitter: () => void;
+  type: "SPLITTER" | "PATCH_PANEL";
 };
 
 export const RemoveSplitterButton = (props: RemoveSplitterButtonProps) => {
-  const { onRemoveSelectedSplitter, disabled } = props;
+  const { onRemoveSelectedSplitter, disabled, type } = props;
   const { t } = useContext(LocaleContext) as LocaleContextType;
+
+  const title =
+    type === "SPLITTER" ? t("removeSplitter") : t("removePatchPanel");
 
   return (
     <>
@@ -18,8 +22,11 @@ export const RemoveSplitterButton = (props: RemoveSplitterButtonProps) => {
         disabled={disabled}
         onClick={() => {
           confirm({
-            title: t("removeSplitter"),
-            content: t("removeSplitterConfirm"),
+            title,
+            content:
+              type === "SPLITTER"
+                ? t("removeSplitterConfirm")
+                : t("removePatchPanelConfirm"),
             okText: t("ok"),
             cancelText: t("cancel"),
             onOk() {
@@ -29,7 +36,7 @@ export const RemoveSplitterButton = (props: RemoveSplitterButtonProps) => {
           });
         }}
       >
-        {t("removeSplitter")}
+        {title}
       </Button>
     </>
   );

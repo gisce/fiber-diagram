@@ -1,23 +1,21 @@
-import react from "@vitejs/plugin-react";
-import * as path from "path";
-import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import dts from 'vite-plugin-dts';
+import { PluginOption, defineConfig } from "vite";
+import dts from "vite-plugin-dts";
+import viteTsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
   plugins: [
     peerDepsExternal({
       includeDependencies: true,
-    }),
+    }) as PluginOption,
     react(),
     dts({
       insertTypesEntry: true,
+      tsconfigPath: path.resolve(__dirname, "./tsconfig.build.json"),
     }),
+    viteTsconfigPaths(),
   ],
   build: {
     emptyOutDir: true,
@@ -25,17 +23,27 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "fiber-diagram",
-      formats: ["es", "umd"],
+      formats: ["es"],
       fileName: (format) => `fiber-diagram.${format}.js`,
     },
     rollupOptions: {
-      external: ["react", "react-dom", "antd", "react-konva", "konva", "@ant-design/icons"],
-      output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      },
+      // We manually add these since they are not directly in package.json, but they end up in the bundle if we don't exclude them.
+      // Reason for this is using imports for specific components
+      external: [
+        "@ant-design/icons",
+        "lodash/debounce",
+        "moment",
+        "dayjs",
+        "dayjs/plugin/advancedFormat",
+        "dayjs/plugin/isoWeek",
+        "dayjs/plugin/timezone",
+        "dayjs/plugin/duration",
+        "dayjs/plugin/relativeTime",
+        "dayjs/plugin/weekday",
+        "dayjs/plugin/localeData",
+        "dayjs/plugin/customParseFormat",
+        "antd/es/alert/ErrorBoundary",
+      ],
     },
   },
 });

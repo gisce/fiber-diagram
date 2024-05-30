@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 import { WireUi } from "@/ui/WireUi";
 import { Grid, GridData } from "@/base/Grid";
@@ -34,17 +34,16 @@ export const GridUi = ({
     (newGrid: Grid) => {
       if (JSON.stringify(newGrid.getJson()) !== JSON.stringify(gridData)) {
         setGridData(newGrid.getJson());
-        if (gridData !== undefined) {
-          onChange(JSON.stringify(sanitize(newGrid.getJson())));
-        }
+        onChange(JSON.stringify(sanitize(newGrid.getJson())));
       }
     },
-    [grid, gridData]
+    [gridData, onChange],
   );
 
   useEffect(() => {
     const input = sanitize(JSON.parse(inputJson));
     setGrid(new Grid({ input, onChange: onChangeGrid }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputJson]);
 
   useEffect(() => {
@@ -53,6 +52,7 @@ export const GridUi = ({
     }
 
     setGrid(new Grid({ input: gridData, onChange: onChangeGrid }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gridData]);
 
   if (!grid) {
@@ -78,12 +78,21 @@ export const GridUi = ({
         {!readonly && (
           <Space>
             <AddSplitterButton
+              type={"SPLITTER"}
+              disabled={selectedSplitter !== undefined}
+              onAddSplitter={(splitterOpts: SplitterOpts) => {
+                grid.addNewSplitter(splitterOpts);
+              }}
+            />
+            <AddSplitterButton
+              type={"PATCH_PANEL"}
               disabled={selectedSplitter !== undefined}
               onAddSplitter={(splitterOpts: SplitterOpts) => {
                 grid.addNewSplitter(splitterOpts);
               }}
             />
             <RemoveSplitterButton
+              type={"SPLITTER"}
               onRemoveSelectedSplitter={() => {
                 if (readonly) {
                   return;
@@ -92,7 +101,25 @@ export const GridUi = ({
                 selectedSplitter.remove();
                 setSelectedSplitter(undefined);
               }}
-              disabled={selectedSplitter === undefined}
+              disabled={
+                selectedSplitter === undefined ||
+                selectedSplitter?.type !== "SPLITTER"
+              }
+            />
+            <RemoveSplitterButton
+              type={"PATCH_PANEL"}
+              onRemoveSelectedSplitter={() => {
+                if (readonly) {
+                  return;
+                }
+
+                selectedSplitter.remove();
+                setSelectedSplitter(undefined);
+              }}
+              disabled={
+                selectedSplitter === undefined ||
+                selectedSplitter?.type !== "PATCH_PANEL"
+              }
             />
           </Space>
         )}
@@ -111,7 +138,6 @@ export const GridUi = ({
               height={grid.size.height * Config.pixelsPerUnit}
               fill={"#cccccc"}
             />
-
             {grid.tubeConnections?.map((connection, i) => {
               return (
                 <TubeConnectionUi
@@ -124,15 +150,21 @@ export const GridUi = ({
             {grid.splitters?.map((splitter) => {
               return (
                 <SplitterUi
-                  key={splitter.id}
+                  key={`${splitter.id}-${splitter.type}`}
                   splitter={splitter}
                   readonly={readonly}
-                  splitterIsSelected={splitter.id === selectedSplitter?.id}
+                  splitterIsSelected={
+                    splitter.id === selectedSplitter?.id &&
+                    splitter.type === selectedSplitter?.type
+                  }
                   onSplitterSelected={(splitterToSelect: Splitter) => {
                     if (readonly) {
                       return;
                     }
-                    if (splitterToSelect.id === selectedSplitter?.id) {
+                    if (
+                      splitterToSelect.id === selectedSplitter?.id &&
+                      splitterToSelect.type === selectedSplitter?.type
+                    ) {
                       setSelectedSplitter(undefined);
                     } else {
                       setSelectedSplitter(splitterToSelect);

@@ -1,64 +1,147 @@
 {
   "name": "@gisce/fiber-diagram",
-  "version": "1.1.0-rc.3",
+  "version": "2.1.0",
   "description": "",
-  "main": "./dist/fiber-diagram.umd.js",
+  "packageManager": "npm@9.8.0",
+  "engines": {
+    "node": "20.5.0"
+  },
   "module": "./dist/fiber-diagram.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/fiber-diagram.es.js",
-      "require": "./dist/fiber-diagram.umd.js"
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
-    "preminor": "npm version preminor --preid rc",
-    "prerelease": "npm version prerelease --preid rc",
-    "prepatch": "npm version prepatch --preid rc",
-    "premajor": "npm version premajor --preid rc",
-    "start": "while :; do tsc && vite build --watch --force; done",
-    "build": "tsc && vite build",
+    "build:tsc": "tsc -p tsconfig.build.json --noEmit",
+    "build:vite": "vite build",
+    "build": "concurrently npm:build:*",
+    "build-vanilla:tsc": "tsc -p tsconfig.build.json --noEmit",
+    "build-vanilla:vite": "vite build --config vite.config.vanilla.ts",
+    "build-vanilla": "concurrently npm:build-vanilla:*",
+    "dev:vite": "npm run build:vite -- --watch --force",
+    "dev:tsc": "npm run build:tsc -- --watch",
+    "start": "concurrently npm:dev:*",
+    "prepare": "husky install",
+    "check": "lint-staged",
     "storybook": "storybook dev -p 6006",
-    "test": "vitest",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "analyze": "vite-bundle-visualizer",
+    "test": "vitest"
   },
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^7.0.20",
-    "@storybook/addon-interactions": "^7.0.20",
-    "@storybook/addon-links": "^7.0.20",
-    "@storybook/blocks": "^7.0.20",
-    "@storybook/react": "^7.0.20",
-    "@storybook/react-vite": "^7.0.20",
-    "@storybook/testing-library": "^0.0.14-next.2",
-    "@types/react": "17.0.60",
-    "@types/react-dom": "17.0.20",
-    "@vitejs/plugin-react": "^4.0.0",
-    "prop-types": "^15.8.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "@commitlint/cli": "^18.4.3",
+    "@gisce/commitlint-rules": "1.0.5",
+    "@semantic-release/exec": "6.0.3",
+    "@semantic-release/git": "10.0.1",
+    "@semantic-release/npm": "10.0.4",
+    "@storybook/addon-essentials": "^7.6.13",
+    "@storybook/addon-interactions": "^7.6.13",
+    "@storybook/addon-links": "^7.6.13",
+    "@storybook/addon-onboarding": "^1.0.11",
+    "@storybook/blocks": "^7.6.13",
+    "@storybook/react": "^7.6.13",
+    "@storybook/react-vite": "^7.6.13",
+    "@storybook/test": "^7.6.13",
+    "@types/react": "18.2.18",
+    "@types/react-dom": "18.2.7",
+    "@vitejs/plugin-react-swc": "3.3.2",
+    "concurrently": "8.2.0",
+    "eslint": "8.51.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-config-standard-with-typescript": "24.0.0",
+    "eslint-plugin-import": "2.28.0",
+    "eslint-plugin-n": "15.6.0",
+    "eslint-plugin-promise": "6.1.1",
+    "eslint-plugin-react": "7.33.1",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "husky": "8.0.3",
+    "lint-staged": "13.2.3",
+    "prettier": "3.0.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "storybook": "^7.0.20",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.9",
-    "vite-plugin-dts": "^2.3.0",
-    "vitest": "^0.32.0"
+    "semantic-release": "21.0.7",
+    "storybook": "^7.6.13",
+    "typescript": "5.3.3",
+    "vite": "4.5.2",
+    "vite-bundle-visualizer": "^0.10.0",
+    "vite-plugin-dts": "^3.6.0",
+    "vite-tsconfig-paths": "3.5.0",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
-    "antd": "^5.5.2",
+    "antd": "5.13.1",
     "konva": "^8.3.1",
-    "react-konva": "^17.0.2-5"
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-konva": "18.2.10"
+  },
+  "overrides": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": "eslint --fix",
+    "src/**/*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
+  },
+  "release": {
+    "branches": [
+      "main",
+      {
+        "name": "develop",
+        "prerelease": "rc"
+      },
+      {
+        "name": "alpha",
+        "prerelease": true
+      }
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run build"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run build-vanilla"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "./dist/fiber-diagram.vanilla.es.js",
+              "label": "Vanilla JS Bundle"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/git"
+    ]
   }
 }

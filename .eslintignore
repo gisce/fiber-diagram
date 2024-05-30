@@ -1,0 +1,7 @@
+coverage
+node_modules
+build
+docs
+report
+vite.config.ts
+vite.config.vanilla.ts

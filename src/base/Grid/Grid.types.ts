@@ -11,6 +11,7 @@ export type GridData = {
     elements?: {
       wires?: WireData[];
       splitters?: SplitterData[];
+      patch_panels?: SplitterData[];
     };
     connections?: {
       fibers: FiberConnectionData[];

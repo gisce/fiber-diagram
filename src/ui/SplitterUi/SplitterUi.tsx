@@ -37,19 +37,7 @@ export const SplitterUi = ({
               y={sfOpts.position.y}
               width={sfOpts.size.width}
               height={sfOpts.size.height}
-              fill={"#555555"}
-            />
-            <Text
-              text={`#${splitterFiber.id}`}
-              x={sfOpts.position.x}
-              y={sfOpts.position.y}
-              width={sfOpts.size.width * 1.2}
-              height={sfOpts.size.height}
-              fontSize={10}
-              padding={sfOpts.size.height}
-              fill="red"
-              strokeWidth={0.5}
-              stroke={"#000000"}
+              fill={Config.splitterFiberColors}
             />
             {!fiberIsConnected(splitterFiber.id) && (
               <FiberCircleUi
@@ -72,19 +60,7 @@ export const SplitterUi = ({
               y={sfOpts.position.y}
               width={sfOpts.size.width}
               height={sfOpts.size.height}
-              fill={"#555555"}
-            />
-            <Text
-              text={`#${splitterFiber.id}`}
-              x={sfOpts.position.x}
-              y={sfOpts.position.y}
-              width={sfOpts.size.width * 1.2}
-              height={sfOpts.size.height}
-              fontSize={10}
-              padding={sfOpts.size.height}
-              fill="red"
-              strokeWidth={0.5}
-              stroke={"#000000"}
+              fill={Config.splitterFiberColors}
             />
             {!fiberIsConnected(splitterFiber.id) && (
               <FiberCircleUi
@@ -104,8 +80,12 @@ export const SplitterUi = ({
         y={opts.position.y}
         width={Config.splitterWidth * Config.pixelsPerUnit}
         height={opts.size.height}
-        fill={"#d0d0d0"}
-        stroke={splitterIsSelected ? "red" : "#555555"}
+        fill={
+          splitter.type === "SPLITTER"
+            ? Config.colorForSplitters
+            : Config.colorForPatchPanels
+        }
+        stroke={splitterIsSelected ? "red" : Config.splitterFiberColors}
         strokeWidth={strokeWidth}
         onMouseEnter={(e) => {
           if (readonly) {
