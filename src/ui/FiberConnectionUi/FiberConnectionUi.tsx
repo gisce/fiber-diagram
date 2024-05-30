@@ -76,7 +76,7 @@ export const FiberConnectionUi = ({
         y={leg.position.y}
         width={leg.size.width}
         height={leg.size.height}
-        stroke={connectionIsSelected ? "#fff" : undefined}
+        stroke={connectionIsSelected ? "#DDD" : undefined}
         strokeWidth={connectionIsSelected ? 2 : undefined}
         fill={leg.color}
       />
