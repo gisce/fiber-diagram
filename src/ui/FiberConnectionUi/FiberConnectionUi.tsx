@@ -26,10 +26,10 @@ export const FiberConnectionUi = ({
   }
 
   const fiberIn: Fiber = connection.parentGrid.getFiberById(
-    connection.fiber_in
+    connection.fiber_in,
   );
   const fiberOut: Fiber = connection.parentGrid.getFiberById(
-    connection.fiber_out
+    connection.fiber_out,
   );
 
   if (fiberIn === undefined) {
@@ -76,6 +76,8 @@ export const FiberConnectionUi = ({
         y={leg.position.y}
         width={leg.size.width}
         height={leg.size.height}
+        stroke={connectionIsSelected ? "#DDD" : undefined}
+        strokeWidth={connectionIsSelected ? 2 : undefined}
         fill={leg.color}
       />
     );
