@@ -138,7 +138,9 @@
               "path": "./dist/fiber-diagram.vanilla.es.js",
               "label": "Vanilla JS Bundle"
             }
-          ]
+          ],
+          "successComment": false,
+          "failComment": false
         }
       ],
       "@semantic-release/git"
