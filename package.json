@@ -1,6 +1,6 @@
 {
   "name": "@gisce/fiber-diagram",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "",
   "packageManager": "npm@9.8.0",
   "engines": {
@@ -143,7 +143,13 @@
           "failComment": false
         }
       ],
-      "@semantic-release/git"
+      "@semantic-release/git",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "echo ${nextRelease.type} > .release-type && echo ${nextRelease.gitTag} > .release-tag"
+        }
+      ]
     ]
   }
 }
