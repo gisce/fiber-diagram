@@ -1,6 +1,6 @@
 {
   "name": "@gisce/fiber-diagram",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "",
   "module": "./dist/fiber-diagram.es.js",
   "types": "./dist/index.d.ts",
