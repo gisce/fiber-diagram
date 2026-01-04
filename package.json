@@ -79,7 +79,7 @@
     "vitest": "^0.34.6"
   },
   "dependencies": {
-    "antd": "5.13.1",
+    "antd": "5.29.3",
     "konva": "^9.3.18",
     "react-konva": "19.2.1"
   },
